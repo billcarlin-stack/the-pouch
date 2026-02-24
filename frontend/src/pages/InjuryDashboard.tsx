@@ -28,6 +28,7 @@ export const InjuryDashboard = () => {
     const [formData, setFormData] = useState<Partial<Injury>>({
         player_id: user?.role === 'player' ? (user.jumper_no || 0) : 0,
         injury_type: '',
+        body_area: '',
         severity: 'Minor',
         status: 'Active',
         notes: ''
@@ -66,7 +67,7 @@ export const InjuryDashboard = () => {
         try {
             await ApiService.logInjury(formData);
             alert("Injury logged and player status updated!");
-            setFormData({ ...formData, injury_type: '', notes: '' }); // Reset some fields
+            setFormData({ ...formData, injury_type: '', body_area: '', notes: '' }); // Reset some fields
             fetchData(); // Refresh list
         } catch (err) {
             alert("Failed to save injury log");
@@ -217,6 +218,32 @@ export const InjuryDashboard = () => {
                                 onChange={e => setFormData({ ...formData, injury_type: e.target.value })}
                                 required
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Body Area</label>
+                            <select
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none"
+                                value={formData.body_area}
+                                onChange={e => setFormData({ ...formData, body_area: e.target.value })}
+                                required
+                            >
+                                <option value="">Select Area...</option>
+                                <option value="Head/Neck">Head/Neck</option>
+                                <option value="Shoulder">Shoulder</option>
+                                <option value="Upper Arm">Upper Arm</option>
+                                <option value="Elbow">Elbow</option>
+                                <option value="Forearm">Forearm</option>
+                                <option value="Hand/Wrist">Hand/Wrist</option>
+                                <option value="Back/Spine">Back/Spine</option>
+                                <option value="Chest/Abdo">Chest/Abdo</option>
+                                <option value="Hip/Groin">Hip/Groin</option>
+                                <option value="Thigh">Thigh</option>
+                                <option value="Knee">Knee</option>
+                                <option value="Lower Leg">Lower Leg</option>
+                                <option value="Ankle">Ankle</option>
+                                <option value="Foot/Toes">Foot/Toes</option>
+                            </select>
                         </div>
 
                         <div>

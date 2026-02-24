@@ -122,25 +122,32 @@ def get_surveys_for_player(jumper_no: int, limit: int = 90) -> list[dict]:
 
 def get_surveys_with_notes(limit: int = 20) -> list[dict]:
     """
-    Retrieves recent wellbeing surveys that have non-empty notes.
-    Joins with the players table to include player names.
-
-    Args:
-        limit: Max records to return.
-
-    Returns:
-        List of dicts with player_name, jumper_no, notes, sleep_score, etc.
+    Retrieves recent wellbeing surveys that are 'critical':
+    1. Have non-empty notes.
+    2. OR have low readiness scores (< 60%).
+    
+    Calculates readiness on the fly using weighted formula:
+    Sleep (40%), Soreness (40%), Stress (20%).
     """
     client = get_bq_client()
     PLAYERS_TABLE = f"{_PROJECT}.{_DATASET}.{_config.BQ_PLAYERS_TABLE}"
+    
+    # SQL-based readiness calculation
     query = f"""
-        SELECT 
-            w.*,
-            p.name as player_name
-        FROM `{_PROJECT}.{_DATASET}.{_TABLE}` w
-        JOIN `{PLAYERS_TABLE}` p ON w.player_id = p.jumper_no
-        WHERE w.notes IS NOT NULL AND TRIM(w.notes) != ''
-        ORDER BY w.submitted_at DESC
+        WITH raw_data AS (
+            SELECT 
+                w.*,
+                p.name as player_name,
+                ((w.sleep_score * 0.4) + (w.soreness_score * 0.4) + (w.stress_score * 0.2)) * 10 as readiness
+            FROM `{_PROJECT}.{_DATASET}.{_TABLE}` w
+            JOIN `{PLAYERS_TABLE}` p ON w.player_id = p.jumper_no
+        )
+        SELECT *
+        FROM raw_data
+        WHERE 
+            (notes IS NOT NULL AND TRIM(notes) != '')
+            OR readiness < 60
+        ORDER BY submitted_at DESC
         LIMIT @limit
     """
     job_config = bigquery.QueryJobConfig(
@@ -153,5 +160,5 @@ def get_surveys_with_notes(limit: int = 20) -> list[dict]:
         rows = client.query(query, job_config=job_config).result()
         return [dict(row) for row in rows]
     except Exception as e:
-        logger.error("Error fetching wellbeing surveys with notes: %s", str(e))
+        logger.error("Error fetching wellbeing alerts: %s", str(e))
         raise
