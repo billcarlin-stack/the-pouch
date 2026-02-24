@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nmfc-navy: #0C2340;
+  --color-nmfc-royal: #0057B8;
+  --color-nmfc-white: #FFFFFF;
+  --color-nmfc-light: #F4F6F8;
+  --color-nmfc-slate: #334155;
+  --color-nmfc-success: #10B981;
+  --color-nmfc-warning: #F59E0B;
+  --color-nmfc-danger: #EF4444;
+
+  --font-sans: "Inter", "Roboto", "system-ui", "sans-serif";
+  --font-outfit: "Outfit", "system-ui", "sans-serif";
+  --font-mono: "Roboto Mono", "monospace";
+
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#F8FAFC] text-slate-900 antialiased font-sans;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-glass transition-all duration-300;
+}
+
+.premium-card {
+  @apply bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-card-hover hover:border-nmfc-royal/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-nmfc-navy via-nmfc-royal to-blue-500;
+}
+
+.gold-divide {
+  @apply border-b-2 border-yellow-400 pb-1 mb-4 flex items-center justify-between;
+}
