@@ -61,7 +61,7 @@ export const Sidebar = () => {
 
             {/* Navigation Links */}
             <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
-                <NavItem to="/" icon={LayoutDashboard} label="Dashboard" />
+                {isCoach && <NavItem to="/" icon={LayoutDashboard} label="Dashboard" />}
 
                 {/* Player-specific items */}
                 {!isCoach && user?.jumper_no && (

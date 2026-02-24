@@ -52,7 +52,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
+        <Route index element={user?.role === 'coach' ? <Dashboard /> : <Navigate to={`/players/${user?.jumper_no}`} replace />} />
 
         {/* Player profile — accessible to both (coaches view any, players view their own) */}
         <Route path="players/:id" element={<PlayerDetail />} />

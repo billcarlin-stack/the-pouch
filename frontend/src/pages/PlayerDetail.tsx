@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ApiService, formatPlayerImage, getMatchRatings } from '../services/api';
 import type { Player, Injury, PlayerStats } from '../services/api';
-import { ChevronLeft, Share2, Printer, Activity } from 'lucide-react';
+import { ChevronLeft, Share2, Printer, Activity, Target } from 'lucide-react';
 import { clsx } from 'clsx';
 import {
     Radar,
@@ -132,6 +132,7 @@ export const PlayerDetail = () => {
     const [playerInjuries, setPlayerInjuries] = useState<Injury[]>([]);
     const [stats2025, setStats2025] = useState<PlayerStats | null>(null);
     const [latestWellbeing, setLatestWellbeing] = useState<any>(null);
+    const [woopGoals, setWoopGoals] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -141,14 +142,16 @@ export const PlayerDetail = () => {
                 ApiService.getRatings(id),
                 ApiService.getInjuries(),
                 ApiService.getStats2025({ jumper_no: Number(id) }),
-                ApiService.getWellbeing(id, 1)
-            ]).then(([p, r, allInj, s, w]) => {
+                ApiService.getWellbeing(id, 1),
+                ApiService.getWoopGoals(Number(id))
+            ]).then(([p, r, allInj, s, w, woop]) => {
                 setPlayer(p);
                 setCoachRatings(r.ratings);
                 setMatchRatings(getMatchRatings(p.jumper_no));
                 setPlayerInjuries(allInj.filter((i: Injury) => i.player_id === Number(id)));
                 if (s && s.length > 0) setStats2025(s[0]);
                 if (w && w.length > 0) setLatestWellbeing(w[0]);
+                setWoopGoals(woop);
             }).finally(() => setLoading(false));
         }
     }, [id]);
@@ -388,7 +391,36 @@ export const PlayerDetail = () => {
                         </table>
                     </div>
                 </div>
+            </div>
 
+            {/* WOOP Goals Section - New */}
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center gap-2">
+                    <Target className="text-nmfc-royal" size={24} />
+                    Player WOOP Goals (Wish, Outcome, Obstacle, Plan)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {woopGoals.length > 0 ? woopGoals.map((goal, idx) => (
+                        <div key={idx} className="p-6 rounded-2xl bg-blue-50 border border-blue-100 space-y-4">
+                            <div className="flex justify-between items-start">
+                                <h4 className="font-bold text-nmfc-navy text-lg">{goal.wish}</h4>
+                                <span className={clsx(
+                                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
+                                    goal.status === 'active' ? "bg-nmfc-royal text-white" : "bg-green-500 text-white"
+                                )}>
+                                    {goal.status}
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-3 text-sm">
+                                <div><span className="font-black text-nmfc-royal uppercase text-[10px] block mb-1">Outcome</span> <p className="text-gray-700 font-medium">{goal.outcome}</p></div>
+                                <div><span className="font-black text-nmfc-royal uppercase text-[10px] block mb-1">Obstacle</span> <p className="text-gray-700 font-medium">{goal.obstacle}</p></div>
+                                <div><span className="font-black text-nmfc-royal uppercase text-[10px] block mb-1">Plan</span> <p className="text-gray-700 font-medium">{goal.plan}</p></div>
+                            </div>
+                        </div>
+                    )) : (
+                        <p className="text-gray-400 italic">No active WOOP goals for this period.</p>
+                    )}
+                </div>
             </div>
         </div>
     );

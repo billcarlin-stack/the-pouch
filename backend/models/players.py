@@ -6,8 +6,8 @@ BigQuery queries for the Players module.
 
 from google.cloud import bigquery
 
-from db.bigquery_client import get_bq_client
 from config import get_config
+from utils.cache import data_cache
 
 _config = get_config()
 _PROJECT = _config.GOOGLE_CLOUD_PROJECT
@@ -22,6 +22,11 @@ def get_all_players() -> list[dict]:
     Returns:
         List of player dicts with all columns from the players table.
     """
+    cached = data_cache.get("all_players")
+    if cached:
+        return cached
+
+    from db.bigquery_client import get_bq_client
     client = get_bq_client()
     query = f"""
         SELECT *
@@ -29,7 +34,9 @@ def get_all_players() -> list[dict]:
         ORDER BY jumper_no
     """
     rows = client.query(query).result()
-    return [dict(row) for row in rows]
+    players = [dict(row) for row in rows]
+    data_cache.set("all_players", players)
+    return players
 
 
 def get_player_by_id(jumper_no: int) -> dict | None:
@@ -42,6 +49,12 @@ def get_player_by_id(jumper_no: int) -> dict | None:
     Returns:
         Player dict if found, None otherwise.
     """
+    cache_key = f"player_{jumper_no}"
+    cached = data_cache.get(cache_key)
+    if cached:
+        return cached
+
+    from db.bigquery_client import get_bq_client
     client = get_bq_client()
     query = f"""
         SELECT *
@@ -56,4 +69,6 @@ def get_player_by_id(jumper_no: int) -> dict | None:
     rows = list(client.query(query, job_config=job_config).result())
     if not rows:
         return None
-    return dict(rows[0])
+    player = dict(rows[0])
+    data_cache.set(cache_key, player)
+    return player
