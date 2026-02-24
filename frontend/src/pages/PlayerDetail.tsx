@@ -151,6 +151,7 @@ export const PlayerDetail = () => {
                 setPlayerInjuries(allInj.filter((i: Injury) => i.player_id === Number(id)));
                 if (s && s.length > 0) setStats2025(s[0]);
                 if (w && w.length > 0) setLatestWellbeing(w[0]);
+                console.log('Fetched WOOP goals:', woop);
                 setWoopGoals(woop);
             }).finally(() => setLoading(false));
         }

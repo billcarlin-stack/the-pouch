@@ -96,8 +96,8 @@ const StatsPage = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
                 <div>
-                    <h1 className="text-5xl font-black text-white tracking-tighter font-outfit uppercase">
-                        SQUAD <span className="text-blue-400">STATS</span>
+                    <h1 className="text-5xl font-black text-nmfc-navy tracking-tighter font-outfit uppercase">
+                        SQUAD <span className="text-nmfc-royal">STATS</span>
                     </h1>
                     <p className="text-blue-300 font-bold uppercase tracking-widest text-[10px] mt-2">2025 Performance Analytics Engine</p>
                 </div>

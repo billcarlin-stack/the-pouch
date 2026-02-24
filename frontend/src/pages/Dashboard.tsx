@@ -6,6 +6,8 @@
 */
 
 import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ApiService } from '../services/api';
 import type { TeamInsights } from '../services/api';
 import {
@@ -51,12 +53,14 @@ const StatCard = ({ title, value, subtext, icon: Icon, trend, color, loading }: 
 };
 
 export const Dashboard = () => {
+    const { user } = useAuth();
     const [insights, setInsights] = useState<TeamInsights | null>(null);
     const [injuries, setInjuries] = useState<any[]>([]);
     const [wbAlerts, setWbAlerts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (user?.role === 'player') return;
         const fetchData = async () => {
             try {
                 const [ins, inj, wba] = await Promise.all([
@@ -87,13 +91,17 @@ export const Dashboard = () => {
 
     const latestStats = chartData.length > 0 ? chartData[chartData.length - 1] : { sleep: 0, soreness: 0, stress: 0 };
 
+    if (user?.role === 'player') {
+        return <Navigate to={`/players/${user.jumper_no}`} replace />;
+    }
+
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header section with Premium Branding */}
             <div className="flex items-center justify-between bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-nmfc-royal/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-black text-nmfc-navy tracking-tight">Team Performance Hub</h1>
+                    <h1 className="text-3xl font-black text-nmfc-navy tracking-tight uppercase">Team Performance Hub</h1>
                     <p className="text-gray-500 font-medium mt-1">Real-time squad analytics for coaching insight.</p>
                 </div>
                 <div className="bg-nmfc-navy/5 p-4 rounded-2xl relative z-10 group">

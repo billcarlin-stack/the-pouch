@@ -149,8 +149,8 @@ const TeamBuilder = () => {
             {/* Header */}
             <div className="flex items-end justify-between border-b border-white/10 pb-6">
                 <div>
-                    <h1 className="text-4xl font-black text-white tracking-tight font-outfit uppercase">
-                        Squad <span className="text-blue-400">Builder</span>
+                    <h1 className="text-4xl font-black text-nmfc-navy tracking-tight font-outfit uppercase">
+                        Squad <span className="text-nmfc-royal">Builder</span>
                     </h1>
                     <p className="text-blue-300 font-medium mt-2 text-sm">
                         Tactical selection & match-day planning interface
@@ -246,7 +246,7 @@ const TeamBuilder = () => {
                 <div className="bg-white/[0.03] rounded-3xl border border-white/10 p-6 space-y-4">
                     <div className="flex items-center gap-2 border-b border-white/10 pb-3">
                         <div className="h-1.5 w-1.5 rounded-full bg-yellow-400"></div>
-                        <div className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">
+                        <div className="text-[11px] font-black text-nmfc-navy uppercase tracking-[0.2em]">
                             Interchange & Bench
                         </div>
                     </div>
@@ -261,7 +261,7 @@ const TeamBuilder = () => {
                 <div className="bg-white/[0.03] rounded-3xl border border-white/10 p-6 space-y-4">
                     <div className="flex items-center gap-2 border-b border-white/10 pb-3">
                         <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
-                        <div className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">
+                        <div className="text-[11px] font-black text-nmfc-navy uppercase tracking-[0.2em]">
                             Extended Consideration
                         </div>
                     </div>
