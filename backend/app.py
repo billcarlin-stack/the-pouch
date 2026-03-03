@@ -86,10 +86,14 @@ def create_app(config=None):
     @app.route('/api/admin/seed', methods=['GET'])
     def admin_seed():
         import threading
+
         def run_seeding():
             try:
+                from db.alloydb_client import init_db
                 from seeds.seed_alloydb_players import seed_alloydb
                 from seeds.seed_alloydb_fitness import seed_alloydb_fitness
+                logger.info("Initializing database schema...")
+                init_db()
                 logger.info("Background seeding started...")
                 seed_alloydb()
                 seed_alloydb_fitness()

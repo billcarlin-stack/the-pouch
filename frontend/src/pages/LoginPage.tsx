@@ -62,9 +62,19 @@ const LoginPage = () => {
                         </div>
 
                         {error && (
-                            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
-                                <AlertCircle size={14} className="text-red-400 shrink-0" />
-                                <p className="text-red-300 text-sm font-medium">{error}</p>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                                    <AlertCircle size={14} className="text-red-400 shrink-0" />
+                                    <p className="text-red-300 text-sm font-medium">{error}</p>
+                                </div>
+                                {error.toLowerCase().includes('seed') && (
+                                    <div className="p-3 rounded-xl bg-amber-400/10 border border-amber-400/20">
+                                        <p className="text-amber-200 text-xs font-medium leading-relaxed">
+                                            Tip: It looks like the database needs to be initialized.
+                                            Refresh the <a href="https://the-nest-api-114675580879.australia-southeast1.run.app/api/admin/seed" target="_blank" className="underline font-black text-gold-400">Admin Seed URL</a> and wait 30 seconds.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         )}
 
