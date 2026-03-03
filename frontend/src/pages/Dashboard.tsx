@@ -1,5 +1,5 @@
 /*
-  The Pouch — Dashboard Page
+  The Nest — Dashboard Page
 
   Primary landing page for coaches/staff.
   Displays high-level team insights and wellbeing stas.
@@ -19,7 +19,7 @@ import {
     Users
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import nmfcLogo from '../assets/nmfc-logo.png';
+import hfcLogo from '../assets/hfc-logo.png';
 import { DailySchedule } from '../components/dashboard/DailySchedule';
 
 const Skeleton = ({ className }: { className?: string }) => (
@@ -99,15 +99,15 @@ export const Dashboard = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header section with Premium Branding */}
             <div className="flex items-center justify-between bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-nmfc-royal/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-hfc-brown/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-black text-nmfc-navy tracking-tight uppercase">Team Performance Hub</h1>
+                    <h1 className="text-3xl font-black text-hfc-brown tracking-tight uppercase">Team Performance Hub</h1>
                     <p className="text-gray-500 font-medium mt-1">Real-time squad analytics for coaching insight.</p>
                 </div>
-                <div className="bg-nmfc-navy/5 p-4 rounded-2xl relative z-10 group">
+                <div className="bg-hfc-brown/5 p-4 rounded-2xl relative z-10 group">
                     <img
-                        src={nmfcLogo}
-                        alt="NMFC Logo"
+                        src={hfcLogo}
+                        alt="HFC Logo"
                         className="h-16 w-auto group-hover:scale-110 transition-transform duration-500"
                     />
                 </div>
@@ -155,7 +155,7 @@ export const Dashboard = () => {
                 <div className="lg:col-span-2 space-y-8">
                     {/* Health & Wellbeing Alerts Panel */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-nmfc-royal">
+                        <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-hfc-brown">
                             <AlertTriangle size={20} className="text-red-600" />
                             Health & Wellbeing Alerts
                         </h3>
@@ -181,7 +181,7 @@ export const Dashboard = () => {
                                                     )}>{alert.player_name}</div>
                                                     <span className={clsx(
                                                         "text-[9px] font-black uppercase px-2 py-0.5 rounded",
-                                                        alert.type === 'injury' ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
+                                                        alert.type === 'injury' ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
                                                     )}>
                                                         {alert.type}
                                                     </span>
@@ -220,7 +220,7 @@ export const Dashboard = () => {
                     {/* Automated Insights Panel */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                            <CheckCircle size={20} className="text-blue-600" />
+                            <CheckCircle size={20} className="text-amber-600" />
                             Coaching Insights
                         </h3>
                         <div className="space-y-4">
@@ -232,7 +232,7 @@ export const Dashboard = () => {
                             ) : (
                                 <>
                                     {insights?.insights.map((text, i) => (
-                                        <div key={i} className="p-3 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100">
+                                        <div key={i} className="p-3 bg-amber-50 text-amber-800 rounded-lg text-sm border border-amber-100">
                                             {text}
                                         </div>
                                     ))}

@@ -67,19 +67,19 @@ const StatsPage = () => {
             onClick={() => handleSort(sortKey)}
             className={clsx(
                 "px-4 py-5 text-center text-[11px] font-black uppercase tracking-[0.2em] cursor-pointer hover:bg-white/10 transition-colors group relative",
-                sortConfig.key === sortKey ? "text-yellow-400 bg-white/5" : "text-blue-200/60"
+                sortConfig.key === sortKey ? "text-gold-400 bg-white/5" : "text-amber-200/60"
             )}
         >
             <div className="flex items-center gap-2 justify-center">
                 <span className="hidden xl:inline">{label}</span>
                 <span className="xl:hidden">{shortLabel || label}</span>
                 <div className="flex flex-col opacity-40 group-hover:opacity-100 transition-opacity">
-                    <ChevronUp size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'asc' ? 'text-yellow-400 opacity-100' : 'opacity-40')} />
-                    <ChevronDown size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'text-yellow-400 opacity-100' : 'opacity-40')} />
+                    <ChevronUp size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'asc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
+                    <ChevronDown size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
                 </div>
             </div>
             {sortConfig.key === sortKey && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-400" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400" />
             )}
         </th>
     );
@@ -96,10 +96,10 @@ const StatsPage = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
                 <div>
-                    <h1 className="text-5xl font-black text-nmfc-navy tracking-tighter font-outfit uppercase">
-                        SQUAD <span className="text-nmfc-royal">STATS</span>
+                    <h1 className="text-5xl font-black text-hfc-brown tracking-tighter font-outfit uppercase">
+                        SQUAD <span className="text-hfc-brown">STATS</span>
                     </h1>
-                    <p className="text-blue-300 font-bold uppercase tracking-widest text-[10px] mt-2">2025 Performance Analytics Engine</p>
+                    <p className="text-amber-300 font-bold uppercase tracking-widest text-[10px] mt-2">2025 Performance Analytics Engine</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -112,8 +112,8 @@ const StatsPage = () => {
                                 className={clsx(
                                     "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300",
                                     viewMode === mode
-                                        ? "bg-nmfc-royal text-white shadow-lg"
-                                        : "text-blue-200/40 hover:text-white"
+                                        ? "bg-hfc-brown text-white shadow-lg"
+                                        : "text-amber-200/40 hover:text-white"
                                 )}
                             >
                                 {mode}
@@ -123,13 +123,13 @@ const StatsPage = () => {
 
                     {/* Search */}
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300/40 group-focus-within:text-yellow-400 transition-colors" size={16} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-300/40 group-focus-within:text-gold-400 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="SEARCH PERSONNEL..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-black/20 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-xs font-bold text-white placeholder:text-blue-300/30 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 focus:border-yellow-400/40 transition-all w-72 uppercase tracking-widest"
+                            className="bg-black/20 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-xs font-bold text-white placeholder:text-amber-300/30 focus:outline-none focus:ring-2 focus:ring-gold-400/20 focus:border-gold-400/40 transition-all w-72 uppercase tracking-widest"
                         />
                     </div>
                 </div>
@@ -141,8 +141,8 @@ const StatsPage = () => {
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="bg-[#071525] border-b border-white/20">
-                                <th className="px-6 py-5 text-left text-[11px] font-black text-blue-200/70 uppercase tracking-[0.2em]">RK</th>
-                                <th className="px-6 py-5 text-left text-[11px] font-black text-blue-200/70 uppercase tracking-[0.2em] min-w-[240px]">Personnel</th>
+                                <th className="px-6 py-5 text-left text-[11px] font-black text-amber-200/70 uppercase tracking-[0.2em]">RK</th>
+                                <th className="px-6 py-5 text-left text-[11px] font-black text-amber-200/70 uppercase tracking-[0.2em] min-w-[240px]">Personnel</th>
                                 <TableHeader label="AF SCORE" sortKey="af_avg" shortLabel="AF" />
                                 <TableHeader label="RATING" sortKey="rating_points" shortLabel="R" />
                                 <TableHeader label="GOALS" sortKey="goals_avg" shortLabel="G" />
@@ -165,33 +165,33 @@ const StatsPage = () => {
                                     )}
                                 >
                                     <td className="px-6 py-5">
-                                        <span className="text-xs font-black text-blue-200/40 border-r border-white/10 pr-4">{index + 1}</span>
+                                        <span className="text-xs font-black text-amber-200/40 border-r border-white/10 pr-4">{index + 1}</span>
                                     </td>
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-nmfc-royal to-nmfc-navy border border-nmfc-royal/60 flex items-center justify-center text-sm font-black text-white shadow-xl shadow-nmfc-royal/20 group-hover:scale-110 transition-transform">
+                                            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-hfc-brown to-hfc-brown border border-hfc-brown/60 flex items-center justify-center text-sm font-black text-white shadow-xl shadow-hfc-brown/20 group-hover:scale-110 transition-transform">
                                                 {player.jumper_no}
                                             </div>
                                             <div>
-                                                <div className="text-base font-black text-white group-hover:text-yellow-400 transition-colors uppercase tracking-tight">{player.name}</div>
-                                                <div className="text-[10px] font-bold text-blue-300/70 uppercase tracking-[0.15em]">{player.position}</div>
+                                                <div className="text-base font-black text-white group-hover:text-gold-400 transition-colors uppercase tracking-tight">{player.name}</div>
+                                                <div className="text-[10px] font-bold text-amber-300/70 uppercase tracking-[0.15em]">{player.position}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'af_avg' ? "text-yellow-400" : "text-white/90")}>{player.af_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'rating_points' ? "text-yellow-400" : "text-white/90")}>{player.rating_points}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'goals_avg' ? "text-yellow-400" : "text-white/90")}>{player.goals_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'af_avg' ? "text-gold-400" : "text-white/90")}>{player.af_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'rating_points' ? "text-gold-400" : "text-white/90")}>{player.rating_points}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'goals_avg' ? "text-gold-400" : "text-white/90")}>{player.goals_avg}</td>
                                     <td className={clsx(
                                         "px-4 py-5 text-center font-black transition-all",
-                                        sortConfig.key === 'disposals_avg' ? "text-yellow-400 text-base" : "text-white/90 text-sm"
+                                        sortConfig.key === 'disposals_avg' ? "text-gold-400 text-base" : "text-white/90 text-sm"
                                     )}>
                                         {player.disposals_avg}
                                     </td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'marks_avg' ? "text-yellow-400" : "text-white/90")}>{player.marks_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'tackles_avg' ? "text-yellow-400" : "text-white/90")}>{player.tackles_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'clearances_avg' ? "text-yellow-400" : "text-white/90")}>{player.clearances_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'kicks_avg' ? "text-yellow-400" : "text-white/90")}>{player.kicks_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'handballs_avg' ? "text-yellow-400" : "text-white/90")}>{player.handballs_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'marks_avg' ? "text-gold-400" : "text-white/90")}>{player.marks_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'tackles_avg' ? "text-gold-400" : "text-white/90")}>{player.tackles_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'clearances_avg' ? "text-gold-400" : "text-white/90")}>{player.clearances_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'kicks_avg' ? "text-gold-400" : "text-white/90")}>{player.kicks_avg}</td>
+                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'handballs_avg' ? "text-gold-400" : "text-white/90")}>{player.handballs_avg}</td>
                                 </tr>
                             ))}
                         </tbody>

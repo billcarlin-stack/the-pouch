@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Players API Routes
+The Hawk Hub — Players API Routes
 
 Endpoints:
     GET  /api/players              — List all players with readiness data

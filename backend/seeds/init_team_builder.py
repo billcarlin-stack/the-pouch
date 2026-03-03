@@ -3,7 +3,9 @@ from google.cloud import bigquery
 
 # Configuration
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
+
+import time
 
 def init_team_selections():
     client = bigquery.Client(project=PROJECT_ID)
@@ -24,6 +26,8 @@ def init_team_selections():
         table = bigquery.Table(table_ref, schema=schema)
         table = client.create_table(table)
         print(f"Created table {table_ref}")
+        # Allow time for BigQuery propagation
+        time.sleep(5)
     except Exception as e:
         print(f"Error creating table: {e}")
         return
@@ -53,11 +57,25 @@ def init_team_selections():
         for pos in positions
     ]
 
-    errors = client.insert_rows_json(table_ref, rows_to_insert)
-    if not errors:
-        print(f"Successfully initialized {len(rows_to_insert)} empty positions in {table_id}")
-    else:
-        print(f"Errors initializing {table_id}: {errors}")
+    # Retry loop for insertion (BigQuery eventual consistency)
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            errors = client.insert_rows_json(table, rows_to_insert)
+            if not errors:
+                print(f"Successfully initialized {len(rows_to_insert)} empty positions in {table_id}")
+                return
+            else:
+                print(f"Errors initializing {table_id}: {errors}")
+                return
+        except Exception as e:
+            err_msg = str(e).lower()
+            if "not found" in err_msg and attempt < max_retries - 1:
+                print(f"Table not yet propagated. Retrying in 5s... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(5)
+            else:
+                print(f"Fatal error during insertion: {e}")
+                return
 
 if __name__ == "__main__":
     init_team_selections()

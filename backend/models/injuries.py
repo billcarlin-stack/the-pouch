@@ -1,95 +1,99 @@
-"""
-The Shinboner Hub — Injury Logic
-
-Handles injury logging and automatic player status updates.
-"""
-
 import uuid
 from datetime import datetime
-from google.cloud import bigquery
+from sqlalchemy import Column, Integer, String, Text, DateTime
+from db.alloydb_client import Base, get_session
+from models.players import Player
 from config import get_config
 
 _config = get_config()
-_PROJECT = _config.GOOGLE_CLOUD_PROJECT
-_DATASET = _config.BQ_DATASET
+
+class InjuryLog(Base):
+    __tablename__ = 'injury_logs'
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    player_id = Column(Integer, nullable=False)
+    injury_type = Column(String(255), nullable=False)
+    body_area = Column(String(100), nullable=False)
+    severity = Column(String(50), nullable=False) # Major, Moderate, Minor
+    contact_load = Column(Integer, default=0)
+    status = Column(String(50), nullable=False) # Active, Recovering, Cleared
+    notes = Column(Text)
+    date = Column(String(10)) # YYYY-MM-DD
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 def log_injury(data: dict) -> dict:
     """
-    Logs an injury and updates the player's status.
-    
-    Args:
-        data: Dict containing player_id, injury_type, body_area, severity, status, notes
+    Logs an injury and updates the player's status in AlloyDB.
     """
-    client = bigquery.Client()
-    
-    # 1. Insert into injury_logs
-    rows_to_insert = [{
-        "id": str(uuid.uuid4()),
-        "player_id": int(data["player_id"]),
-        "injury_type": data["injury_type"],
-        "body_area": data["body_area"],
-        "severity": data["severity"],
-        "contact_load": int(data.get("contact_load", 0)),
-        "status": data["status"], # Active, Recovering, Cleared
-        "notes": data.get("notes", ""),
-        "date": datetime.now().strftime("%Y-%m-%d"),
-        "created_at": datetime.now().isoformat()
-    }]
-    
-    errors = client.insert_rows_json(f"{_PROJECT}.{_DATASET}.injury_logs", rows_to_insert)
-    if errors:
-        raise Exception(f"Failed to insert injury log: {errors}")
+    session = get_session()
+    try:
+        # 1. Insert into injury_logs
+        record = InjuryLog(
+            player_id=int(data["player_id"]),
+            injury_type=data["injury_type"],
+            body_area=data["body_area"],
+            severity=data["severity"],
+            contact_load=int(data.get("contact_load", 0)),
+            status=data["status"],
+            notes=data.get("notes", ""),
+            date=datetime.now().strftime("%Y-%m-%d")
+        )
+        session.add(record)
         
-    # 2. Update Player Status based on Injury Status/Severity
-    # Logic: 
-    # - Active Major -> Red
-    # - Active Moderate -> Amber
-    # - Active Minor -> Amber
-    # - Recovering -> Amber
-    # - Cleared -> Green
-    
-    new_status = "Green"
-    injury_status = data["status"]
-    severity = data["severity"]
-    
-    if injury_status == "Active":
-        if severity == "Major":
-            new_status = "Red"
-        else:
-            new_status = "Amber"
-    elif injury_status == "Recovering":
-        new_status = "Amber"
-    elif injury_status == "Cleared":
+        # 2. Update Player Status
         new_status = "Green"
+        injury_status = data["status"]
+        severity = data["severity"]
         
-    # Valid statuses in players_2026 are Green, Amber, Red.
-    
-    update_query = f"""
-        UPDATE `{_PROJECT}.{_DATASET}.players_2026`
-        SET status = @status
-        WHERE jumper_no = @player_id
-    """
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("status", "STRING", new_status),
-            bigquery.ScalarQueryParameter("player_id", "INTEGER", int(data["player_id"]))
-        ]
-    )
-    client.query(update_query, job_config=job_config).result()
-    
-    return {"message": "Injury logged and status updated", "new_status": new_status}
+        if injury_status == "Active":
+            if severity == "Major":
+                new_status = "Red"
+            else:
+                new_status = "Amber"
+        elif injury_status == "Recovering":
+            new_status = "Amber"
+        elif injury_status == "Cleared":
+            new_status = "Green"
+            
+        player = session.query(Player).filter(Player.jumper_no == int(data["player_id"])).first()
+        if player:
+            player.status = new_status
+            
+        session.commit()
+        return {"message": "Injury logged and status updated", "new_status": new_status}
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
 
 def get_injury_history() -> list[dict]:
-    client = bigquery.Client()
-    query = f"""
-        SELECT 
-            i.*, 
-            p.name as player_name
-        FROM `{_PROJECT}.{_DATASET}.injury_logs` i
-        JOIN `{_PROJECT}.{_DATASET}.players_2026` p
-        ON i.player_id = p.jumper_no
-        ORDER BY i.created_at DESC
-        LIMIT 100
     """
-    rows = client.query(query).result()
-    return [dict(row) for row in rows]
+    Fetches injury history from AlloyDB.
+    """
+    session = get_session()
+    try:
+        results = session.query(
+            InjuryLog,
+            Player.name.label('player_name')
+        ).join(Player, InjuryLog.player_id == Player.jumper_no).order_by(InjuryLog.created_at.desc()).limit(100).all()
+        
+        history = []
+        for i, player_name in results:
+            d = {
+                "id": i.id,
+                "player_id": i.player_id,
+                "player_name": player_name,
+                "injury_type": i.injury_type,
+                "body_area": i.body_area,
+                "severity": i.severity,
+                "contact_load": i.contact_load,
+                "status": i.status,
+                "notes": i.notes,
+                "date": i.date,
+                "created_at": i.created_at.isoformat()
+            }
+            history.append(d)
+        return history
+    finally:
+        session.close()

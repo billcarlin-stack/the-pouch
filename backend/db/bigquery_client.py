@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — BigQuery Client
+The Hawk Hub — BigQuery Client
 
 Thread-safe singleton for the Google Cloud BigQuery client.
 All data access modules should import `get_bq_client` from here.

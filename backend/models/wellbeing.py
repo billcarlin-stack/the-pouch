@@ -1,164 +1,102 @@
-"""
-The Shinboner Hub — Wellbeing Survey Data Access Layer
-
-BigQuery queries for the Wellbeing Surveys module.
-
-Survey fields:
-    - player_id (jumper_no)
-    - sleep_score (1-10)
-    - soreness_score (1-10)
-    - stress_score (1-10)
-    - notes (optional text)
-    - submitted_at (auto-generated timestamp)
-"""
-
-import logging
 from datetime import datetime, timezone
-
-from google.cloud import bigquery
-
-from db.bigquery_client import get_bq_client
-from config import get_config
+from sqlalchemy import Column, Integer, String, Text, DateTime, Float, func
+from db.alloydb_client import Base, get_session
+from models.players import Player
+import logging
 
 logger = logging.getLogger(__name__)
 
-_config = get_config()
-_PROJECT = _config.GOOGLE_CLOUD_PROJECT
-_DATASET = _config.BQ_DATASET
-_TABLE = _config.BQ_WELLBEING_TABLE
+class WellbeingSurvey(Base):
+    __tablename__ = 'wellbeing_surveys'
 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    player_id = Column(Integer, nullable=False)
+    sleep_score = Column(Integer, nullable=False)
+    soreness_score = Column(Integer, nullable=False)
+    stress_score = Column(Integer, nullable=False)
+    notes = Column(Text)
+    submitted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 def submit_survey(data: dict) -> dict:
     """
-    Inserts a wellbeing survey record into BigQuery.
-
-    Args:
-        data: Dict with keys: player_id, sleep_score, soreness_score,
-              stress_score, notes (optional).
-
-    Returns:
-        Dict with the submitted survey data and confirmation.
-
-    Raises:
-        ValueError: If required fields are missing or invalid.
+    Inserts a wellbeing survey record into AlloyDB.
     """
-    # Validate required fields
-    required = ["player_id", "sleep_score", "soreness_score", "stress_score"]
-    missing = [f for f in required if f not in data]
-    if missing:
-        raise ValueError(f"Missing required fields: {', '.join(missing)}")
-
-    # Validate score ranges
-    for field in ["sleep_score", "soreness_score", "stress_score"]:
-        score = data[field]
-        if not isinstance(score, int) or not 1 <= score <= 10:
-            raise ValueError(f"{field} must be an integer between 1 and 10")
-
-    record = {
-        "player_id": int(data["player_id"]),
-        "sleep_score": int(data["sleep_score"]),
-        "soreness_score": int(data["soreness_score"]),
-        "stress_score": int(data["stress_score"]),
-        "notes": data.get("notes", ""),
-        "submitted_at": datetime.now(timezone.utc).isoformat(),
-    }
-
+    session = get_session()
     try:
-        client = get_bq_client()
-        table_ref = f"{_PROJECT}.{_DATASET}.{_TABLE}"
-        errors = client.insert_rows_json(table_ref, [record])
-
-        if errors:
-            logger.error("BigQuery insert errors: %s", errors)
-            raise RuntimeError(f"Failed to insert survey: {errors}")
-
-        logger.info(
-            "Wellbeing survey submitted for player %d", record["player_id"]
+        record = WellbeingSurvey(
+            player_id=int(data["player_id"]),
+            sleep_score=int(data["sleep_score"]),
+            soreness_score=int(data["soreness_score"]),
+            stress_score=int(data["stress_score"]),
+            notes=data.get("notes", "")
         )
-        return record
-
+        session.add(record)
+        session.commit()
+        return {
+            "player_id": record.player_id,
+            "sleep_score": record.sleep_score,
+            "soreness_score": record.soreness_score,
+            "stress_score": record.stress_score,
+            "notes": record.notes,
+            "submitted_at": record.submitted_at.isoformat()
+        }
     except Exception as e:
+        session.rollback()
         logger.error("Error submitting wellbeing survey: %s", str(e))
         raise
-
+    finally:
+        session.close()
 
 def get_surveys_for_player(jumper_no: int, limit: int = 90) -> list[dict]:
     """
-    Retrieves wellbeing survey history for a player.
-
-    Args:
-        jumper_no: The player's jumper number.
-        limit: Maximum number of records to return (default: 90).
-
-    Returns:
-        List of survey dicts ordered by most recent first.
+    Retrieves wellbeing survey history for a player from AlloyDB.
     """
-    client = get_bq_client()
-    query = f"""
-        SELECT *
-        FROM `{_PROJECT}.{_DATASET}.{_TABLE}`
-        WHERE player_id = @player_id
-        ORDER BY submitted_at DESC
-        LIMIT @limit
-    """
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("player_id", "INTEGER", jumper_no),
-            bigquery.ScalarQueryParameter("limit", "INTEGER", limit),
-        ]
-    )
-
+    session = get_session()
     try:
-        rows = client.query(query, job_config=job_config).result()
-        return [dict(row) for row in rows]
-    except Exception as e:
-        logger.error(
-            "Error fetching wellbeing surveys for player %d: %s",
-            jumper_no,
-            str(e),
-        )
-        raise
-
+        rows = session.query(WellbeingSurvey).filter(WellbeingSurvey.player_id == jumper_no).order_by(WellbeingSurvey.submitted_at.desc()).limit(limit).all()
+        return [{
+            "player_id": r.player_id,
+            "sleep_score": r.sleep_score,
+            "soreness_score": r.soreness_score,
+            "stress_score": r.stress_score,
+            "notes": r.notes,
+            "submitted_at": r.submitted_at.isoformat()
+        } for r in rows]
+    finally:
+        session.close()
 
 def get_surveys_with_notes(limit: int = 20) -> list[dict]:
     """
-    Retrieves recent wellbeing surveys that are 'critical':
-    1. Have non-empty notes.
-    2. OR have low readiness scores (< 60%).
-    
-    Calculates readiness on the fly using weighted formula:
-    Sleep (40%), Soreness (40%), Stress (20%).
+    Retrieves recent wellbeing surveys that are 'critical' from AlloyDB.
     """
-    client = get_bq_client()
-    PLAYERS_TABLE = f"{_PROJECT}.{_DATASET}.{_config.BQ_PLAYERS_TABLE}"
-    
-    # SQL-based readiness calculation
-    query = f"""
-        WITH raw_data AS (
-            SELECT 
-                w.*,
-                p.name as player_name,
-                ((w.sleep_score * 0.4) + (w.soreness_score * 0.4) + (w.stress_score * 0.2)) * 10 as readiness
-            FROM `{_PROJECT}.{_DATASET}.{_TABLE}` w
-            JOIN `{PLAYERS_TABLE}` p ON w.player_id = p.jumper_no
-        )
-        SELECT *
-        FROM raw_data
-        WHERE 
-            (notes IS NOT NULL AND TRIM(notes) != '')
-            OR readiness < 60
-        ORDER BY submitted_at DESC
-        LIMIT @limit
-    """
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("limit", "INTEGER", limit),
-        ]
-    )
-
+    session = get_session()
     try:
-        rows = client.query(query, job_config=job_config).result()
-        return [dict(row) for row in rows]
-    except Exception as e:
-        logger.error("Error fetching wellbeing alerts: %s", str(e))
-        raise
+        # SQLAlchemy equivalent of the BigQuery query
+        # Readiness = ((sleep * 0.4) + (soreness * 0.4) + (stress * 0.2)) * 10
+        
+        query = session.query(
+            WellbeingSurvey,
+            Player.name.label('player_name'),
+            (((WellbeingSurvey.sleep_score * 0.4) + (WellbeingSurvey.soreness_score * 0.4) + (WellbeingSurvey.stress_score * 0.2)) * 10).label('readiness')
+        ).join(Player, WellbeingSurvey.player_id == Player.jumper_no)
+        
+        critical_rows = query.filter(
+            (WellbeingSurvey.notes != '') | ((((WellbeingSurvey.sleep_score * 0.4) + (WellbeingSurvey.soreness_score * 0.4) + (WellbeingSurvey.stress_score * 0.2)) * 10) < 60)
+        ).order_by(WellbeingSurvey.submitted_at.desc()).limit(limit).all()
+        
+        results = []
+        for w, player_name, readiness in critical_rows:
+            d = {
+                "player_id": w.player_id,
+                "player_name": player_name,
+                "sleep_score": w.sleep_score,
+                "soreness_score": w.soreness_score,
+                "stress_score": w.stress_score,
+                "notes": w.notes,
+                "submitted_at": w.submitted_at.isoformat(),
+                "readiness": float(readiness)
+            }
+            results.append(d)
+        return results
+    finally:
+        session.close()

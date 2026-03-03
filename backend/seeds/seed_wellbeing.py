@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Wellbeing Surveys Seed Script
+The Hawk Hub — Wellbeing Surveys Seed Script
 
 Creates the wellbeing_surveys table and seeds ~200 realistic survey records
 across all 44 players (4-5 surveys each over recent weeks).
@@ -16,7 +16,7 @@ from google.cloud import bigquery
 from google.api_core.exceptions import Conflict, NotFound
 
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 TABLE_ID = "wellbeing_surveys"
 
 # Player statuses affect score ranges

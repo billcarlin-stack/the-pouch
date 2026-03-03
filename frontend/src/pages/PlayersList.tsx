@@ -1,5 +1,5 @@
 /*
-  The Pouch — Players List Page
+  The Nest — Players List Page
 
   Displays grid of player cards with readiness status.
   Includes search filtering and navigation to detail view.
@@ -37,17 +37,21 @@ const PlayerCard = ({ player }: { player: Player }) => {
             </div>
 
             {/* Jumper Badge */}
-            <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-nmfc-royal text-white flex items-center justify-center text-xs font-bold font-mono">
+            <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-hfc-brown text-white flex items-center justify-center text-xs font-bold font-mono">
                 {player.jumper_no}
             </div>
 
             {/* Image */}
             <div className={`relative w-24 h-24 rounded-full p-1 ring-2 ring-offset-2 mb-4 group-hover:scale-105 transition-transform ${statusColors[player.status].split(' ')[0]}`}>
                 <img
-                    src={formatPlayerImage(player.jumper_no, player.photo_url)}
+                    src={formatPlayerImage(player.jumper_no, player.photo_url, player.name)}
                     alt={player.name}
                     className="w-full h-full object-cover rounded-full bg-gray-100"
                     loading="lazy"
+                    onError={(e) => {
+                        // Fallback to HFC initials avatar if AFL CDN fails
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=4D2004&color=F6B000&size=200&length=2&font-size=0.4`;
+                    }}
                 />
             </div>
 
@@ -111,7 +115,7 @@ export const PlayersList = () => {
                     <input
                         type="text"
                         placeholder="Search player..."
-                        className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg w-64 focus:ring-2 focus:ring-nmfc-royal focus:border-transparent outline-none shadow-sm"
+                        className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg w-64 focus:ring-2 focus:ring-hfc-brown focus:border-transparent outline-none shadow-sm"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />

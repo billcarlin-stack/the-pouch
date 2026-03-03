@@ -1,119 +1,60 @@
-"""
-The Shinboner Hub — IDP Ratings Data Access Layer
-
-BigQuery queries for the Individual Development Plan (IDP) Ratings module.
-
-IDP Categories (1-10 scale):
-    - Grit: Mental toughness and willingness to compete
-    - TacticalIQ: Game sense and decision-making
-    - Execution: Skill execution under pressure
-    - Resilience: Bounce-back from setbacks
-    - Leadership: On-field and off-field leadership qualities
-    - composite_score: Weighted average of all categories
-"""
-
 import logging
-
-from google.cloud import bigquery
-
-from db.bigquery_client import get_bq_client
-from config import get_config
+from datetime import datetime, timezone
+from sqlalchemy import Column, Integer, Float, DateTime
+from db.alloydb_client import Base, get_session
 
 logger = logging.getLogger(__name__)
 
-_config = get_config()
-_PROJECT = _config.GOOGLE_CLOUD_PROJECT
-_DATASET = _config.BQ_DATASET
-_TABLE = _config.BQ_IDP_TABLE
+class IdpRating(Base):
+    __tablename__ = 'idp_ratings'
 
+    player_id = Column(Integer, primary_key=True)
+    grit = Column(Float)
+    tactical_iq = Column(Float)
+    execution = Column(Float)
+    resilience = Column(Float)
+    leadership = Column(Float)
+    composite_score = Column(Float)
+    assessed_at = Column(DateTime, primary_key=True, default=lambda: datetime.now(timezone.utc))
 
 def get_idp_for_player(jumper_no: int) -> dict | None:
     """
-    Returns IDP ratings for a given player from BigQuery.
-
-    Args:
-        jumper_no: The player's jumper number.
-
-    Returns:
-        Dict with IDP category scores and composite, or None if not found.
+    Returns IDP ratings for a given player from AlloyDB.
     """
-    client = get_bq_client()
-    query = f"""
-        SELECT
-            player_id,
-            grit AS Grit,
-            tactical_iq AS TacticalIQ,
-            execution AS Execution,
-            resilience AS Resilience,
-            leadership AS Leadership,
-            composite_score,
-            assessed_at
-        FROM `{_PROJECT}.{_DATASET}.{_TABLE}`
-        WHERE player_id = @player_id
-        ORDER BY assessed_at DESC
-        LIMIT 1
-    """
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("player_id", "INTEGER", jumper_no)
-        ]
-    )
-
+    session = get_session()
     try:
-        rows = list(client.query(query, job_config=job_config).result())
-        if not rows:
+        row = session.query(IdpRating).filter(IdpRating.player_id == jumper_no).order_by(IdpRating.assessed_at.desc()).first()
+        if not row:
             return None
-        return dict(rows[0])
-    except Exception as e:
-        logger.error(
-            "Error fetching IDP for player %d: %s", jumper_no, str(e)
-        )
-        raise
-
+        return {
+            "player_id": row.player_id,
+            "Grit": row.grit,
+            "TacticalIQ": row.tactical_iq,
+            "Execution": row.execution,
+            "Resilience": row.resilience,
+            "Leadership": row.leadership,
+            "composite_score": row.composite_score,
+            "assessed_at": row.assessed_at.isoformat()
+        }
+    finally:
+        session.close()
 
 def get_idp_for_players(jumper_nos: list[int]) -> list[dict]:
     """
-    Returns IDP ratings for multiple players (used by comparison endpoint).
-
-    Args:
-        jumper_nos: List of player jumper numbers.
-
-    Returns:
-        List of IDP dicts ordered by composite score descending.
+    Returns IDP ratings for multiple players from AlloyDB.
     """
-    client = get_bq_client()
-
-    # Build parameterized query for multiple players
-    params = []
-    placeholders = []
-    for i, jn in enumerate(jumper_nos):
-        param_name = f"p{i}"
-        placeholders.append(f"@{param_name}")
-        params.append(
-            bigquery.ScalarQueryParameter(param_name, "INTEGER", jn)
-        )
-
-    query = f"""
-        SELECT
-            player_id,
-            grit AS Grit,
-            tactical_iq AS TacticalIQ,
-            execution AS Execution,
-            resilience AS Resilience,
-            leadership AS Leadership,
-            composite_score,
-            assessed_at
-        FROM `{_PROJECT}.{_DATASET}.{_TABLE}`
-        WHERE player_id IN ({', '.join(placeholders)})
-        ORDER BY composite_score DESC
-    """
-    job_config = bigquery.QueryJobConfig(query_parameters=params)
-
+    session = get_session()
     try:
-        rows = client.query(query, job_config=job_config).result()
-        return [dict(row) for row in rows]
-    except Exception as e:
-        logger.error(
-            "Error fetching IDP for players %s: %s", jumper_nos, str(e)
-        )
-        raise
+        rows = session.query(IdpRating).filter(IdpRating.player_id.in_(jumper_nos)).order_by(IdpRating.composite_score.desc()).all()
+        return [{
+            "player_id": r.player_id,
+            "Grit": r.grit,
+            "TacticalIQ": r.tactical_iq,
+            "Execution": r.execution,
+            "Resilience": r.resilience,
+            "Leadership": r.leadership,
+            "composite_score": r.composite_score,
+            "assessed_at": r.assessed_at.isoformat()
+        } for r in rows]
+    finally:
+        session.close()

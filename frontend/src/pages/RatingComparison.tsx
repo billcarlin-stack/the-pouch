@@ -1,5 +1,5 @@
 /*
-  The Pouch — Rating Comparison Dashboard
+  The Nest — Rating Comparison Dashboard
   
   Module 3: Visualizes the gap between Coach, Self, and Squad ratings.
 */
@@ -63,7 +63,7 @@ export const RatingComparison = () => {
                 </div>
                 <div className="w-72 relative">
                     <select
-                        className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl appearance-none focus:ring-2 focus:ring-nmfc-royal focus:outline-none font-medium shadow-sm"
+                        className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl appearance-none focus:ring-2 focus:ring-hfc-brown focus:outline-none font-medium shadow-sm"
                         value={selectedPlayerId}
                         onChange={e => setSelectedPlayerId(Number(e.target.value))}
                     >
@@ -112,7 +112,7 @@ export const RatingComparison = () => {
                                     {/* Coach: Solid Filled Shape (Blue) */}
                                     <Radar name="Coach" dataKey="Coach" stroke="#003b7e" strokeWidth={2} fill="#003b7e" fillOpacity={0.5} />
 
-                                    {/* Self: Yellow Outline */}
+                                    {/* Self: Gold Outline */}
                                     <Radar name="Self" dataKey="Self" stroke="#fbbf24" strokeWidth={3} fill="transparent" />
 
                                     {/* Squad: Dashed line */}
@@ -144,7 +144,7 @@ export const RatingComparison = () => {
                                                 {r.skill}
                                                 <span className="block text-xs text-gray-400 font-normal">{r.category}</span>
                                             </td>
-                                            <td className="px-4 py-3 text-center text-nmfc-royal font-bold">{r.coach_rating || '-'}</td>
+                                            <td className="px-4 py-3 text-center text-hfc-brown font-bold">{r.coach_rating || '-'}</td>
                                             <td className="px-4 py-3 text-center text-amber-500 font-bold">{r.self_rating}</td>
                                             <td className="px-4 py-3 text-center">
                                                 <span className={clsx(

@@ -13,7 +13,7 @@ import TeamBuilder from './pages/TeamBuilder';
 import WoopGoals from './pages/WoopGoals';
 import DailyCheckIn from './pages/DailyCheckIn';
 import CalendarPage from './pages/CalendarPage';
-import KangaAiPage from './pages/KangaAiPage';
+import HawkAiPage from './pages/HawkAiPage';
 
 /**
  * Route guard: only renders children if user has the required role.
@@ -40,7 +40,7 @@ function AppRoutes() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0C2340] flex items-center justify-center">
-        <div className="h-8 w-8 border-3 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" />
+        <div className="h-8 w-8 border-3 border-gold-400/30 border-t-gold-400 rounded-full animate-spin" />
       </div>
     );
   }
@@ -67,7 +67,7 @@ function AppRoutes() {
         {/* Shared routes */}
         <Route path="injuries" element={<InjuryDashboard />} />
         <Route path="calendar" element={<CalendarPage />} />
-        <Route path="kanga-ai" element={<KangaAiPage />} />
+        <Route path="hawk-ai" element={<HawkAiPage />} />
 
         {/* Player-only routes */}
         <Route path="checkin" element={<PlayerOnly><DailyCheckIn /></PlayerOnly>} />

@@ -4,7 +4,7 @@ from google.cloud import bigquery
 
 # Configuration
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 
 def seed_player_stats():
     client = bigquery.Client(project=PROJECT_ID)
@@ -45,7 +45,7 @@ def seed_player_stats():
     rows_to_insert = []
     for jn in players:
         games = random.randint(18, 23)
-        # Random but realistic averages for NMFC/AFL
+        # Random but realistic averages for HFC/AFL
         disposals = random.uniform(15, 30)
         kicks = disposals * random.uniform(0.5, 0.7)
         handballs = disposals - kicks

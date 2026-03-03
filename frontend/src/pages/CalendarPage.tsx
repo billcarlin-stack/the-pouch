@@ -1,5 +1,5 @@
 /*
-  The Pouch — Squad Calendar
+  The Nest — Squad Calendar
   Full page weekly view with event creation for coaches.
 */
 
@@ -18,7 +18,7 @@ import {
 import { clsx } from 'clsx';
 
 const EVENT_TYPES = [
-    { label: 'Main Session', color: 'bg-blue-500', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+    { label: 'Main Session', color: 'bg-amber-500', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
     { label: 'Weights', color: 'bg-indigo-500', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
     { label: 'Media', color: 'bg-purple-500', bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
     { label: 'Rehab', color: 'bg-red-500', bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
@@ -144,8 +144,8 @@ const CalendarPage = () => {
             {/* Header */}
             <div className="flex items-center justify-between pb-6 border-b border-gray-100">
                 <div>
-                    <h1 className="text-3xl font-black text-nmfc-navy tracking-tight uppercase font-outfit">
-                        Squad <span className="text-nmfc-royal">Calendar</span>
+                    <h1 className="text-3xl font-black text-hfc-brown tracking-tight uppercase font-outfit">
+                        Squad <span className="text-hfc-brown">Calendar</span>
                     </h1>
                     <p className="text-gray-500 font-medium text-sm mt-1">Weekly session schedule and tasks.</p>
                 </div>
@@ -158,7 +158,7 @@ const CalendarPage = () => {
                         >
                             <ChevronLeft size={20} />
                         </button>
-                        <span className="px-4 font-black text-nmfc-navy text-sm uppercase">
+                        <span className="px-4 font-black text-hfc-brown text-sm uppercase">
                             {weekDays[0].toLocaleDateString('en-AU', { month: 'short', day: 'numeric' })} - {weekDays[6].toLocaleDateString('en-AU', { month: 'short', day: 'numeric' })}
                         </span>
                         <button
@@ -175,7 +175,7 @@ const CalendarPage = () => {
                                 setFormData({ ...formData, date: new Date().toISOString().split('T')[0] });
                                 setShowModal(true);
                             }}
-                            className="flex items-center gap-2 bg-gradient-to-r from-nmfc-royal to-nmfc-navy text-white px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-nmfc-royal/20 hover:scale-105 transition-all"
+                            className="flex items-center gap-2 bg-gradient-to-r from-hfc-brown to-hfc-brown text-white px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-hfc-brown/20 hover:scale-105 transition-all"
                         >
                             <Plus size={16} />
                             Add Event
@@ -190,14 +190,14 @@ const CalendarPage = () => {
                     {weekDays.map((date, i) => (
                         <div key={i} className={clsx(
                             "p-4 text-center border-r border-gray-100 last:border-0",
-                            date.toDateString() === new Date().toDateString() ? "bg-nmfc-royal/5" : ""
+                            date.toDateString() === new Date().toDateString() ? "bg-hfc-brown/5" : ""
                         )}>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-2">
                                 {date.toLocaleDateString('en-AU', { weekday: 'short' })}
                             </p>
                             <p className={clsx(
                                 "text-2xl font-black font-outfit leading-none",
-                                date.toDateString() === new Date().toDateString() ? "text-nmfc-royal" : "text-nmfc-navy"
+                                date.toDateString() === new Date().toDateString() ? "text-hfc-brown" : "text-hfc-brown"
                             )}>
                                 {date.getDate()}
                             </p>
@@ -213,7 +213,7 @@ const CalendarPage = () => {
                         return (
                             <div key={dayIdx} className={clsx(
                                 "p-3 space-y-3",
-                                date.toDateString() === new Date().toDateString() ? "bg-nmfc-royal/[0.02]" : ""
+                                date.toDateString() === new Date().toDateString() ? "bg-hfc-brown/[0.02]" : ""
                             )}>
                                 {dayEvents.map((event, eventIdx) => {
                                     const typeData = EVENT_TYPES.find(t => t.label === event.type) || EVENT_TYPES[5];
@@ -241,7 +241,7 @@ const CalendarPage = () => {
                                                 )}
                                             </div>
 
-                                            <h4 className="text-xs font-black text-nmfc-navy mb-1 line-clamp-2 leading-tight uppercase tracking-tight">
+                                            <h4 className="text-xs font-black text-hfc-brown mb-1 line-clamp-2 leading-tight uppercase tracking-tight">
                                                 {event.title}
                                             </h4>
 
@@ -256,7 +256,7 @@ const CalendarPage = () => {
                                                     {event.player_ids.length} Player{event.player_ids.length > 1 ? 's' : ''}
                                                 </div>
                                             ) : (
-                                                <div className="mt-2 pt-2 border-t border-black/5 flex items-center gap-1 text-[9px] font-black text-nmfc-royal uppercase italic">
+                                                <div className="mt-2 pt-2 border-t border-black/5 flex items-center gap-1 text-[9px] font-black text-hfc-brown uppercase italic">
                                                     <Users size={10} />
                                                     Full Squad
                                                 </div>
@@ -278,12 +278,12 @@ const CalendarPage = () => {
 
             {/* Modals & Helpers */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-nmfc-navy/60 backdrop-blur-sm animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-hfc-brown/60 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-300">
-                        <div className="bg-nmfc-navy p-8 flex items-center justify-between text-white">
+                        <div className="bg-hfc-brown p-8 flex items-center justify-between text-white">
                             <div>
-                                <h3 className="text-2xl font-black uppercase font-outfit">Add Session <span className="text-yellow-400">Event</span></h3>
-                                <p className="text-blue-300 text-xs font-bold uppercase tracking-widest mt-1">Assign tasks to squad members</p>
+                                <h3 className="text-2xl font-black uppercase font-outfit">Add Session <span className="text-gold-400">Event</span></h3>
+                                <p className="text-amber-300 text-xs font-bold uppercase tracking-widest mt-1">Assign tasks to squad members</p>
                             </div>
                             <button onClick={() => setShowModal(false)} className="bg-white/10 p-2 rounded-2xl hover:bg-white/20 transition-colors">
                                 <X size={20} />
@@ -298,7 +298,7 @@ const CalendarPage = () => {
                                         type="text" required
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown"
                                         placeholder="e.g., Tactical Walkthrough"
                                     />
                                 </div>
@@ -308,7 +308,7 @@ const CalendarPage = () => {
                                     <select
                                         value={formData.type}
                                         onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy appearance-none cursor-pointer"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown appearance-none cursor-pointer"
                                     >
                                         {EVENT_TYPES.map(t => <option key={t.label} value={t.label}>{t.label}</option>)}
                                     </select>
@@ -320,7 +320,7 @@ const CalendarPage = () => {
                                         type="date" required
                                         value={formData.date}
                                         onChange={e => setFormData({ ...formData, date: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown"
                                     />
                                 </div>
 
@@ -330,7 +330,7 @@ const CalendarPage = () => {
                                         type="time" required
                                         value={formData.startTime}
                                         onChange={e => setFormData({ ...formData, startTime: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown"
                                     />
                                 </div>
 
@@ -340,7 +340,7 @@ const CalendarPage = () => {
                                         type="time" required
                                         value={formData.endTime}
                                         onChange={e => setFormData({ ...formData, endTime: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown"
                                     />
                                 </div>
 
@@ -362,8 +362,8 @@ const CalendarPage = () => {
                                                 className={clsx(
                                                     "p-2 rounded-xl text-[10px] font-black border transition-all",
                                                     formData.player_ids.includes(p.jumper_no)
-                                                        ? "bg-nmfc-royal text-white border-nmfc-royal shadow-md"
-                                                        : "bg-white text-gray-400 border-gray-100 hover:border-nmfc-royal/30"
+                                                        ? "bg-hfc-brown text-white border-hfc-brown shadow-md"
+                                                        : "bg-white text-gray-400 border-gray-100 hover:border-hfc-brown/30"
                                                 )}
                                             >
                                                 #{p.jumper_no} {p.name.split(' ').pop()}
@@ -378,7 +378,7 @@ const CalendarPage = () => {
                                         rows={3}
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-nmfc-royal ring-offset-2 outline-none transition-all font-bold text-nmfc-navy resize-none"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-hfc-brown ring-offset-2 outline-none transition-all font-bold text-hfc-brown resize-none"
                                         placeholder="Add further details here..."
                                     />
                                 </div>
@@ -387,7 +387,7 @@ const CalendarPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className="w-full py-5 rounded-[20px] bg-nmfc-navy text-white font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-nmfc-navy/20 hover:bg-nmfc-royal hover:-translate-y-1 active:translate-y-0 transition-all disabled:opacity-50"
+                                className="w-full py-5 rounded-[20px] bg-hfc-brown text-white font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-hfc-brown/20 hover:bg-hfc-brown hover:-translate-y-1 active:translate-y-0 transition-all disabled:opacity-50"
                             >
                                 {isSaving ? 'Scheduling...' : 'Confirm Session Event'}
                             </button>

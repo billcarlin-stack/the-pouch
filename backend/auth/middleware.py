@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Authentication Middleware
+The Hawk Hub — Authentication Middleware
 
 Role-based access control decorator (stub implementation).
 Designed to be replaced with Firebase Auth / Cloud IAP in production.

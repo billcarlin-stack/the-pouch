@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Readiness Engine
+The Hawk Hub — Readiness Engine
 
 Calculates a player's readiness score based on wellbeing metrics.
 Migrated from the original ReadinessAlgo.py.

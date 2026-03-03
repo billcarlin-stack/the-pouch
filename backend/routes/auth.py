@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Auth Routes
+The Hawk Hub — Auth Routes
 
 PIN-based authentication:
     PIN 0 = Coach (full access)
@@ -8,8 +8,7 @@ PIN-based authentication:
 
 import logging
 from flask import Blueprint, jsonify, request
-from db.bigquery_client import get_bq_client
-from config import get_config
+from models.players import get_player_by_id
 
 logger = logging.getLogger(__name__)
 auth_bp = Blueprint("auth", __name__)
@@ -44,27 +43,15 @@ def login():
         }), 200
 
     # Player PIN — lookup by jumper_no
-    config = get_config()
-    client = get_bq_client()
-
-    query = f"""
-        SELECT jumper_no, name
-        FROM `{config.GOOGLE_CLOUD_PROJECT}.{config.BQ_DATASET}.{config.BQ_PLAYERS_TABLE}`
-        WHERE jumper_no = @jumper_no
-        LIMIT 1
-    """
-    from google.cloud import bigquery
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("jumper_no", "INTEGER", pin_int),
-        ]
-    )
-
-    rows = list(client.query(query, job_config=job_config).result())
-    if not rows:
+    try:
+        player = get_player_by_id(pin_int)
+    except Exception as e:
+        logger.error("Login database error: %s", str(e))
+        return jsonify({"error": "Database connection error. Please check your configuration."}), 500
+    
+    if not player:
         return jsonify({"error": "No player found with that PIN"}), 401
 
-    player = dict(rows[0])
     name = player.get("name", "Player")
     parts = name.split()
     initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) >= 2 else name[:2].upper()

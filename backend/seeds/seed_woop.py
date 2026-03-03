@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from google.cloud import bigquery
 
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 TABLE_ID = "woop_goals"
 
 WISHES = [

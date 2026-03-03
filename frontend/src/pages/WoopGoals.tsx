@@ -74,8 +74,8 @@ const WoopGoals = () => {
             {/* Header */}
             <div className="flex items-end justify-between border-b border-gray-200 pb-6">
                 <div>
-                    <h1 className="text-3xl font-black text-nmfc-navy tracking-tight font-outfit uppercase">
-                        WOOP <span className="text-nmfc-royal">Goals</span>
+                    <h1 className="text-3xl font-black text-hfc-brown tracking-tight font-outfit uppercase">
+                        WOOP <span className="text-hfc-brown">Goals</span>
                     </h1>
                     <p className="text-gray-500 text-sm font-medium mt-1">
                         Wish · Outcome · Obstacle · Plan — Weekly goal setting framework
@@ -83,7 +83,7 @@ const WoopGoals = () => {
                 </div>
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="flex items-center gap-2 bg-nmfc-royal text-white px-5 py-3 rounded-2xl text-sm font-bold hover:bg-nmfc-navy transition-colors shadow-lg shadow-nmfc-royal/20"
+                    className="flex items-center gap-2 bg-hfc-brown text-white px-5 py-3 rounded-2xl text-sm font-bold hover:bg-hfc-brown transition-colors shadow-lg shadow-hfc-brown/20"
                 >
                     <Plus size={16} />
                     New Goal
@@ -93,8 +93,8 @@ const WoopGoals = () => {
             {/* Create Form */}
             {showForm && (
                 <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 space-y-5 animate-in fade-in duration-300">
-                    <h3 className="font-bold text-lg text-nmfc-navy flex items-center gap-2">
-                        <Target size={20} className="text-yellow-500" />
+                    <h3 className="font-bold text-lg text-hfc-brown flex items-center gap-2">
+                        <Target size={20} className="text-gold-500" />
                         Set a New WOOP Goal
                     </h3>
                     {(['wish', 'outcome', 'obstacle', 'plan'] as const).map((field) => (
@@ -109,7 +109,7 @@ const WoopGoals = () => {
                                 value={form[field]}
                                 onChange={(e) => setForm(prev => ({ ...prev, [field]: e.target.value }))}
                                 rows={2}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-nmfc-royal/20 focus:border-nmfc-royal/30 resize-none transition-all"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 focus:border-hfc-brown/30 resize-none transition-all"
                                 placeholder={`Enter your ${field}...`}
                             />
                         </div>
@@ -118,7 +118,7 @@ const WoopGoals = () => {
                         <button
                             onClick={handleCreate}
                             disabled={saving || !form.wish.trim()}
-                            className="bg-nmfc-royal text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-nmfc-navy transition-colors disabled:opacity-40"
+                            className="bg-hfc-brown text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-hfc-brown transition-colors disabled:opacity-40"
                         >
                             {saving ? 'Saving...' : 'Save Goal'}
                         </button>
@@ -147,11 +147,11 @@ const WoopGoals = () => {
                     <div key={goal.id} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 space-y-4 hover:shadow-md transition-shadow">
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-yellow-50 border border-yellow-200 flex items-center justify-center">
-                                    <Target size={18} className="text-yellow-600" />
+                                <div className="h-10 w-10 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center">
+                                    <Target size={18} className="text-gold-600" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-nmfc-navy">{goal.wish}</h4>
+                                    <h4 className="font-bold text-hfc-brown">{goal.wish}</h4>
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{goal.week_of}</p>
                                 </div>
                             </div>
@@ -164,9 +164,9 @@ const WoopGoals = () => {
                             </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                                <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Outcome</p>
-                                <p className="text-sm text-blue-900">{goal.outcome || '—'}</p>
+                            <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
+                                <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Outcome</p>
+                                <p className="text-sm text-amber-900">{goal.outcome || '—'}</p>
                             </div>
                             <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
                                 <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">Obstacle</p>

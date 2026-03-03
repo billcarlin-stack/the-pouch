@@ -1,5 +1,5 @@
 /*
-  The Pouch — API Service
+  The Nest — API Service
   
   Centralized data fetching logic using Axios.
     Configured to connect to Flask backend.
@@ -7,10 +7,11 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use relative /api so Vite proxy forwards requests to the Flask backend on port 8080
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hawk-backend-114675580879.australia-southeast1.run.app/api';
 
 // Create axios instance with default config
-const api = axios.create({
+export const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ const api = axios.create({
 
 // Add request interceptor to inject auth headers from session
 api.interceptors.request.use((config) => {
-    const stored = sessionStorage.getItem('shinboner_hub_user');
+    const stored = sessionStorage.getItem('hawk_hub_user');
     if (stored) {
         try {
             const user = JSON.parse(stored);
@@ -113,6 +114,33 @@ export interface RatingResponse {
     ratings: CoachRating[];
 }
 
+export interface FitnessSession {
+    session_date: string;
+    session_type: string;
+    top_speed_kmh: number;
+    distance_km: number;
+    hsd_m: number;
+    hr_avg_bpm: number;
+    hr_max_bpm: number;
+    total_load: number;
+    sprints: number;
+    accelerations: number;
+    decelerations: number;
+    is_live: boolean;
+}
+
+export interface FitnessPBs {
+    run_2k_seconds: number;
+    bench_press_kg: number;
+    squat_kg: number;
+    vertical_jump_cm: number;
+    beep_test_level: number;
+    top_speed_kmh: number;
+    sprint_10m_s: number;
+    sprint_40m_s: number;
+    date_recorded: string;
+}
+
 export interface PlayerStats {
     jumper_no: number;
     name: string;
@@ -136,9 +164,42 @@ export interface TeamPosition {
     notes: string;
 }
 
-export const formatPlayerImage = (id: number, url?: string) =>
-    url || `https://ui-avatars.com/api/?name=Player+${id}&background=013B82&color=FFFFFF&size=200&length=2&font-size=0.4`;
-// Updated to a known accessible AFL image pattern for 2024/25
+// AFL Fantasy player IDs mapped by Hawthorn jumper number
+// Used to fetch official headshots from the AFL CDN
+const HFC_PLAYER_PHOTO_IDS: Record<number, number> = {
+    1: 1000,  // Harry Morrison — placeholder
+    2: 1333,  // Mitchell Lewis
+    3: 4712,  // Jai Newcombe
+    4: 1082,  // Jarman Impey
+    5: 1713,  // James Worpel
+    6: 514,   // James Sicily
+    7: 1822,  // Ned Reeves
+    8: 1113,  // Sam Frost
+    9: 2084,  // Changkuoth Jiath
+    10: 801,   // Karl Amon
+    12: 3726,  // Will Day
+    13: 1595,  // Dylan Moore
+    19: 2238,  // Jack Ginnivan
+    21: 5592,  // Nick Watson
+    22: 312,   // Luke Breust
+    25: 4034,  // Josh Ward
+    43: 500,   // Jack Gunston
+};
+
+export const formatPlayerImage = (id: number, url?: string, name?: string) => {
+    // Use a provided URL first
+    if (url && url.startsWith('http')) return url;
+
+    // Try AFL CDN with known player ID
+    const aflId = HFC_PLAYER_PHOTO_IDS[id];
+    if (aflId) {
+        return `https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/AFL/${aflId}.png`;
+    }
+
+    // Fallback: HFC-branded initials avatar (Brown background, Gold text)
+    const displayName = name ? encodeURIComponent(name) : `Player+${id}`;
+    return `https://ui-avatars.com/api/?name=${displayName}&background=4D2004&color=F6B000&size=200&length=2&font-size=0.4`;
+};
 
 export const getMockProfile = (id: number) => ({
     height_cm: 180 + (id % 15),
@@ -285,6 +346,16 @@ export const ApiService = {
     },
     getWellbeingAlerts: async (limit: number = 10) => {
         const response = await api.get<WellbeingSurvey[]>(`/wellbeing/alerts`, { params: { limit } });
+        return response.data;
+    },
+
+    // Fitness
+    getFitnessSession: async (playerId: number | string) => {
+        const response = await api.get<{ session: FitnessSession | null }>(`/v1/fitness/session/${playerId}`);
+        return response.data;
+    },
+    getFitnessPbs: async (playerId: number | string) => {
+        const response = await api.get<{ pbs: FitnessPBs | null }>(`/v1/fitness/pbs/${playerId}`);
         return response.data;
     }
 };

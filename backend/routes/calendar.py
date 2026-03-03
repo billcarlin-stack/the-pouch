@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Calendar API Routes
+The Hawk Hub — Calendar API Routes
 
 Endpoints:
     GET  /api/calendar       — Get events

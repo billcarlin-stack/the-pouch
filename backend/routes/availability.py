@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Team Availability API Routes
+The Hawk Hub — Team Availability API Routes
 
 Endpoints:
     GET /api/availability  — Squad-wide availability summary

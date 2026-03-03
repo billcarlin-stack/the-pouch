@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Analytics Engine
+The Hawk Hub — Analytics Engine
 
 Provides statistical analysis for player wellbeing data.
 Functions:

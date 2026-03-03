@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Wellbeing Survey API Routes
+The Hawk Hub — Wellbeing Survey API Routes
 
 Endpoints:
     POST /api/wellbeing                — Submit a wellbeing survey

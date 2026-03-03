@@ -1,5 +1,5 @@
 /*
-  The Pouch — Coach Ratings Module
+  The Nest — Coach Ratings Module
   
   Module 2: Survey interface for coaches to rate players on specific skills.
 */
@@ -85,7 +85,7 @@ export const CoachRatings = () => {
                     <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Select Player</label>
                     <div className="relative">
                         <select
-                            className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl appearance-none focus:ring-2 focus:ring-nmfc-royal focus:outline-none font-medium shadow-sm"
+                            className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl appearance-none focus:ring-2 focus:ring-hfc-brown focus:outline-none font-medium shadow-sm"
                             value={selectedPlayerId}
                             onChange={e => setSelectedPlayerId(Number(e.target.value))}
                         >
@@ -101,7 +101,7 @@ export const CoachRatings = () => {
 
             {selectedPlayer && (
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-full border-2 border-nmfc-royal p-1">
+                    <div className="w-20 h-20 rounded-full border-2 border-hfc-brown p-1">
                         <img
                             src={formatPlayerImage(selectedPlayer.jumper_no, selectedPlayer.photo_url)}
                             alt={selectedPlayer.name}
@@ -111,7 +111,7 @@ export const CoachRatings = () => {
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">{selectedPlayer.name} #{selectedPlayer.jumper_no}</h2>
                         <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                            <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">{selectedPlayer.position}</span>
+                            <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">{selectedPlayer.position}</span>
                             <span>{selectedPlayer.age} years old</span>
                             <span>{selectedPlayer.games} games</span>
                         </div>
@@ -146,10 +146,10 @@ export const CoachRatings = () => {
                                                     step="1"
                                                     value={val}
                                                     onChange={e => handleRatingChange(category, skill, Number(e.target.value))}
-                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-nmfc-royal"
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-hfc-brown"
                                                 />
                                                 <span className="text-xs font-bold text-gray-400">10</span>
-                                                <div className="w-12 h-10 flex items-center justify-center bg-nmfc-royal text-white font-bold rounded-lg shadow-sm border border-blue-800">
+                                                <div className="w-12 h-10 flex items-center justify-center bg-hfc-brown text-white font-bold rounded-lg shadow-sm border border-amber-800">
                                                     {val}
                                                 </div>
                                             </div>
@@ -158,7 +158,7 @@ export const CoachRatings = () => {
                                                 <input
                                                     type="text"
                                                     placeholder="Optional notes..."
-                                                    className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-nmfc-royal focus:outline-none"
+                                                    className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-hfc-brown focus:outline-none"
                                                     value={notes[key] || ''}
                                                     onChange={e => handleNoteChange(category, skill, e.target.value)}
                                                 />
@@ -173,7 +173,7 @@ export const CoachRatings = () => {
                     <div className="fixed bottom-0 left-64 right-0 p-4 bg-white border-t border-gray-200 flex justify-end gap-4 z-40">
                         <button
                             onClick={handleSubmit}
-                            className="bg-nmfc-royal text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-900 transition-colors flex items-center gap-2 shadow-lg"
+                            className="bg-hfc-brown text-white px-8 py-3 rounded-xl font-bold hover:bg-amber-900 transition-colors flex items-center gap-2 shadow-lg"
                         >
                             <Save size={20} />
                             Save All Ratings

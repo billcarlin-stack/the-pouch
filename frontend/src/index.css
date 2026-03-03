@@ -1,14 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  --color-nmfc-navy: #0C2340;
-  --color-nmfc-royal: #0057B8;
-  --color-nmfc-white: #FFFFFF;
-  --color-nmfc-light: #F4F6F8;
-  --color-nmfc-slate: #334155;
-  --color-nmfc-success: #10B981;
-  --color-nmfc-warning: #F59E0B;
-  --color-nmfc-danger: #EF4444;
+  --color-hfc-brown: #0C2340;
+  --color-hfc-brown: #0057B8;
+  --color-hfc-white: #FFFFFF;
+  --color-hfc-light: #F4F6F8;
+  --color-hfc-slate: #334155;
+  --color-hfc-success: #10B981;
+  --color-hfc-warning: #F59E0B;
+  --color-hfc-danger: #EF4444;
+
+  /* Define standard Amber/Gold for HFC */
+  --color-gold-50: #fffbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-200: #fde68a;
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+  --color-gold-700: #b45309;
+  --color-gold-800: #92400e;
+  --color-gold-900: #78350f;
 
   --font-sans: "Inter", "Roboto", "system-ui", "sans-serif";
   --font-outfit: "Outfit", "system-ui", "sans-serif";
@@ -34,13 +46,13 @@
 }
 
 .premium-card {
-  @apply bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-card-hover hover:border-nmfc-royal/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden;
+  @apply bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-card-hover hover:border-hfc-brown/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden;
 }
 
 .text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-nmfc-navy via-nmfc-royal to-blue-500;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-hfc-brown via-hfc-brown to-amber-500;
 }
 
 .gold-divide {
-  @apply border-b-2 border-yellow-400 pb-1 mb-4 flex items-center justify-between;
+  @apply border-b-2 border-gold-400 pb-1 mb-4 flex items-center justify-between;
 }

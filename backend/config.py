@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Application Configuration
+The Hawk Hub — Application Configuration
 
 Environment-driven configuration for the Flask backend.
 All sensitive values are loaded from environment variables.
@@ -12,7 +12,7 @@ class Config:
     """Base configuration."""
 
     # Flask
-    SECRET_KEY = os.environ.get("SECRET_KEY", "shinboner-spirit-dev-key")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "hawk-spirit-dev-key")
     DEBUG = False
     TESTING = False
 
@@ -22,11 +22,18 @@ class Config:
     )
 
     # BigQuery
-    BQ_DATASET = os.environ.get("BQ_DATASET", "nmfc_performance_hub")
+    BQ_DATASET = os.environ.get("BQ_DATASET", "hfc_performance_hub")
     BQ_PLAYERS_TABLE = "players_2026"
     BQ_WELLBEING_TABLE = "wellbeing_surveys"
     BQ_IDP_TABLE = "idp_ratings"
     BQ_AVAILABILITY_TABLE = "team_availability"
+    BQ_COACH_RATINGS_TABLE = "coach_ratings"
+
+    # AlloyDB / PostgreSQL
+    DATABASE_URL = os.environ.get(
+        "DATABASE_URL", 
+        "postgresql://postgres:postgres@localhost:5432/hfc_dev"
+    )
 
     # CORS
     CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*")
@@ -49,7 +56,7 @@ class ProductionConfig(Config):
     DEBUG = False
     CORS_ORIGINS = os.environ.get(
         "CORS_ORIGINS", 
-        ["https://shinbonerhub.nmfc.com.au", "https://the-pouch.vercel.app"]
+        ["https://hawkhub.hfc.com.au", "https://the-nest.vercel.app"]
     )
 
 

@@ -1,6 +1,6 @@
-# Deployment Guide — "The Pouch"
+# Deployment Guide — "The Nest"
 
-This guide outlines how to take "The Pouch" from your local machine to a live, production environment.
+This guide outlines how to take "The Nest" from your local machine to a live, production environment.
 
 ---
 
@@ -34,16 +34,24 @@ gcloud config set project bill-sandpit
 > [!IMPORTANT]
 > Copy the **entire** command below and paste it as one block.
 ```powershell
-gcloud run deploy the-pouch-api `
+gcloud run deploy the-nest-api `
   --source . `
   --region australia-southeast1 `
   --allow-unauthenticated `
-  --set-env-vars "FLASK_ENV=production,GOOGLE_CLOUD_PROJECT=bill-sandpit,BQ_DATASET=nmfc_performance_hub"
+  --set-env-vars "FLASK_ENV=production,GOOGLE_CLOUD_PROJECT=bill-sandpit,BQ_DATASET=hfc_performance_hub,DATABASE_URL=postgresql://<user>:<password>@<alloydb-ip>:5432/hfc_prod"
 ```
-*Note: The backtick (`) is the line-continuation character in PowerShell.*
+*Note: Replace `<user>`, `<password>`, and `<alloydb-ip>` with your actual AlloyDB credentials.*
+
+### Step 3: Database Seeding (One-time)
+Once the service is deployed, you need to populate the player database:
+1. Locally, set your `DATABASE_URL` to point to your cloud instance.
+2. Run the seed script:
+```powershell
+python seeds/seed_alloydb_players.py
+```
 
 3. **Save the Service URL**:
-Google will provide a URL like `https://the-pouch-api-xyz.a.run.app`. **Save this for the next step.**
+Google will provide a URL like `https://the-nest-api-xyz.a.run.app`. **Save this for the next step.**
 
 ---
 
@@ -53,7 +61,7 @@ Vercel is the best fit for Vite applications.
 1. Create an account on [Vercel](https://vercel.com).
 2. Connect your repository.
 3. **Environment Variable**: Add `VITE_API_URL` under Settings → Environment Variables.
-   - Value: `https://the-pouch-api-xyz.a.run.app/api` (The URL from Step 1 + `/api`).
+   - Value: `https://the-nest-api-xyz.a.run.app/api` (The URL from Step 1 + `/api`).
 4. **Deploy**: Vercel will build and deploy automatically using `npm run build`.
 
 ---
@@ -61,7 +69,7 @@ Vercel is the best fit for Vite applications.
 ## 3. Database Permissions
 For the live app to access BigQuery:
 1. Go to **IAM & Admin** in Google Cloud Console.
-2. Find the Service Account for your Cloud Run service (`the-pouch-api`).
+2. Find the Service Account for your Cloud Run service (`the-nest-api`).
 3. Grant it:
    - **BigQuery Data Editor**
    - **BigQuery User**

@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — IDP Ratings Seed Script
+The Hawk Hub — IDP Ratings Seed Script
 
 Creates the idp_ratings table and seeds one IDP assessment per player (44 records)
 with experience-weighted scores.
@@ -19,56 +19,56 @@ from google.cloud import bigquery
 from google.api_core.exceptions import NotFound
 
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 TABLE_ID = "idp_ratings"
 
 # Player data: (jumper_no, name, games, position)
 # Used to weight IDP scores realistically
 PLAYERS = [
-    (1, "Lachy Dovaston", 0, "Forward"),
-    (2, "Finn O'Sullivan", 22, "Def/Mid"),
-    (3, "Harry Sheezel", 67, "Def/Mid"),
-    (4, "Aidan Corr", 180, "Defender"),
-    (5, "Caleb Daniel", 215, "Mid/Fwd"),
-    (6, "George Wardlaw", 39, "Midfielder"),
-    (7, "Zane Duursma", 35, "Forward"),
-    (8, "Bailey Scott", 130, "Mid/Def"),
-    (9, "L. Davies-Uniacke", 130, "Midfielder"),
-    (10, "Colby McKercher", 39, "Defender"),
-    (11, "Luke McDonald", 230, "Defender"),
-    (12, "Jy Simpkin", 173, "Midfielder"),
-    (13, "Tyler Sellers", 10, "Key Fwd"),
-    (14, "Liam Shiels", 300, "Midfielder"),
-    (15, "Daniel Howe", 110, "Mid/Def"),
-    (16, "Zac Fisher", 140, "Def/Mid"),
-    (17, "Riley Hardeman", 15, "Midfielder"),
-    (18, "Wil Dawson", 8, "Key Def"),
-    (19, "Griffin Logue", 95, "Key Def"),
-    (20, "Nick Larkey", 134, "Key Forward"),
-    (21, "Callum Coleman-Jones", 60, "Ruck/Fwd"),
-    (22, "Taylor Goad", 5, "Ruck"),
-    (23, "Dylan Stephens", 85, "Midfielder"),
-    (24, "Tom Powell", 80, "Midfielder"),
-    (25, "Paul Curtis", 75, "Forward"),
-    (26, "Luke Parker", 315, "Mid/Fwd"),
-    (27, "Jack Darling", 320, "Key Forward"),
-    (28, "Bigoa Nyuon", 25, "Key Def"),
-    (29, "Will Phillips", 60, "Midfielder"),
-    (30, "Charlie Comben", 45, "Key Def"),
-    (31, "Josh Goater", 25, "Defender"),
-    (32, "Toby Pink", 40, "Key Def"),
-    (33, "Brayden George", 15, "Forward"),
-    (34, "Jackson Archer", 35, "Defender"),
-    (35, "Charlie Lazzaro", 55, "Mid/Fwd"),
-    (36, "Robert Hansen Jr", 10, "Forward"),
-    (37, "Cooper Harvey", 12, "Mid/Fwd"),
-    (38, "Tristan Xerri", 76, "Ruck"),
-    (39, "Geordie Payne", 3, "Defender"),
-    (40, "Eddie Ford", 50, "Forward"),
-    (41, "Blake Drury", 20, "Mid/Fwd"),
-    (42, "Kallan Dawson", 45, "Key Def"),
-    (43, "Aaron Hall", 190, "Defender"),
-    (44, "Cameron Zurhaar", 150, "Forward"),
+    (1, 'Harry Morrison', 90, 'Mid/Def'),
+    (2, 'Mitchell Lewis', 75, 'Key Forward'),
+    (3, 'Jai Newcombe', 60, 'Midfielder'),
+    (4, 'Jarman Impey', 180, 'Defender'),
+    (5, 'James Worpel', 110, 'Midfielder'),
+    (6, 'James Sicily', 140, 'Defender'),
+    (7, 'Ned Reeves', 45, 'Ruck'),
+    (8, 'Sam Frost', 160, 'Key Def'),
+    (9, 'Changkuoth Jiath', 50, 'Def/Mid'),
+    (10, 'Karl Amon', 140, 'Midfielder'),
+    (11, 'Conor Nash', 85, 'Midfielder'),
+    (12, 'Will Day', 60, 'Mid/Def'),
+    (13, 'Dylan Moore', 80, 'Forward'),
+    (14, 'Jack Scrimshaw', 85, 'Defender'),
+    (15, 'Blake Hardwick', 150, 'Defender'),
+    (16, "Massimo D'Ambrosio", 15, 'Def/Mid'),
+    (17, 'Lloyd Meek', 30, 'Ruck'),
+    (18, 'Mabior Chol', 65, 'Key Forward'),
+    (19, 'Jack Ginnivan', 45, 'Forward'),
+    (20, 'Chad Wingard', 220, 'Forward'),
+    (21, 'Nick Watson', 10, 'Forward'),
+    (22, 'Luke Breust', 285, 'Forward'),
+    (23, 'Josh Weddle', 20, 'Defender'),
+    (24, 'Denver Grainger-Barras', 30, 'Key Def'),
+    (25, 'Josh Ward', 35, 'Midfielder'),
+    (26, 'Bodie Ryan', 0, 'Defender'),
+    (27, 'Will McCabe', 0, 'Key Def'),
+    (28, 'Cam Mackenzie', 15, 'Midfielder'),
+    (29, 'Jai Serong', 10, 'Mid/Fwd'),
+    (30, 'Sam Butler', 20, 'Forward'),
+    (31, 'Connor MacDonald', 40, 'Mid/Fwd'),
+    (32, 'Finn Maginness', 35, 'Midfielder'),
+    (33, "Jack O'Sullivan", 0, 'Forward'),
+    (34, 'Ethan Phillips', 0, 'Def'),
+    (35, 'Calsher Dear', 0, 'Key Fwd'),
+    (36, 'James Blanck', 30, 'Key Def'),
+    (37, 'Josh Bennetts', 0, 'Forward'),
+    (38, 'Max Ramsden', 5, 'Ruck/Fwd'),
+    (39, 'Bailey Macdonald', 2, 'Defender'),
+    (40, 'Seamus Mitchell', 15, 'Def/Fwd'),
+    (41, 'Josh Tucker', 0, 'Forward'),
+    (42, 'Clay Tucker', 0, 'Ruck'),
+    (43, 'Jack Gunston', 250, 'Forward'),
+    (44, 'Henry Hustwaite', 5, 'Midfielder'),
 ]
 
 
@@ -108,30 +108,24 @@ def generate_idp_ratings():
         leadership = random.randint(*r["lead"])
 
         # Known overrides for key players
-        if jumper_no == 12:  # Jy Simpkin (Captain)
+        if jumper_no == 6:  # James Sicily (Captain)
             leadership = 10
             grit = max(grit, 9)
-        elif jumper_no == 11:  # Luke McDonald (Vice-Captain)
+        elif jumper_no == 22:  # Luke Breust (Vice-Captain)
             leadership = 10
-            resilience = max(resilience, 9)
-        elif jumper_no == 3:  # Harry Sheezel
-            execution = 10
-            tactical_iq = max(tactical_iq, 9)
-        elif jumper_no == 6:  # George Wardlaw
+            execution = max(execution, 9)
+        elif jumper_no == 3:  # Jai Newcombe
             grit = 10
-            resilience = max(resilience, 9)
-        elif jumper_no == 26:  # Luke Parker
+            execution = max(execution, 9)
+        elif jumper_no == 12:  # Will Day
+            tactical_iq = 10
+            execution = max(execution, 9)
+        elif jumper_no == 13:  # Dylan Moore
             grit = 10
             leadership = max(leadership, 9)
-        elif jumper_no == 9:  # LDU
+        elif jumper_no == 43:  # Jack Gunston
             tactical_iq = max(tactical_iq, 9)
             execution = max(execution, 9)
-        elif jumper_no == 27:  # Jack Darling
-            resilience = 10
-            leadership = max(leadership, 8)
-        elif jumper_no == 20:  # Nick Larkey
-            execution = max(execution, 9)
-            grit = max(grit, 8)
 
         # Composite: weighted average
         composite = round(

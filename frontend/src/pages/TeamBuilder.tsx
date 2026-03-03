@@ -89,14 +89,14 @@ const TeamBuilder = () => {
                     "relative group cursor-pointer transition-all duration-300 h-[88px] w-[120px]",
                     "rounded-2xl border flex flex-col items-center justify-center gap-1 overflow-hidden",
                     isEmpty
-                        ? "bg-white/[0.04] border-white/20 border-dashed hover:bg-white/10 hover:border-yellow-400/50 hover:shadow-lg hover:shadow-yellow-400/10"
-                        : "bg-gradient-to-b from-nmfc-royal/60 to-nmfc-navy/80 border-nmfc-royal/60 shadow-lg shadow-nmfc-royal/20 hover:border-yellow-400/60"
+                        ? "bg-white/[0.04] border-white/20 border-dashed hover:bg-white/10 hover:border-gold-400/50 hover:shadow-lg hover:shadow-gold-400/10"
+                        : "bg-gradient-to-b from-hfc-brown/60 to-hfc-brown/80 border-hfc-brown/60 shadow-lg shadow-hfc-brown/20 hover:border-gold-400/60"
                 )}
             >
                 {/* Position label always at top */}
                 <div className={clsx(
                     "text-[10px] font-black uppercase tracking-[0.2em] px-2",
-                    isEmpty ? "text-blue-300/70" : "text-yellow-400"
+                    isEmpty ? "text-amber-300/70" : "text-gold-400"
                 )}>
                     {label}
                 </div>
@@ -106,17 +106,17 @@ const TeamBuilder = () => {
                         <div className="text-[11px] font-black text-white uppercase tracking-tight text-center px-2 leading-tight line-clamp-2">
                             {player.name}
                         </div>
-                        <div className="text-[9px] font-bold text-blue-200/60">#{player.jumper_no}</div>
+                        <div className="text-[9px] font-bold text-amber-200/60">#{player.jumper_no}</div>
                         {sel?.notes && (
                             <div className="absolute top-1.5 right-1.5">
-                                <MessageSquare size={9} className="text-yellow-400" />
+                                <MessageSquare size={9} className="text-gold-400" />
                             </div>
                         )}
                     </>
                 ) : (
                     <Plus
                         size={16}
-                        className="text-blue-300/30 group-hover:text-yellow-400/70 transition-colors"
+                        className="text-amber-300/30 group-hover:text-gold-400/70 transition-colors"
                     />
                 )}
 
@@ -149,20 +149,20 @@ const TeamBuilder = () => {
             {/* Header */}
             <div className="flex items-end justify-between border-b border-white/10 pb-6">
                 <div>
-                    <h1 className="text-4xl font-black text-nmfc-navy tracking-tight font-outfit uppercase">
-                        Squad <span className="text-nmfc-royal">Builder</span>
+                    <h1 className="text-4xl font-black text-hfc-brown tracking-tight font-outfit uppercase">
+                        Squad <span className="text-hfc-brown">Builder</span>
                     </h1>
-                    <p className="text-blue-300 font-medium mt-2 text-sm">
+                    <p className="text-amber-300 font-medium mt-2 text-sm">
                         Tactical selection & match-day planning interface
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     {saving && (
-                        <div className="text-[10px] font-black text-yellow-400 uppercase tracking-widest animate-pulse">
+                        <div className="text-[10px] font-black text-gold-400 uppercase tracking-widest animate-pulse">
                             Saving...
                         </div>
                     )}
-                    <div className="px-4 py-2 rounded-xl bg-yellow-400/10 border border-yellow-400/30 text-[10px] font-black text-yellow-400 uppercase tracking-widest">
+                    <div className="px-4 py-2 rounded-xl bg-gold-400/10 border border-gold-400/30 text-[10px] font-black text-gold-400 uppercase tracking-widest">
                         Draft: Active
                     </div>
                 </div>
@@ -245,8 +245,8 @@ const TeamBuilder = () => {
                 {/* Bench */}
                 <div className="bg-white/[0.03] rounded-3xl border border-white/10 p-6 space-y-4">
                     <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                        <div className="h-1.5 w-1.5 rounded-full bg-yellow-400"></div>
-                        <div className="text-[11px] font-black text-nmfc-navy uppercase tracking-[0.2em]">
+                        <div className="h-1.5 w-1.5 rounded-full bg-gold-400"></div>
+                        <div className="text-[11px] font-black text-hfc-brown uppercase tracking-[0.2em]">
                             Interchange & Bench
                         </div>
                     </div>
@@ -260,8 +260,8 @@ const TeamBuilder = () => {
                 {/* Consideration */}
                 <div className="bg-white/[0.03] rounded-3xl border border-white/10 p-6 space-y-4">
                     <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
-                        <div className="text-[11px] font-black text-nmfc-navy uppercase tracking-[0.2em]">
+                        <div className="h-1.5 w-1.5 rounded-full bg-amber-400"></div>
+                        <div className="text-[11px] font-black text-hfc-brown uppercase tracking-[0.2em]">
                             Extended Consideration
                         </div>
                     </div>
@@ -286,12 +286,12 @@ const TeamBuilder = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <ChevronRight size={14} className="text-yellow-400" />
+                                        <ChevronRight size={14} className="text-gold-400" />
                                         <h2 className="text-lg font-black text-white uppercase font-outfit tracking-tight">
                                             {activePos.replace(/_/g, ' ')}
                                         </h2>
                                     </div>
-                                    <p className="text-[10px] text-blue-300/50 font-bold uppercase tracking-widest mt-1">
+                                    <p className="text-[10px] text-amber-300/50 font-bold uppercase tracking-widest mt-1">
                                         Select personnel for this position
                                     </p>
                                 </div>
@@ -304,14 +304,14 @@ const TeamBuilder = () => {
                             </div>
 
                             <div className="relative group">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300/40 group-focus-within:text-yellow-400 transition-colors" size={15} />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-300/40 group-focus-within:text-gold-400 transition-colors" size={15} />
                                 <input
                                     autoFocus
                                     type="text"
                                     placeholder="Search by name or number..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/15 rounded-2xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400/30 transition-all"
+                                    className="w-full bg-white/5 border border-white/15 rounded-2xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-amber-300/30 focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400/30 transition-all"
                                 />
                             </div>
                         </div>
@@ -319,7 +319,7 @@ const TeamBuilder = () => {
                         {/* Player List */}
                         <div className="flex-1 overflow-y-auto p-3 space-y-1.5" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
                             {filteredPlayers.length === 0 && (
-                                <div className="text-center text-blue-300/30 text-sm py-8 font-bold uppercase tracking-widest">
+                                <div className="text-center text-amber-300/30 text-sm py-8 font-bold uppercase tracking-widest">
                                     No players found
                                 </div>
                             )}
@@ -335,33 +335,33 @@ const TeamBuilder = () => {
                                             "flex items-center gap-3 p-3 rounded-2xl border transition-all duration-200 group",
                                             assigned
                                                 ? "bg-white/[0.02] border-white/5 opacity-35 cursor-not-allowed"
-                                                : "bg-white/[0.03] border-white/8 hover:border-yellow-400/40 hover:bg-yellow-400/5 cursor-pointer"
+                                                : "bg-white/[0.03] border-white/8 hover:border-gold-400/40 hover:bg-gold-400/5 cursor-pointer"
                                         )}
                                     >
                                         <div className={clsx(
                                             "h-10 w-10 rounded-xl border flex items-center justify-center font-black text-white text-xs shrink-0",
-                                            assigned ? "bg-white/5 border-white/10" : "bg-nmfc-royal/40 border-nmfc-royal/60"
+                                            assigned ? "bg-white/5 border-white/10" : "bg-hfc-brown/40 border-hfc-brown/60"
                                         )}>
                                             {p.jumper_no}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className={clsx(
                                                 "text-sm font-black uppercase tracking-tight truncate transition-colors",
-                                                assigned ? "text-white/50" : "text-white group-hover:text-yellow-400"
+                                                assigned ? "text-white/50" : "text-white group-hover:text-gold-400"
                                             )}>
                                                 {p.name}
                                             </div>
-                                            <div className="text-[10px] font-bold text-blue-300/40 uppercase tracking-wider">
+                                            <div className="text-[10px] font-bold text-amber-300/40 uppercase tracking-wider">
                                                 {p.position}
                                             </div>
                                         </div>
                                         {assigned ? (
-                                            <span className="text-[9px] font-black text-yellow-400/40 uppercase tracking-widest shrink-0">
+                                            <span className="text-[9px] font-black text-gold-400/40 uppercase tracking-widest shrink-0">
                                                 Assigned
                                             </span>
                                         ) : (
                                             <div className="h-7 w-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                <Plus size={12} className="text-yellow-400" />
+                                                <Plus size={12} className="text-gold-400" />
                                             </div>
                                         )}
                                     </div>
@@ -371,7 +371,7 @@ const TeamBuilder = () => {
 
                         {/* Footer */}
                         <div className="p-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-blue-300/40 uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-[10px] font-black text-amber-300/40 uppercase tracking-widest">
                                 <Users size={11} />
                                 {players.length} Players · {selections.filter(s => s.player_id != null).length} Assigned
                             </div>

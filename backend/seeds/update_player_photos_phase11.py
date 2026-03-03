@@ -1,11 +1,11 @@
-"""Update player photos for North Melbourne using Name-based mapping (Phase 13)."""
+"""Update player photos for Hawthorn using Name-based mapping (Phase 13)."""
 from google.cloud import bigquery
 import urllib.parse
 import os
 
 # Configuration
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 TABLE_ID = f"{PROJECT_ID}.{DATASET_ID}.players_2026"
 
 BASE_URL = "https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/AFL"
@@ -47,9 +47,9 @@ def update_photos():
         name = row['name'].strip()
         
         # Standardize on Initials Avatars for ALL players (Phase 14 Revert)
-        # 2 initials, encoded properly, NMFC colors (#013B82 Blue, #FFFFFF White)
+        # 2 initials, encoded properly, Hawthorn colors (#4D2004 Brown, #F6B000 Gold)
         encoded_name = urllib.parse.quote(name)
-        photo_url = f"https://ui-avatars.com/api/?name={encoded_name}&background=013B82&color=FFFFFF&size=200&length=2&font-size=0.4"
+        photo_url = f"https://ui-avatars.com/api/?name={encoded_name}&background=4D2004&color=F6B000&size=200&length=2&font-size=0.4"
             
         update_query = f"""
             UPDATE `{TABLE_ID}`

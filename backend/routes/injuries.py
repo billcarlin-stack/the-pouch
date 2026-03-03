@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Injury Routes
+The Hawk Hub — Injury Routes
 """
 
 from flask import Blueprint, request, jsonify, g

@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Gunicorn Configuration
+The Hawk Hub — Gunicorn Configuration
 
 Production WSGI server settings for Cloud Run deployment.
 """
@@ -26,9 +26,9 @@ errorlog = "-"
 loglevel = os.environ.get("LOG_LEVEL", "info")
 
 # Process naming
-proc_name = "shinboner-hub"
+proc_name = "hawk-hub"
 
 # Server mechanics
-preload_app = True
+preload_app = False
 max_requests = 1000
 max_requests_jitter = 50

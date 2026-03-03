@@ -1,12 +1,12 @@
-# System Rundown — The Pouch
+# System Rundown — The Nest
 
-**The Pouch** is a premium high-performance analytics platform built for the **North Melbourne Football Club**. It serves as a unified command center for coaches and a personalized performance portal for players.
+**The Nest** is a premium high-performance analytics platform built for the **Hawthorn Football Club**. It serves as a unified command center for coaches and a personalized performance portal for players.
 
 ## 🏢 Core Architecture
 - **Frontend**: React + Vite + Tailwind CSS (Premium Dark Theme).
 - **Backend**: Flask API (Python).
 - **Database**: Google BigQuery (Data Lakehouse).
-- **AI Engine**: Kanga AI (Custom logic engine integrated with BigQuery analytics).
+- **AI Engine**: Hawk AI (Custom logic engine integrated with BigQuery analytics).
 
 ---
 
@@ -66,7 +66,7 @@
 ## 📅 Squad Calendar
 - **Weekly View**: Full-page calendar for team-wide scheduling.
 - **Event Management**: Coaches can create sessions, weights, and rehab meetings.
-- **Visual Coding**: Color-coded events (e.g., Royal Blue for Main Sessions, Red for Rehab).
+- **Visual Coding**: Color-coded events (e.g., Brown Blue for Main Sessions, Red for Rehab).
 
 ---
 

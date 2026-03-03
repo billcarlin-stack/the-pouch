@@ -1,7 +1,7 @@
 /*
-  The Shinboner Hub — Sidebar Navigation
+  The Hawk Hub — Sidebar Navigation
 
-  Persistent left-hand navigation with North Melbourne FC branding.
+  Persistent left-hand navigation with Hawthorn FC branding.
   Role-aware: coaches see all nav items, players only see permitted ones.
 */
 
@@ -10,7 +10,7 @@ import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, Log
 import { clsx } from 'clsx';
 import { useAuth } from '../../context/AuthContext';
 
-import nmfcLogo from '../../assets/nmfc-logo.png';
+import hfcLogo from '../../assets/hfc-logo.png';
 
 const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: string }) => (
     <NavLink
@@ -20,16 +20,16 @@ const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: stri
                 "group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-bold text-sm relative",
                 isActive
                     ? "bg-white/10 text-white shadow-inner"
-                    : "text-blue-100/60 hover:bg-white/5 hover:text-white"
+                    : "text-amber-100/60 hover:bg-white/5 hover:text-white"
             )
         }
     >
         {({ isActive }) => (
             <>
-                <Icon size={18} className={clsx("transition-transform duration-500 group-hover:scale-110", isActive ? "text-yellow-400" : "text-blue-300/60 group-hover:text-white")} />
+                <Icon size={18} className={clsx("transition-transform duration-500 group-hover:scale-110", isActive ? "text-gold-400" : "text-amber-300/60 group-hover:text-white")} />
                 <span className="tracking-tight">{label}</span>
                 {isActive && (
-                    <div className="absolute left-0 w-1 h-6 bg-yellow-400 rounded-r-full shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
+                    <div className="absolute left-0 w-1 h-6 bg-gold-400 rounded-r-full shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
                 )}
             </>
         )}
@@ -51,11 +51,11 @@ export const Sidebar = () => {
             {/* Brand Header */}
             <div className="p-8 flex items-center gap-4">
                 <div className="bg-white rounded-2xl p-1.5 h-12 w-12 flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                    <img src={nmfcLogo} alt="NMFC Logo" className="h-10 w-auto" />
+                    <img src={hfcLogo} alt="HFC Logo" className="h-10 w-auto" />
                 </div>
                 <div>
-                    <h1 className="font-black text-xl leading-none tracking-tight uppercase font-outfit">The Hub</h1>
-                    <p className="text-[10px] text-blue-300 font-bold uppercase tracking-widest mt-1">Analytics Engine</p>
+                    <h1 className="font-black text-xl leading-none tracking-tight uppercase font-outfit">The Nest</h1>
+                    <p className="text-[10px] text-amber-300 font-bold uppercase tracking-widest mt-1">Analytics Engine</p>
                 </div>
             </div>
 
@@ -71,10 +71,10 @@ export const Sidebar = () => {
                 {isCoach && (
                     <NavItem to="/players" icon={Users} label="Players & Squad" />
                 )}
-                <NavItem to="/kanga-ai" icon={MessageSquareCode} label="Kanga AI Agent" />
+                <NavItem to="/hawk-ai" icon={MessageSquareCode} label="Hawk AI Agent" />
 
                 {/* Shared items */}
-                <div className="pt-8 pb-3 px-4 text-[10px] font-black text-blue-300/40 uppercase tracking-[0.2em]">
+                <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
                     High Performance
                 </div>
 
@@ -96,7 +96,7 @@ export const Sidebar = () => {
                 {/* Coach-only items */}
                 {isCoach && (
                     <>
-                        <div className="pt-8 pb-3 px-4 text-[10px] font-black text-blue-300/40 uppercase tracking-[0.2em]">
+                        <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
                             Coaching
                         </div>
                         <NavItem to="/team-builder" icon={ClipboardList} label="Team Builder" />
@@ -109,17 +109,17 @@ export const Sidebar = () => {
             {/* Footer / User Profile */}
             <div className="p-6">
                 <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:bg-white/10 transition-colors duration-300">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-600 text-nmfc-navy flex items-center justify-center font-black text-xs shadow-lg">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-gold-400 to-amber-600 text-hfc-brown flex items-center justify-center font-black text-xs shadow-lg">
                         {user?.initials || '??'}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-white group-hover:text-yellow-400 transition-colors truncate">{user?.name || 'Guest'}</p>
-                        <p className="text-[10px] text-blue-300 font-medium capitalize">{user?.role || 'Unknown'}</p>
+                        <p className="text-xs font-bold text-white group-hover:text-gold-400 transition-colors truncate">{user?.name || 'Guest'}</p>
+                        <p className="text-[10px] text-amber-300 font-medium capitalize">{user?.role || 'Unknown'}</p>
                     </div>
                     <button
                         onClick={handleLogout}
                         title="Logout"
-                        className="text-blue-400 cursor-pointer hover:text-red-400 hover:rotate-12 transition-all duration-300"
+                        className="text-amber-400 cursor-pointer hover:text-red-400 hover:rotate-12 transition-all duration-300"
                     >
                         <LogOut size={14} />
                     </button>

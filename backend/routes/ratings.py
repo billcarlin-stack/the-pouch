@@ -1,7 +1,8 @@
 """
-The Shinboner Hub — Rating Routes
+The Hawk Hub — Rating Routes
 """
 
+import traceback
 from flask import Blueprint, request, jsonify
 from models.ratings import submit_rating, get_player_ratings
 

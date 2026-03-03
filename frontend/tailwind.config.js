@@ -7,9 +7,9 @@ export default {
     theme: {
         extend: {
             colors: {
-                nmfc: {
-                    navy: "#0C2340", // Primary Navy
-                    royal: "#0057B8", // Royal Blue
+                hfc: {
+                    brown: "#4D2004", // Primary Brown
+                    gold: "#F6B000",  // Gold Blue
                     white: "#FFFFFF",
                     light: "#F4F6F8", // Background Grey
                     slate: "#334155", // Text
@@ -22,7 +22,7 @@ export default {
                 sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
             },
             backgroundImage: {
-                'hero-gradient': 'linear-gradient(135deg, #0C2340 0%, #0057B8 100%)',
+                'hero-gradient': 'linear-gradient(135deg, #4D2004 0%, #F6B000 100%)',
             },
             boxShadow: {
                 'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',

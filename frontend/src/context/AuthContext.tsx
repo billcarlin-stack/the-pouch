@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import axios from 'axios';
+import { api } from '../services/api';
 
 export interface AuthUser {
     role: 'coach' | 'player';
@@ -18,7 +18,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const SESSION_KEY = 'shinboner_hub_user';
+const SESSION_KEY = 'hawk_hub_user';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<AuthUser | null>(null);
@@ -42,8 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setError(null);
         setLoading(true);
         try {
-            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            const resp = await axios.post(`${API_BASE_URL}/auth/login`, { pin });
+            const resp = await api.post(`/auth/login`, { pin });
             const userData: AuthUser = resp.data;
             setUser(userData);
             sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData));

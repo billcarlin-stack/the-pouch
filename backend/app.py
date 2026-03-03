@@ -1,7 +1,7 @@
 """
-The Shinboner Hub — Application Entry Point
+The Hawk Hub — Application Entry Point
 
-Flask application factory for the North Melbourne FC
+Flask application factory for the Hawthorn FC
 high-performance analytics platform.
 
 Usage:
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 def create_app(config=None):
     """
-    Application factory for the Shinboner Hub backend.
+    Application factory for the Hawk Hub backend.
 
     Args:
         config: Optional configuration object. If None, auto-detects
@@ -44,6 +44,14 @@ def create_app(config=None):
         config = get_config()
     app.config.from_object(config)
 
+    # Initialize AlloyDB (create tables if they don't exist)
+    from db.alloydb_client import init_db
+    try:
+        init_db()
+        logger.info("AlloyDB initialised (tables verified/created)")
+    except Exception as e:
+        logger.warning("Could not initialise AlloyDB on startup: %s", str(e))
+
     # Enable CORS
     CORS(app, origins=config.CORS_ORIGINS)
 
@@ -51,7 +59,7 @@ def create_app(config=None):
     @app.route("/health", methods=["GET"])
     def health_check():
         return jsonify({
-            "status": "Shinboner Hub Online",
+            "status": "Hawk Hub Online",
             "version": "2026.2.0",
             "environment": os.environ.get("FLASK_ENV", "development"),
         }), 200
@@ -77,6 +85,7 @@ def create_app(config=None):
     from routes.auth import auth_bp
     from routes.woop import woop_bp
     from routes.calendar import calendar_bp
+    from routes.fitness import fitness_bp
 
     app.register_blueprint(injuries_bp, url_prefix='/api')
     app.register_blueprint(ratings_bp, url_prefix='/api')
@@ -86,6 +95,7 @@ def create_app(config=None):
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(woop_bp, url_prefix='/api')
     app.register_blueprint(calendar_bp, url_prefix='/api')
+    app.register_blueprint(fitness_bp, url_prefix='/api/v1/fitness')
 
     # ── Global Error Handlers ─────────────────────────────────────
     @app.errorhandler(404)
@@ -109,7 +119,7 @@ def create_app(config=None):
             "message": "An unexpected error occurred",
         }), 500
 
-    logger.info("Shinboner Hub backend initialised — %s mode", config.__class__.__name__)
+    logger.info("Hawk Hub backend initialised — %s mode", config.__class__.__name__)
 
     return app
 

@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Seed Injury History (Phase 10)
+The Hawk Hub — Seed Injury History (Phase 10)
 
 Populates `injury_logs` with variety of statuses (Active, Recovering, Cleared).
 Updates player statuses in BigQuery to match.
@@ -13,7 +13,7 @@ import os
 
 # Configuration
 PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "bill-sandpit")
-DATASET_ID = "nmfc_performance_hub"
+DATASET_ID = "hfc_performance_hub"
 
 INJURIES = [
     ("Hamstring Strain", "Moderate", "Active"),
@@ -89,10 +89,39 @@ def seed_injuries():
         client.query(update_query).result()
         print(f"✅ Player #{player_id} updated to status: {new_status}")
 
+def init_table():
+    client = bigquery.Client()
+    table_id = f"{PROJECT_ID}.{DATASET_ID}.injury_logs"
+    
+    schema = [
+        bigquery.SchemaField("id", "STRING", mode="REQUIRED"),
+        bigquery.SchemaField("player_id", "INTEGER", mode="REQUIRED"),
+        bigquery.SchemaField("injury_type", "STRING", mode="REQUIRED"),
+        bigquery.SchemaField("body_area", "STRING", mode="NULLABLE"),
+        bigquery.SchemaField("severity", "STRING", mode="REQUIRED"),
+        bigquery.SchemaField("contact_load", "INTEGER", mode="NULLABLE"),
+        bigquery.SchemaField("status", "STRING", mode="REQUIRED"),
+        bigquery.SchemaField("notes", "STRING", mode="NULLABLE"),
+        bigquery.SchemaField("date", "STRING", mode="REQUIRED"),
+        bigquery.SchemaField("created_at", "TIMESTAMP", mode="REQUIRED"),
+    ]
+    
+    table = bigquery.Table(table_id, schema=schema)
+    try:
+        client.get_table(table_id)
+        print(f"Table {table_id} already exists.")
+    except Exception:
+        print(f"Table {table_id} not found. Creating...")
+        client.create_table(table)
+        print(f"Table {table_id} created.")
+
 if __name__ == "__main__":
+    init_table()
+    
     # Clear existing injuries first to avoid duplicates
     client = bigquery.Client()
-    client.query(f"DELETE FROM `{PROJECT_ID}.{DATASET_ID}.injury_logs` WHERE 1=1").result()
+    table_ref = f"{PROJECT_ID}.{DATASET_ID}.injury_logs"
+    client.query(f"DELETE FROM `{table_ref}` WHERE 1=1").result()
     print("🗑️ Cleared existing injury logs.")
     
     seed_injuries()

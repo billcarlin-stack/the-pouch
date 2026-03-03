@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — IDP Ratings API Routes
+The Hawk Hub — IDP Ratings API Routes
 
 Endpoints:
     GET /api/idp/<jumper_no>  — IDP ratings for a specific player

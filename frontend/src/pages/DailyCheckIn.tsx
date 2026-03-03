@@ -43,7 +43,7 @@ const DailyCheckIn = () => {
 
     const getScoreColor = (score: number) => {
         if (score >= 8) return 'text-green-500';
-        if (score >= 6) return 'text-yellow-500';
+        if (score >= 6) return 'text-gold-500';
         if (score >= 4) return 'text-amber-500';
         return 'text-red-500';
     };
@@ -71,12 +71,12 @@ const DailyCheckIn = () => {
                         <CheckCircle size={40} className="text-green-600" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-nmfc-navy">Check-In Complete!</h2>
+                        <h2 className="text-2xl font-black text-hfc-brown">Check-In Complete!</h2>
                         <p className="text-gray-500 mt-2">Your readiness score: <span className={`font-black text-xl ${getScoreColor(parseFloat(readinessScore))}`}>{readinessScore}</span></p>
                     </div>
                     <button
                         onClick={() => { setSubmitted(false); setScores({ sleep: 7, soreness: 7, mood: 7, confidence: 7 }); setNotes(''); }}
-                        className="text-sm font-bold text-nmfc-royal hover:underline"
+                        className="text-sm font-bold text-hfc-brown hover:underline"
                     >
                         Submit Another
                     </button>
@@ -89,8 +89,8 @@ const DailyCheckIn = () => {
         <div className="p-6 max-w-3xl mx-auto space-y-8 animate-in fade-in duration-700">
             {/* Header */}
             <div className="border-b border-gray-200 pb-6">
-                <h1 className="text-3xl font-black text-nmfc-navy tracking-tight font-outfit uppercase">
-                    Daily <span className="text-nmfc-royal">Check-In</span>
+                <h1 className="text-3xl font-black text-hfc-brown tracking-tight font-outfit uppercase">
+                    Daily <span className="text-hfc-brown">Check-In</span>
                 </h1>
                 <p className="text-gray-500 text-sm font-medium mt-1">
                     Pre-training wellbeing survey — {new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -117,7 +117,7 @@ const DailyCheckIn = () => {
                             <div className="flex items-center gap-3">
                                 <span className="text-2xl">{emoji}</span>
                                 <div>
-                                    <h3 className="font-bold text-nmfc-navy">{label}</h3>
+                                    <h3 className="font-bold text-hfc-brown">{label}</h3>
                                     <p className="text-xs text-gray-400">{subtitle}</p>
                                 </div>
                             </div>
@@ -134,11 +134,11 @@ const DailyCheckIn = () => {
                                 max="10"
                                 value={scores[key]}
                                 onChange={(e) => setScores(prev => ({ ...prev, [key]: parseInt(e.target.value) }))}
-                                className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-nmfc-royal"
+                                className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-hfc-brown"
                             />
                             <div className="flex justify-between text-[10px] text-gray-300 font-bold mt-1 px-0.5">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                                    <span key={n} className={clsx(scores[key] === n && 'text-nmfc-royal font-black')}>{n}</span>
+                                    <span key={n} className={clsx(scores[key] === n && 'text-hfc-brown font-black')}>{n}</span>
                                 ))}
                             </div>
                         </div>
@@ -156,7 +156,7 @@ const DailyCheckIn = () => {
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
                     placeholder="Anything the coaching staff should know today..."
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-nmfc-royal/20 resize-none"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 resize-none"
                 />
             </div>
 
@@ -171,7 +171,7 @@ const DailyCheckIn = () => {
             <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full bg-gradient-to-r from-nmfc-royal to-nmfc-navy text-white font-black py-4 rounded-2xl text-sm uppercase tracking-widest hover:from-nmfc-navy hover:to-nmfc-royal transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-nmfc-royal/20"
+                className="w-full bg-gradient-to-r from-hfc-brown to-hfc-brown text-white font-black py-4 rounded-2xl text-sm uppercase tracking-widest hover:from-hfc-brown hover:to-hfc-brown transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-hfc-brown/20"
             >
                 {submitting ? (
                     <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

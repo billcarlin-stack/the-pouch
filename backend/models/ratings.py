@@ -1,108 +1,94 @@
-"""
-The Shinboner Hub — Coach Ratings Logic
-
-Handles submitting coach ratings and fetching comparison data.
-"""
-
 import uuid
+import random
 from datetime import datetime
-from google.cloud import bigquery
+from sqlalchemy import Column, Integer, String, Text, DateTime
+from db.alloydb_client import Base, get_session
 from config import get_config
 
 _config = get_config()
-_PROJECT = _config.GOOGLE_CLOUD_PROJECT
-_DATASET = _config.BQ_DATASET
+
+class CoachRating(Base):
+    __tablename__ = 'coach_ratings'
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    player_id = Column(Integer, nullable=False)
+    skill_category = Column(String(100), nullable=False)
+    skill_name = Column(String(100), nullable=False)
+    rating_value = Column(Integer, nullable=False)
+    notes = Column(Text)
+    date = Column(String(10)) # YYYY-MM-DD
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 def submit_rating(data: dict) -> dict:
     """
-    Submits a coach rating for a player skill.
-    
-    Args:
-        data: Dict containing player_id, skill_category, skill_name, rating_value, notes
+    Submits a coach rating for a player skill using AlloyDB.
     """
-    client = bigquery.Client()
-    
-    rows_to_insert = [{
-        "id": str(uuid.uuid4()),
-        "player_id": int(data["player_id"]),
-        "skill_category": data["skill_category"],
-        "skill_name": data["skill_name"],
-        "rating_value": int(data["rating_value"]),
-        "notes": data.get("notes", ""),
-        "date": datetime.now().strftime("%Y-%m-%d"),
-        "created_at": datetime.now().isoformat()
-    }]
-    
-    errors = client.insert_rows_json(f"{_PROJECT}.{_DATASET}.coach_ratings", rows_to_insert)
-    if errors:
-        raise Exception(f"Failed to submit rating: {errors}")
-        
-    return {"message": "Rating submitted successfully"}
+    session = get_session()
+    try:
+        new_rating = CoachRating(
+            player_id=int(data["player_id"]),
+            skill_category=data["skill_category"],
+            skill_name=data["skill_name"],
+            rating_value=int(data["rating_value"]),
+            notes=data.get("notes", ""),
+            date=datetime.now().strftime("%Y-%m-%d")
+        )
+        session.add(new_rating)
+        session.commit()
+        return {"message": "Rating submitted successfully"}
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
 
 def get_player_ratings(player_id: int) -> dict:
     """
-    Fetches the latest coach ratings for a player and compares with mock Self/Squad data.
+    Fetches the latest coach ratings for a player from AlloyDB.
     """
-    client = bigquery.Client()
-    
-    # Get latest coach ratings for this player
-    query = f"""
-        SELECT skill_category, skill_name, rating_value, notes, date
-        FROM `{_PROJECT}.{_DATASET}.coach_ratings`
-        WHERE player_id = @player_id
-        ORDER BY created_at DESC
-    """
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("player_id", "INTEGER", player_id)
+    session = get_session()
+    try:
+        # Get all ratings for this player, ordered by created_at desc
+        ratings_objs = session.query(CoachRating).filter(CoachRating.player_id == player_id).order_by(CoachRating.created_at.desc()).all()
+        
+        # Deduplicate to get only the latest rating per skill
+        coach_ratings = {}
+        for r in ratings_objs:
+            key = f"{r.skill_category}_{r.skill_name}"
+            if key not in coach_ratings:
+                coach_ratings[key] = {
+                    "category": r.skill_category,
+                    "skill": r.skill_name,
+                    "rating": r.rating_value,
+                    "notes": r.notes,
+                    "date": r.date
+                }
+                
+        comparison_data = []
+        standard_skills = [
+            ("Technical", "Kicking"), ("Technical", "Handball"), ("Technical", "Marking"),
+            ("Tactical", "Decision Making"), ("Tactical", "Positioning"),
+            ("Physical", "Speed"), ("Physical", "Endurance"),
+            ("Mental", "Resilience"), ("Mental", "Leadership")
         ]
-    )
-    rows = client.query(query, job_config=job_config).result()
-    
-    # Deduplicate to get only the latest rating per skill
-    coach_ratings = {}
-    for row in rows:
-        key = f"{row.skill_category}_{row.skill_name}"
-        if key not in coach_ratings:
-            coach_ratings[key] = {
-                "category": row.skill_category,
-                "skill": row.skill_name,
-                "rating": row.rating_value,
-                "notes": row.notes,
-                "date": row.date.strftime("%Y-%m-%d")
-            }
+        
+        for category, skill in standard_skills:
+            key = f"{category}_{skill}"
+            coach_val = coach_ratings.get(key, {}).get("rating", 0)
             
-    # Mock Self and Squad Ratings (as per requirements)
-    # In a real app, 'Self' would come from a player app submission, and 'Squad' would be an aggregation query.
-    
-    comparison_data = []
-    
-    # If no coach ratings exist, we return empty or default list. 
-    # Let's populate the standard skill list to ensure the UI has something to show even if empty.
-    standard_skills = [
-        ("Technical", "Kicking"), ("Technical", "Handball"), ("Technical", "Marking"),
-        ("Tactical", "Decision Making"), ("Tactical", "Positioning"),
-        ("Physical", "Speed"), ("Physical", "Endurance"),
-        ("Mental", "Resilience"), ("Mental", "Leadership")
-    ]
-    
-    import random
-    
-    for category, skill in standard_skills:
-        key = f"{category}_{skill}"
-        coach_val = coach_ratings.get(key, {}).get("rating", 0) # Default to 0 if not rated
-        
-        # Mock values
-        self_val = random.randint(5, 9)
-        squad_val = random.randint(6, 8)
-        
-        comparison_data.append({
-            "skill": skill,
-            "category": category,
-            "coach_rating": coach_val,
-            "self_rating": self_val,
-            "squad_avg": squad_val,
-            "gap": coach_val - self_val
-        })
-        
-    return {"ratings": comparison_data}
+            # Mock values for Self and Squad as per original logic
+            self_val = random.randint(5, 9)
+            squad_val = random.randint(6, 8)
+            
+            comparison_data.append({
+                "skill": skill,
+                "category": category,
+                "coach_rating": coach_val,
+                "self_rating": self_val,
+                "squad_avg": squad_val,
+                "gap": coach_val - self_val
+            })
+            
+        return {"ratings": comparison_data}
+    finally:
+        session.close()

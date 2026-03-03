@@ -7,8 +7,8 @@ interface Message {
     sender: 'ai' | 'user';
 }
 
-// === Existing KangaChat (sidebar/dedicated page version) ===
-export const KangaChat = () => {
+// === Existing HawkChat (sidebar/dedicated page version) ===
+export const HawkChat = () => {
     const [messages, setMessages] = useState<Message[]>([
         { text: "G'day! I'm KANGA.AI, your high-performance assistant. Ask me anything about squad wellbeing or ratings.", sender: 'ai' }
     ]);
@@ -49,17 +49,17 @@ export const KangaChat = () => {
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[500px] overflow-hidden">
             {/* Header */}
-            <div className="bg-nmfc-navy p-4 flex items-center justify-between text-white">
+            <div className="bg-hfc-brown p-4 flex items-center justify-between text-white">
                 <div className="flex items-center gap-3">
-                    <div className="bg-nmfc-royal p-2 rounded-lg">
-                        <Bot size={20} className="text-yellow-400" />
+                    <div className="bg-hfc-brown p-2 rounded-lg">
+                        <Bot size={20} className="text-gold-400" />
                     </div>
                     <div>
                         <h3 className="font-bold text-sm">KANGA.AI</h3>
-                        <p className="text-[10px] text-blue-200 uppercase tracking-widest">Performance Agent</p>
+                        <p className="text-[10px] text-amber-200 uppercase tracking-widest">Performance Agent</p>
                     </div>
                 </div>
-                <Sparkles size={16} className="text-yellow-400 animate-pulse" />
+                <Sparkles size={16} className="text-gold-400 animate-pulse" />
             </div>
 
             {/* Messages */}
@@ -67,7 +67,7 @@ export const KangaChat = () => {
                 {messages.map((m, i) => (
                     <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${m.sender === 'user'
-                            ? 'bg-nmfc-royal text-white rounded-tr-none'
+                            ? 'bg-hfc-brown text-white rounded-tr-none'
                             : 'bg-white border border-gray-100 text-gray-800 shadow-sm rounded-tl-none'
                             }`}>
                             {m.text}
@@ -76,7 +76,7 @@ export const KangaChat = () => {
                 ))}
                 {loading && (
                     <div className="flex justify-start italic text-gray-400 text-xs animate-pulse">
-                        Kanga is thinking...
+                        Hawk is thinking...
                     </div>
                 )}
             </div>
@@ -88,7 +88,7 @@ export const KangaChat = () => {
                         <button
                             key={i}
                             onClick={() => handleSend(s)}
-                            className="text-[10px] font-medium bg-gray-50 hover:bg-yellow-50 hover:text-yellow-700 text-gray-500 py-1 px-3 rounded-full border border-gray-100 transition-colors"
+                            className="text-[10px] font-medium bg-gray-50 hover:bg-gold-50 hover:text-gold-700 text-gray-500 py-1 px-3 rounded-full border border-gray-100 transition-colors"
                         >
                             {s}
                         </button>
@@ -103,12 +103,12 @@ export const KangaChat = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Ask KANGA.AI..."
-                        className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-nmfc-royal/20"
+                        className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-hfc-brown/20"
                     />
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-nmfc-royal text-white p-2 rounded-xl hover:bg-nmfc-navy transition-colors disabled:opacity-50"
+                        className="bg-hfc-brown text-white p-2 rounded-xl hover:bg-hfc-brown transition-colors disabled:opacity-50"
                     >
                         <Send size={18} />
                     </button>
@@ -119,7 +119,7 @@ export const KangaChat = () => {
 };
 
 
-// === DashboardKangaAI — Gemini-style interface for the Dashboard ===
+// === DashboardHawkAI — Gemini-style interface for the Dashboard ===
 const SUGGESTIONS = [
     "Who's at risk this week?",
     "Lowest sleep scores?",
@@ -128,7 +128,7 @@ const SUGGESTIONS = [
     "Squad readiness summary",
 ];
 
-export const DashboardKangaAI = () => {
+export const DashboardHawkAI = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -168,14 +168,14 @@ export const DashboardKangaAI = () => {
                     {/* Branding */}
                     <div className="flex flex-col items-center gap-3 text-center">
                         <div className="relative">
-                            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-nmfc-navy to-nmfc-royal flex items-center justify-center shadow-xl shadow-nmfc-royal/30">
-                                <Sparkles size={26} className="text-yellow-400" />
+                            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-hfc-brown to-hfc-brown flex items-center justify-center shadow-xl shadow-hfc-brown/30">
+                                <Sparkles size={26} className="text-gold-400" />
                             </div>
                             <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-400 border-2 border-white animate-pulse" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-nmfc-navy tracking-tight">
-                                KANGA<span className="text-nmfc-royal">.</span>AI
+                            <h2 className="text-2xl font-black text-hfc-brown tracking-tight">
+                                KANGA<span className="text-hfc-brown">.</span>AI
                             </h2>
                             <p className="text-gray-400 text-xs font-medium mt-1 tracking-wide">
                                 Your intelligent squad performance assistant
@@ -189,7 +189,7 @@ export const DashboardKangaAI = () => {
                             <button
                                 key={i}
                                 onClick={() => handleSend(s)}
-                                className="text-xs font-medium bg-gray-50 hover:bg-nmfc-navy hover:text-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full transition-all duration-200 hover:border-nmfc-navy hover:shadow-sm"
+                                className="text-xs font-medium bg-gray-50 hover:bg-hfc-brown hover:text-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full transition-all duration-200 hover:border-hfc-brown hover:shadow-sm"
                             >
                                 {s}
                             </button>
@@ -208,12 +208,12 @@ export const DashboardKangaAI = () => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask KANGA.AI anything about the squad..."
-                                className="w-full bg-white border-2 border-gray-200 group-hover:border-gray-300 focus:border-nmfc-royal rounded-2xl py-4 pl-5 pr-14 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:shadow-lg focus:shadow-nmfc-royal/10 transition-all duration-300 shadow-sm"
+                                className="w-full bg-white border-2 border-gray-200 group-hover:border-gray-300 focus:border-hfc-brown rounded-2xl py-4 pl-5 pr-14 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:shadow-lg focus:shadow-hfc-brown/10 transition-all duration-300 shadow-sm"
                             />
                             <button
                                 type="submit"
                                 disabled={!input.trim()}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-xl bg-nmfc-royal text-white flex items-center justify-center hover:bg-nmfc-navy transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-xl bg-hfc-brown text-white flex items-center justify-center hover:bg-hfc-brown transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
                             >
                                 <ArrowUp size={16} />
                             </button>
@@ -227,10 +227,10 @@ export const DashboardKangaAI = () => {
                 <>
                     {/* Compact header */}
                     <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 shrink-0">
-                        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-nmfc-navy to-nmfc-royal flex items-center justify-center">
-                            <Sparkles size={13} className="text-yellow-400" />
+                        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-hfc-brown to-hfc-brown flex items-center justify-center">
+                            <Sparkles size={13} className="text-gold-400" />
                         </div>
-                        <span className="font-black text-nmfc-navy text-sm tracking-tight">KANGA.AI</span>
+                        <span className="font-black text-hfc-brown text-sm tracking-tight">KANGA.AI</span>
                         <div className="ml-auto flex items-center gap-1.5">
                             <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Online</span>
@@ -246,12 +246,12 @@ export const DashboardKangaAI = () => {
                         {messages.map((m, i) => (
                             <div key={i} className={`flex gap-2 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 {m.sender === 'ai' && (
-                                    <div className="h-6 w-6 rounded-lg bg-nmfc-navy flex items-center justify-center shrink-0 mt-0.5">
-                                        <Sparkles size={10} className="text-yellow-400" />
+                                    <div className="h-6 w-6 rounded-lg bg-hfc-brown flex items-center justify-center shrink-0 mt-0.5">
+                                        <Sparkles size={10} className="text-gold-400" />
                                     </div>
                                 )}
                                 <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.sender === 'user'
-                                    ? 'bg-nmfc-royal text-white rounded-tr-sm font-medium'
+                                    ? 'bg-hfc-brown text-white rounded-tr-sm font-medium'
                                     : 'bg-white border border-gray-100 text-gray-800 shadow-sm rounded-tl-sm'
                                     }`}>
                                     {m.text}
@@ -260,14 +260,14 @@ export const DashboardKangaAI = () => {
                         ))}
                         {loading && (
                             <div className="flex gap-2 justify-start items-center">
-                                <div className="h-6 w-6 rounded-lg bg-nmfc-navy flex items-center justify-center">
-                                    <Sparkles size={10} className="text-yellow-400 animate-pulse" />
+                                <div className="h-6 w-6 rounded-lg bg-hfc-brown flex items-center justify-center">
+                                    <Sparkles size={10} className="text-gold-400 animate-pulse" />
                                 </div>
                                 <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm">
                                     <div className="flex gap-1 items-center">
-                                        <div className="h-1.5 w-1.5 rounded-full bg-nmfc-royal animate-bounce" style={{ animationDelay: '0ms' }} />
-                                        <div className="h-1.5 w-1.5 rounded-full bg-nmfc-royal animate-bounce" style={{ animationDelay: '120ms' }} />
-                                        <div className="h-1.5 w-1.5 rounded-full bg-nmfc-royal animate-bounce" style={{ animationDelay: '240ms' }} />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-hfc-brown animate-bounce" style={{ animationDelay: '0ms' }} />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-hfc-brown animate-bounce" style={{ animationDelay: '120ms' }} />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-hfc-brown animate-bounce" style={{ animationDelay: '240ms' }} />
                                     </div>
                                 </div>
                             </div>
@@ -285,13 +285,13 @@ export const DashboardKangaAI = () => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask a follow-up..."
-                                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-12 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-nmfc-royal/20 focus:border-nmfc-royal/40 transition-all"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-12 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 focus:border-hfc-brown/40 transition-all"
                                 autoFocus
                             />
                             <button
                                 type="submit"
                                 disabled={loading || !input.trim()}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg bg-nmfc-royal flex items-center justify-center text-white hover:bg-nmfc-navy transition-colors disabled:opacity-30"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg bg-hfc-brown flex items-center justify-center text-white hover:bg-hfc-brown transition-colors disabled:opacity-30"
                             >
                                 <ArrowUp size={15} />
                             </button>

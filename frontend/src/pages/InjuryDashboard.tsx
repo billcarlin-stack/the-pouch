@@ -1,5 +1,5 @@
 /*
-  The Pouch — Injury & Load Log Dashboard
+  The Nest — Injury & Load Log Dashboard
   
   Module 1: Tracks player injuries and updates their status.
 */
@@ -113,7 +113,7 @@ export const InjuryDashboard = () => {
                     </div>
                 </div>
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 text-blue-600 rounded-lg"><Activity size={24} /></div>
+                    <div className="p-3 bg-amber-100 text-amber-600 rounded-lg"><Activity size={24} /></div>
                     <div>
                         <div className="text-2xl font-bold">{totalCount}</div>
                         <div className="text-xs text-gray-500 uppercase font-medium">Total Records</div>
@@ -182,7 +182,7 @@ export const InjuryDashboard = () => {
                 {/* Right Column: Entry Form */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
                     <h3 className="font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
-                        <Plus size={20} className="text-nmfc-royal" />
+                        <Plus size={20} className="text-hfc-brown" />
                         Log New Entry
                     </h3>
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -190,7 +190,7 @@ export const InjuryDashboard = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-1">Player</label>
                             <select
                                 className={clsx(
-                                    "w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none",
+                                    "w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none",
                                     user?.role === 'player' && "bg-gray-50 text-gray-400 cursor-not-allowed"
                                 )}
                                 value={formData.player_id}
@@ -213,7 +213,7 @@ export const InjuryDashboard = () => {
                             <input
                                 type="text"
                                 placeholder="e.g. Hamstring"
-                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none"
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none"
                                 value={formData.injury_type}
                                 onChange={e => setFormData({ ...formData, injury_type: e.target.value })}
                                 required
@@ -223,7 +223,7 @@ export const InjuryDashboard = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Body Area</label>
                             <select
-                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none"
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none"
                                 value={formData.body_area}
                                 onChange={e => setFormData({ ...formData, body_area: e.target.value })}
                                 required
@@ -249,7 +249,7 @@ export const InjuryDashboard = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
                             <select
-                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none"
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none"
                                 value={formData.severity}
                                 onChange={e => setFormData({ ...formData, severity: e.target.value as any })}
                             >
@@ -262,7 +262,7 @@ export const InjuryDashboard = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Current Status</label>
                             <select
-                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none"
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none"
                                 value={formData.status}
                                 onChange={e => setFormData({ ...formData, status: e.target.value as any })}
                             >
@@ -275,7 +275,7 @@ export const InjuryDashboard = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                             <textarea
-                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-nmfc-royal focus:outline-none h-24"
+                                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-hfc-brown focus:outline-none h-24"
                                 value={formData.notes}
                                 onChange={e => setFormData({ ...formData, notes: e.target.value })}
                             ></textarea>
@@ -283,7 +283,7 @@ export const InjuryDashboard = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-nmfc-royal text-white py-3 rounded-xl font-bold hover:bg-blue-900 transition-colors flex items-center justify-center gap-2"
+                            className="w-full bg-hfc-brown text-white py-3 rounded-xl font-bold hover:bg-amber-900 transition-colors flex items-center justify-center gap-2"
                         >
                             <Save size={18} />
                             Log Entry & Update Status

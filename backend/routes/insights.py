@@ -1,5 +1,5 @@
 """
-The Shinboner Hub — Insights API Routes
+The Hawk Hub — Insights API Routes
 
 Endpoints:
     GET /api/insights/team  — Squad-wide analytics and trends

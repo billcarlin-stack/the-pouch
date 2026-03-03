@@ -1,6 +1,6 @@
 /*
-  The Pouch — Daily Schedule Widget
-  Replaces KangaAI on the dashboard sidebar.
+  The Nest — Daily Schedule Widget
+  Replaces HawkAI on the dashboard sidebar.
 */
 
 import { useEffect, useState } from 'react';
@@ -37,7 +37,7 @@ export const DailySchedule = () => {
 
     const getTypeStyles = (type: string) => {
         switch (type.toLowerCase()) {
-            case 'main session': return 'bg-blue-100 text-nmfc-navy border-blue-200';
+            case 'main session': return 'bg-amber-100 text-hfc-brown border-amber-200';
             case 'weights': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
             case 'rehab': return 'bg-red-100 text-red-800 border-red-200';
             case 'media': return 'bg-purple-100 text-purple-800 border-purple-200';
@@ -49,11 +49,11 @@ export const DailySchedule = () => {
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 h-full flex flex-col">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="bg-nmfc-navy/5 p-2 rounded-xl text-nmfc-navy">
+                    <div className="bg-hfc-brown/5 p-2 rounded-xl text-hfc-brown">
                         <Calendar size={20} />
                     </div>
                     <div>
-                        <h3 className="font-black text-nmfc-navy uppercase tracking-tight text-sm">Today's Schedule</h3>
+                        <h3 className="font-black text-hfc-brown uppercase tracking-tight text-sm">Today's Schedule</h3>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mt-0.5">
                             {new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'short' })}
                         </p>
@@ -69,10 +69,10 @@ export const DailySchedule = () => {
                 ) : events.length > 0 ? (
                     events.map((event, i) => (
                         <div key={i} className="group cursor-pointer">
-                            <div className="bg-white border border-gray-100 p-4 rounded-2xl hover:border-nmfc-royal/30 hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                            <div className="bg-white border border-gray-100 p-4 rounded-2xl hover:border-hfc-brown/30 hover:shadow-md transition-all duration-300 relative overflow-hidden">
                                 <div className={clsx(
                                     "absolute left-0 top-0 bottom-0 w-1",
-                                    event.type.toLowerCase() === 'main session' ? 'bg-nmfc-royal' :
+                                    event.type.toLowerCase() === 'main session' ? 'bg-hfc-brown' :
                                         event.type.toLowerCase() === 'weights' ? 'bg-indigo-500' :
                                             event.type.toLowerCase() === 'rehab' ? 'bg-red-500' : 'bg-gray-400'
                                 )} />
@@ -91,11 +91,11 @@ export const DailySchedule = () => {
                                                 {new Date(event.start_time).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true })}
                                             </span>
                                         </div>
-                                        <h4 className="font-black text-nmfc-navy text-sm truncate group-hover:text-nmfc-royal transition-colors font-outfit">
+                                        <h4 className="font-black text-hfc-brown text-sm truncate group-hover:text-hfc-brown transition-colors font-outfit">
                                             {event.title}
                                         </h4>
                                     </div>
-                                    <ChevronRight size={16} className="text-gray-300 group-hover:text-nmfc-royal transform group-hover:translate-x-1 transition-all" />
+                                    <ChevronRight size={16} className="text-gray-300 group-hover:text-hfc-brown transform group-hover:translate-x-1 transition-all" />
                                 </div>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ export const DailySchedule = () => {
                 )}
             </div>
 
-            <button className="mt-6 w-full py-3 bg-gray-50 hover:bg-nmfc-royal/5 text-gray-500 hover:text-nmfc-royal rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-nmfc-royal/10">
+            <button className="mt-6 w-full py-3 bg-gray-50 hover:bg-hfc-brown/5 text-gray-500 hover:text-hfc-brown rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-hfc-brown/10">
                 View Weekly Calendar
             </button>
         </div>
