@@ -56,7 +56,7 @@ class ProductionConfig(Config):
     DEBUG = False
     CORS_ORIGINS = os.environ.get(
         "CORS_ORIGINS", 
-        ["https://hawkhub.hfc.com.au", "https://the-nest.vercel.app"]
+        ["https://hfc-performance.vercel.app", "https://the-nest.vercel.app"]
     )
 
 

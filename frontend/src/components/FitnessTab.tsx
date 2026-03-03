@@ -39,7 +39,8 @@ export interface FitnessPBs {
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
-const formatTime = (seconds: number): string => {
+const formatTime = (seconds?: number | null): string => {
+    if (seconds == null) return '—';
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
@@ -106,11 +107,11 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                         <Activity className="text-hfc-brown" size={22} />
                         Latest Training Session
                     </h2>
-                    {session && (
+                    {session && session.session_date && (
                         <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
                             {new Date(session.session_date).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}
                             {' · '}
-                            <span className="text-hfc-brown font-bold">{session.session_type}</span>
+                            <span className="text-hfc-brown font-bold">{session.session_type || 'Training'}</span>
                         </span>
                     )}
                 </div>
@@ -131,10 +132,10 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                     <>
                         {/* Primary GPS metrics */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-                            <MetricTile label="Top Speed" value={session.top_speed_kmh.toFixed(1)} unit="km/h" icon={Zap} accent size="large" />
-                            <MetricTile label="Distance" value={session.distance_km.toFixed(2)} unit="km" icon={Footprints} />
-                            <MetricTile label="Avg Heart Rate" value={session.hr_avg_bpm} unit="bpm" icon={Heart} />
-                            <MetricTile label="Max Heart Rate" value={session.hr_max_bpm} unit="bpm" icon={Heart} accent />
+                            <MetricTile label="Top Speed" value={session.top_speed_kmh?.toFixed(1) || '—'} unit="km/h" icon={Zap} accent size="large" />
+                            <MetricTile label="Distance" value={session.distance_km?.toFixed(2) || '—'} unit="km" icon={Footprints} />
+                            <MetricTile label="Avg Heart Rate" value={session.hr_avg_bpm || '—'} unit="bpm" icon={Heart} />
+                            <MetricTile label="Max Heart Rate" value={session.hr_max_bpm || '—'} unit="bpm" icon={Heart} accent />
                         </div>
 
                         {/* Secondary session metrics */}
@@ -142,28 +143,28 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                             <h3 className="text-sm font-black text-amber-300 uppercase tracking-widest mb-5">Session Breakdown</h3>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
                                 <div className="text-center">
-                                    <div className="text-3xl font-black text-white">{session.hsd_m.toFixed(0)}<span className="text-sm text-gray-400 ml-1">m</span></div>
+                                    <div className="text-3xl font-black text-white">{session.hsd_m?.toFixed(0) || '0'}<span className="text-sm text-gray-400 ml-1">m</span></div>
                                     <div className="text-[10px] text-amber-300 uppercase tracking-widest mt-1">High Speed Distance</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl font-black text-white">{session.sprints}</div>
+                                    <div className="text-3xl font-black text-white">{session.sprints || '0'}</div>
                                     <div className="text-[10px] text-amber-300 uppercase tracking-widest mt-1">Sprints</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl font-black text-white">{session.accelerations}</div>
+                                    <div className="text-3xl font-black text-white">{session.accelerations || '0'}</div>
                                     <div className="text-[10px] text-amber-300 uppercase tracking-widest mt-1">Accelerations</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl font-black text-white">{session.decelerations}</div>
+                                    <div className="text-3xl font-black text-white">{session.decelerations || '0'}</div>
                                     <div className="text-[10px] text-amber-300 uppercase tracking-widest mt-1">Decelerations</div>
                                 </div>
                             </div>
 
                             {/* Load bars */}
                             <div className="space-y-3 border-t border-white/10 pt-5">
-                                <LoadBar value={session.total_load} max={700} label="Total Session Load" color="bg-amber-400" />
-                                <LoadBar value={session.hsd_m} max={2500} label="High Speed Distance (m)" color="bg-green-400" />
-                                <LoadBar value={session.hr_avg_bpm} max={200} label="Avg Heart Rate (bpm)" color="bg-red-400" />
+                                <LoadBar value={session.total_load || 0} max={700} label="Total Session Load" color="bg-amber-400" />
+                                <LoadBar value={session.hsd_m || 0} max={2500} label="High Speed Distance (m)" color="bg-green-400" />
+                                <LoadBar value={session.hr_avg_bpm || 0} max={200} label="Avg Heart Rate (bpm)" color="bg-red-400" />
                             </div>
                         </div>
                     </>
@@ -191,53 +192,53 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                         />
                         <MetricTile
                             label="Beep Test"
-                            value={`Lvl ${pbs.beep_test_level.toFixed(1)}`}
+                            value={pbs.beep_test_level ? `Lvl ${pbs.beep_test_level.toFixed(1)}` : '—'}
                             icon={TrendingUp}
                         />
                         {/* Speed */}
                         <MetricTile
                             label="Season Top Speed"
-                            value={pbs.top_speed_kmh.toFixed(1)}
+                            value={pbs.top_speed_kmh?.toFixed(1) || '—'}
                             unit="km/h"
                             icon={Zap}
                             accent
                         />
                         <MetricTile
                             label="10m Sprint"
-                            value={pbs.sprint_10m_s.toFixed(2)}
+                            value={pbs.sprint_10m_s?.toFixed(2) || '—'}
                             unit="sec"
                             icon={Footprints}
                         />
                         <MetricTile
                             label="40m Sprint"
-                            value={pbs.sprint_40m_s.toFixed(2)}
+                            value={pbs.sprint_40m_s?.toFixed(2) || '—'}
                             unit="sec"
                             icon={Footprints}
                         />
                         {/* Strength */}
                         <MetricTile
                             label="Vertical Jump"
-                            value={pbs.vertical_jump_cm.toFixed(0)}
+                            value={pbs.vertical_jump_cm?.toFixed(0) || '—'}
                             unit="cm"
                             icon={TrendingUp}
                             accent
                         />
                         <MetricTile
                             label="Bench Press"
-                            value={pbs.bench_press_kg.toFixed(0)}
+                            value={pbs.bench_press_kg?.toFixed(0) || '—'}
                             unit="kg"
                             icon={Weight}
                         />
                         <MetricTile
                             label="Max Squat"
-                            value={pbs.squat_kg.toFixed(0)}
+                            value={pbs.squat_kg?.toFixed(0) || '—'}
                             unit="kg"
                             icon={Target}
                         />
                     </div>
                 )}
 
-                {pbs && (
+                {pbs && pbs.date_recorded && (
                     <p className="text-[11px] text-gray-400 mt-3 text-right">
                         Last testing: {new Date(pbs.date_recorded).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>

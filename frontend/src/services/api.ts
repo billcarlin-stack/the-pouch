@@ -8,7 +8,7 @@
 import axios from 'axios';
 
 // Use relative /api so Vite proxy forwards requests to the Flask backend on port 8080
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hawk-backend-114675580879.australia-southeast1.run.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://the-nest-api-114675580879.australia-southeast1.run.app/api';
 
 // Create axios instance with default config
 export const api = axios.create({

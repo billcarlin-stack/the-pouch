@@ -29,13 +29,6 @@ logger = logging.getLogger(__name__)
 def create_app(config=None):
     """
     Application factory for the Hawk Hub backend.
-
-    Args:
-        config: Optional configuration object. If None, auto-detects
-                from FLASK_ENV environment variable.
-
-    Returns:
-        Configured Flask application instance.
     """
     app = Flask(__name__)
 
@@ -44,82 +37,73 @@ def create_app(config=None):
         config = get_config()
     app.config.from_object(config)
 
-    # Initialize AlloyDB (create tables if they don't exist)
-    from db.alloydb_client import init_db
-    try:
-        init_db()
-        logger.info("AlloyDB initialised (tables verified/created)")
-    except Exception as e:
-        logger.warning("Could not initialise AlloyDB on startup: %s", str(e))
-
     # Enable CORS
     CORS(app, origins=config.CORS_ORIGINS)
 
-    # ── Health Check ──────────────────────────────────────────────
+    # ── Health Check (Moved Up) ───────────────────────────────────
     @app.route("/health", methods=["GET"])
     def health_check():
         return jsonify({
             "status": "Hawk Hub Online",
-            "version": "2026.2.0",
-            "environment": os.environ.get("FLASK_ENV", "development"),
+            "environment": os.environ.get("FLASK_ENV", "production"),
         }), 200
 
     # ── Register Blueprints ───────────────────────────────────────
-    from routes.players import players_bp
-    from routes.idp import idp_bp
-    from routes.wellbeing import wellbeing_bp
-    from routes.availability import availability_bp
-    from routes.insights import insights_bp
+    try:
+        from routes.players import players_bp
+        from routes.idp import idp_bp
+        from routes.wellbeing import wellbeing_bp
+        from routes.availability import availability_bp
+        from routes.insights import insights_bp
+        from routes.injuries import injuries_bp
+        from routes.ratings import ratings_bp
+        from routes.ai import ai_bp
+        from routes.stats import stats_bp
+        from routes.team import team_bp
+        from routes.auth import auth_bp
+        from routes.woop import woop_bp
+        from routes.calendar import calendar_bp
+        from routes.fitness import fitness_bp
 
-    app.register_blueprint(players_bp)
-    app.register_blueprint(idp_bp)
-    app.register_blueprint(wellbeing_bp)
-    app.register_blueprint(availability_bp)
-    app.register_blueprint(insights_bp)
-    
-    from routes.injuries import injuries_bp
-    from routes.ratings import ratings_bp
-    from routes.ai import ai_bp
-    from routes.stats import stats_bp
-    from routes.team import team_bp
-    from routes.auth import auth_bp
-    from routes.woop import woop_bp
-    from routes.calendar import calendar_bp
-    from routes.fitness import fitness_bp
+        app.register_blueprint(players_bp)
+        app.register_blueprint(idp_bp)
+        app.register_blueprint(wellbeing_bp)
+        app.register_blueprint(availability_bp)
+        app.register_blueprint(insights_bp)
+        app.register_blueprint(injuries_bp, url_prefix='/api')
+        app.register_blueprint(ratings_bp, url_prefix='/api')
+        app.register_blueprint(ai_bp, url_prefix='/api/ai')
+        app.register_blueprint(stats_bp, url_prefix='/api/stats')
+        app.register_blueprint(team_bp, url_prefix='/api/team')
+        app.register_blueprint(auth_bp, url_prefix='/api/auth')
+        app.register_blueprint(woop_bp, url_prefix='/api')
+        app.register_blueprint(calendar_bp, url_prefix='/api')
+        app.register_blueprint(fitness_bp, url_prefix='/api/v1/fitness')
+    except Exception as e:
+        logger.error("Failed to register blueprints: %s", str(e))
 
-    app.register_blueprint(injuries_bp, url_prefix='/api')
-    app.register_blueprint(ratings_bp, url_prefix='/api')
-    app.register_blueprint(ai_bp, url_prefix='/api/ai')
-    app.register_blueprint(stats_bp, url_prefix='/api/stats')
-    app.register_blueprint(team_bp, url_prefix='/api/team')
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(woop_bp, url_prefix='/api')
-    app.register_blueprint(calendar_bp, url_prefix='/api')
-    app.register_blueprint(fitness_bp, url_prefix='/api/v1/fitness')
+    # ── Temporary Admin/Seed Route ────────────────────────────────
+    @app.route('/api/admin/seed', methods=['GET'])
+    def admin_seed():
+        import threading
+        def run_seeding():
+            try:
+                from seeds.seed_alloydb_players import seed_alloydb
+                from seeds.seed_alloydb_fitness import seed_alloydb_fitness
+                logger.info("Background seeding started...")
+                seed_alloydb()
+                seed_alloydb_fitness()
+                logger.info("Background seeding completed!")
+            except Exception as e:
+                logger.error("Background seeding failed: %s", str(e))
+
+        threading.Thread(target=run_seeding).start()
+        return jsonify({"status": "success", "message": "Seeding started in background"}), 200
 
     # ── Global Error Handlers ─────────────────────────────────────
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({
-            "error": "Not Found",
-            "message": "The requested resource does not exist",
-        }), 404
-
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        return jsonify({
-            "error": "Method Not Allowed",
-            "message": "The HTTP method is not allowed for this endpoint",
-        }), 405
-
-    @app.errorhandler(500)
-    def internal_error(error):
-        return jsonify({
-            "error": "Internal Server Error",
-            "message": "An unexpected error occurred",
-        }), 500
-
-    logger.info("Hawk Hub backend initialised — %s mode", config.__class__.__name__)
+        return jsonify({"error": "Not Found"}), 404
 
     return app
 
