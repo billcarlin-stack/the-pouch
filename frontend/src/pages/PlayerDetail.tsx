@@ -8,8 +8,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ApiService, formatPlayerImage, getMatchRatings } from '../services/api';
-import type { Player, Injury, PlayerStats, FitnessSession, FitnessPBs } from '../services/api';
+import type { Player, Injury, PlayerStats } from '../services/api';
 import { ChevronLeft, Share2, Printer, Activity, Target } from 'lucide-react';
+import { clsx } from 'clsx';
 import {
     Radar,
     RadarChart,
