@@ -85,24 +85,34 @@ def create_app(config=None):
     # ── Temporary Admin/Seed Route ────────────────────────────────
     @app.route('/api/admin/seed', methods=['GET'])
     def admin_seed():
-        import threading
-
-        def run_seeding():
-            try:
-                from db.alloydb_client import init_db
-                from seeds.seed_alloydb_players import seed_alloydb
-                from seeds.seed_alloydb_fitness import seed_alloydb_fitness
-                logger.info("Initializing database schema...")
-                init_db()
-                logger.info("Background seeding started...")
-                seed_alloydb()
-                seed_alloydb_fitness()
-                logger.info("Background seeding completed!")
-            except Exception as e:
-                logger.error("Background seeding failed: %s", str(e))
-
-        threading.Thread(target=run_seeding).start()
-        return jsonify({"status": "success", "message": "Seeding started in background"}), 200
+        """Synchronous seeding route to ensure database tables are created and populated.
+        Returns 500 with stack trace if any part of the process fails.
+        """
+        try:
+            from db.alloydb_client import init_db
+            from seeds.seed_alloydb_players import seed_alloydb
+            from seeds.seed_alloydb_fitness import seed_alloydb_fitness
+            
+            logger.info("Initializing database schema...")
+            init_db()
+            
+            logger.info("Starting synchronous seeding...")
+            seed_alloydb()
+            seed_alloydb_fitness()
+            
+            logger.info("Seeding completed successfully!")
+            return jsonify({
+                "status": "success", 
+                "message": "Database initialized and seeded successfully"
+            }), 200
+            
+        except Exception as e:
+            logger.error(f"Seeding failed: {str(e)}", exc_info=True)
+            return jsonify({
+                "status": "error",
+                "message": "Seeding failed. Check server logs.",
+                "detail": str(e)
+            }), 500
 
     # ── Global Error Handlers ─────────────────────────────────────
     @app.errorhandler(404)

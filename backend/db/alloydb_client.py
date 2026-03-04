@@ -50,5 +50,8 @@ def init_db():
     import models.fitness
     import models.availability
     import models.injuries
+    import models.team
+    import models.woop
+    import models.stats
     
     Base.metadata.create_all(bind=engine)
