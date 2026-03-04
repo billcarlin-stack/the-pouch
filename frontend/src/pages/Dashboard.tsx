@@ -16,7 +16,8 @@ import {
     TrendingDown,
     AlertTriangle,
     CheckCircle,
-    Users
+    Users,
+    Zap
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import hfcLogo from '../assets/hfc-logo.png';
@@ -142,6 +143,43 @@ export const Dashboard = () => {
                     trend="up"
                     color="bg-emerald-600 shadow-lg shadow-emerald-200"
                 />
+            </div>
+
+            {/* Squad Fitness Performance Row */}
+            <div className="bg-[#0C2340] rounded-[2.5rem] p-8 text-white border border-white/10 shadow-2xl overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="relative z-10">
+                    <h3 className="text-xl font-black uppercase tracking-tight mb-6 flex items-center gap-3">
+                        <Zap className="text-gold-400" size={24} />
+                        Squad Fitness Performance
+                        <span className="text-[10px] text-amber-300 font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10 uppercase tracking-widest ml-auto">
+                            Latest Sessions (n={insights?.fitness_stats?.count || 0})
+                        </span>
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div className="space-y-2">
+                            <div className="text-[10px] font-black text-amber-300 uppercase tracking-widest">Avg Peak Speed</div>
+                            <div className="text-4xl font-black text-white">
+                                {insights?.fitness_stats?.avg_top_speed || '—'}
+                                <span className="text-sm text-gray-400 ml-1 font-bold">km/h</span>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="text-[10px] font-black text-amber-300 uppercase tracking-widest">Avg Distance</div>
+                            <div className="text-4xl font-black text-white">
+                                {insights?.fitness_stats?.avg_distance || '—'}
+                                <span className="text-sm text-gray-400 ml-1 font-bold">km</span>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="text-[10px] font-black text-gold-400 uppercase tracking-widest">Avg Session Load</div>
+                            <div className="text-4xl font-black text-gold-400">
+                                {insights?.fitness_stats?.avg_load || '—'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Main Content section */}

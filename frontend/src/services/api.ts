@@ -86,6 +86,12 @@ export interface Player {
 export interface TeamInsights {
     daily_averages: Record<string, { sleep: number; soreness: number; stress: number; count: number }>;
     insights: string[];
+    fitness_stats: {
+        avg_top_speed: number;
+        avg_distance: number;
+        avg_load: number;
+        count: number;
+    };
 }
 
 export interface Injury {

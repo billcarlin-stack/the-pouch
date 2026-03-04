@@ -10,10 +10,35 @@ import type { Player } from '../services/api';
 import { Save, User } from 'lucide-react';
 
 const SKILL_CATEGORIES = {
-    "Technical": ["Kicking", "Handball", "Marking", "Tackling"],
-    "Tactical": ["Decision Making", "Positioning", "Stoppage Craft"],
-    "Physical": ["Speed", "Endurance", "Strength"],
-    "Mental": ["Resilience", "Leadership", "Professionalism"]
+    "Technical": [
+        "Kicking (Short 15-30m)", "Kicking (Long 50m+)", "Goal Kicking Accuracy",
+        "Non-Preferred Foot Effectiveness", "Handball Execution (Traffic)",
+        "Handball Vision & Creativity", "Clean Hands (Ground Level)",
+        "Contested Marking", "Uncontested/Spread Marking", "Intercept Marking",
+        "Lead-up Marking", "Ground Balls (Clean)", "Ground Balls (Pressure/Traffic)",
+        "Tackling Technique", "Tackling Effectiveness", "Spoiling & Body Spoils",
+        "Smothering Capability", "Ruck Setup / Tap Work"
+    ],
+    "Tactical": [
+        "Offensive Positioning / Spread", "Defensive Positioning / Zone",
+        "Stoppage Positioning / Setup", "Decision Making (With Ball / Under Pressure)",
+        "Decision Making (Without Ball / Leading)", "Reading the Play / Anticipation",
+        "Team Structure Adherence", "Game Sense / Overall Awareness",
+        "Transition Running (Offense to Defense)", "Transition Running (Defense to Offense)"
+    ],
+    "Physical": [
+        "Acceleration (First 10m)", "Top Speed Capabilities", "Agility & Lateral Movement",
+        "Aerobic Endurance / Running Capacity", "Anaerobic Repeated Sprint Ability",
+        "Core Strength & Stability", "Contested 1-on-1 Strength", "Vertical Jump / Leap",
+        "Explosiveness out of contests", "Recovery Rate Between Efforts"
+    ],
+    "Mental": [
+        "Resilience / Bouncing Back from Mistakes", "On-Field Leadership & Direction",
+        "Off-Field Leadership & Professionalism", "Communication / Voice on Field",
+        "Work Rate / Effort", "Focus & Concentration across 4 quarters",
+        "Coachability & Tactical Implementation", "Aggression & Physicality",
+        "Composure Under Extreme Pressure", "Self-Motivation & Drive"
+    ]
 };
 
 export const CoachRatings = () => {

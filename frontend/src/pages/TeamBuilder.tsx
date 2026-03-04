@@ -360,8 +360,16 @@ const TeamBuilder = () => {
                                                 Assigned
                                             </span>
                                         ) : (
-                                            <div className="h-7 w-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                <Plus size={12} className="text-gold-400" />
+                                            <div
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (!assigned && activePos) {
+                                                        handleSelectPlayer(activePos, p.jumper_no);
+                                                    }
+                                                }}
+                                                className="h-8 w-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0 hover:bg-gold-400/20 hover:border-gold-400/40 cursor-pointer text-gold-400 z-10 relative"
+                                            >
+                                                <Plus size={14} />
                                             </div>
                                         )}
                                     </div>

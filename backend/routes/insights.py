@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, jsonify
 
 from models.wellbeing import get_surveys_for_player
+from models.fitness import get_latest_session
 from models.players import get_all_players
 from auth.middleware import require_role
 
@@ -40,14 +41,20 @@ def get_team_insights():
 
         # Aggregate surveys from all players (last 14 days)
         all_surveys = []
+        all_fitness = []
         for p in players:
-            # We fetch 14 days worth
+            # We fetch 14 days worth of wellbeing
             surveys = get_surveys_for_player(p['jumper_no'], limit=14)
             for s in surveys:
-                s['position'] = p['position'] # Enrich with position
+                s['position'] = p['position']
                 all_surveys.append(s)
+            
+            # Fetch latest fitness session
+            fit = get_latest_session(p['jumper_no'])
+            if fit:
+                all_fitness.append(fit)
 
-        if not all_surveys:
+        if not all_surveys and not all_fitness:
             return jsonify({"message": "No recent data available"}), 200
 
         # Group by date
@@ -103,9 +110,29 @@ def get_team_insights():
                 if avg_soreness < 6.5: # Lower is worse
                     insights.append(f"{pos} group showing high soreness load ({round(avg_soreness, 1)} avg)")
 
+        # 3. Fitness Aggregates
+        fitness_stats = {
+            "avg_top_speed": 0,
+            "avg_distance": 0,
+            "avg_load": 0,
+            "count": 0
+        }
+        if all_fitness:
+            fitness_stats = {
+                "avg_top_speed": round(statistics.mean(f["top_speed_kmh"] for f in all_fitness), 1),
+                "avg_distance": round(statistics.mean(f["distance_km"] for f in all_fitness), 2),
+                "avg_load": round(statistics.mean(f["total_load"] for f in all_fitness), 0),
+                "count": len(all_fitness)
+            }
+            
+            # Add fitness insight if speed is high
+            if fitness_stats["avg_top_speed"] > 31:
+                insights.append(f"Squad peak speed trending high ({fitness_stats['avg_top_speed']} km/h avg)")
+
         return jsonify({
             "daily_averages": daily_averages,
-            "insights": insights
+            "insights": insights,
+            "fitness_stats": fitness_stats
         }), 200
 
     except Exception as e:

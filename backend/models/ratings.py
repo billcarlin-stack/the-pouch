@@ -65,20 +65,15 @@ def get_player_ratings(player_id: int) -> dict:
                 }
                 
         comparison_data = []
-        standard_skills = [
-            ("Technical", "Kicking"), ("Technical", "Handball"), ("Technical", "Marking"),
-            ("Tactical", "Decision Making"), ("Tactical", "Positioning"),
-            ("Physical", "Speed"), ("Physical", "Endurance"),
-            ("Mental", "Resilience"), ("Mental", "Leadership")
-        ]
         
-        for category, skill in standard_skills:
-            key = f"{category}_{skill}"
-            coach_val = coach_ratings.get(key, {}).get("rating", 0)
+        for key, data in coach_ratings.items():
+            coach_val = data["rating"]
+            skill = data["skill"]
+            category = data["category"]
             
-            # Mock values for Self and Squad as per original logic
-            self_val = random.randint(5, 9)
-            squad_val = random.randint(6, 8)
+            # Mock values for Self and Squad as per original logic, keeping them close to coach val
+            self_val = max(1, min(10, coach_val + random.randint(-2, 2)))
+            squad_val = max(1, min(10, coach_val + random.randint(-1, 2)))
             
             comparison_data.append({
                 "skill": skill,

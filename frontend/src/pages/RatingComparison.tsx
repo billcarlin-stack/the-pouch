@@ -22,6 +22,7 @@ import { clsx } from 'clsx';
 export const RatingComparison = () => {
     const [players, setPlayers] = useState<Player[]>([]);
     const [selectedPlayerId, setSelectedPlayerId] = useState<number>(0);
+    const [selectedCategory, setSelectedCategory] = useState<string>("Technical");
     const [ratings, setRatings] = useState<CoachRating[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,7 +45,9 @@ export const RatingComparison = () => {
     // I'll filter to show the top 6-8 skills or category averages?
     // Actually, `api.ts` mock returns ~9 skills. That fits on a Radar.
 
-    const chartData = ratings.map(r => ({
+    const filteredRatings = ratings.filter(r => r.category === selectedCategory);
+
+    const chartData = filteredRatings.map(r => ({
         skill: r.skill,
         Coach: r.coach_rating,
         Self: r.self_rating,
@@ -73,6 +76,22 @@ export const RatingComparison = () => {
                         ))}
                     </select>
                     <User className="absolute left-3 top-3.5 text-gray-400" size={18} />
+                </div>
+                <div className="flex gap-2 bg-gray-100 p-1 rounded-xl">
+                    {["Technical", "Tactical", "Physical", "Mental"].map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={clsx(
+                                "px-4 py-2 rounded-lg text-xs font-bold transition-all",
+                                selectedCategory === cat
+                                    ? "bg-hfc-brown text-white shadow-sm"
+                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+                            )}
+                        >
+                            {cat}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -138,7 +157,7 @@ export const RatingComparison = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {ratings.map((r, i) => (
+                                    {filteredRatings.map((r, i) => (
                                         <tr key={i} className="hover:bg-gray-50">
                                             <td className="px-4 py-3 font-medium text-gray-900">
                                                 {r.skill}

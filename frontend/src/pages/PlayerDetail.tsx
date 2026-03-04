@@ -27,6 +27,7 @@ import {
     Cell,
     Legend
 } from 'recharts';
+import { FitnessTab } from '../components/FitnessTab';
 
 // Sub-components for clean code
 const ProfileHeader = ({ player, stats2025 }: { player: Player, stats2025: PlayerStats | null }) => (
@@ -136,6 +137,8 @@ export const PlayerDetail = () => {
     const [stats2025, setStats2025] = useState<PlayerStats | null>(null);
     const [latestWellbeing, setLatestWellbeing] = useState<any>(null);
     const [woopGoals, setWoopGoals] = useState<any[]>([]);
+    const [fitnessSession, setFitnessSession] = useState<any>(null);
+    const [fitnessPBs, setFitnessPBs] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -146,8 +149,10 @@ export const PlayerDetail = () => {
                 ApiService.getInjuries(),
                 ApiService.getStats2025({ jumper_no: Number(id) }),
                 ApiService.getWellbeing(id, 1),
-                ApiService.getWoopGoals(Number(id))
-            ]).then(([p, r, allInj, s, w, woop]) => {
+                ApiService.getWoopGoals(Number(id)),
+                ApiService.getFitnessSession(id),
+                ApiService.getFitnessPbs(id)
+            ]).then(([p, r, allInj, s, w, woop, fitS, fitP]) => {
                 if (p.status === 'fulfilled') {
                     setPlayer(p.value);
                     setMatchRatings(getMatchRatings(p.value.jumper_no));
@@ -157,6 +162,8 @@ export const PlayerDetail = () => {
                 if (s.status === 'fulfilled' && s.value.length > 0) setStats2025(s.value[0]);
                 if (w.status === 'fulfilled' && w.value.length > 0) setLatestWellbeing(w.value[0]);
                 if (woop.status === 'fulfilled') setWoopGoals(woop.value);
+                if (fitS.status === 'fulfilled') setFitnessSession(fitS.value.session);
+                if (fitP.status === 'fulfilled') setFitnessPBs(fitP.value.pbs);
             }).finally(() => setLoading(false));
         }
     }, [id]);
@@ -399,6 +406,20 @@ export const PlayerDetail = () => {
                             </table>
                         </div>
                     </div>
+                </div>
+
+                {/* Fitness & Performance Section */}
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center gap-2">
+                        <Activity className="text-hfc-brown" size={24} />
+                        Fitness & GPS Performance
+                    </h3>
+                    <FitnessTab
+                        session={fitnessSession}
+                        pbs={fitnessPBs}
+                        playerName={player.name}
+                        isInjured={player.status !== 'Green'}
+                    />
                 </div>
 
                 {/* WOOP Goals Section */}
