@@ -30,10 +30,18 @@ class Config:
     BQ_COACH_RATINGS_TABLE = "coach_ratings"
 
     # AlloyDB / PostgreSQL
-    DATABASE_URL = os.environ.get(
-        "DATABASE_URL", 
-        "postgresql://postgres:postgres@localhost:5432/hfc_dev"
-    )
+    @property
+    def DATABASE_URL(self):
+        url = os.environ.get(
+            "DATABASE_URL", 
+            "postgresql://postgres:postgres@localhost:5432/hfc_dev"
+        )
+        # Ensure sslmode=require for production/AlloyDB if not specified
+        if "10.31.0.2" in url or os.environ.get("FLASK_ENV") == "production":
+            if "sslmode" not in url:
+                separator = "&" if "?" in url else "?"
+                url = f"{url}{separator}sslmode=require"
+        return url
 
     # CORS
     CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*")
