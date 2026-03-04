@@ -82,8 +82,8 @@ export const Dashboard = () => {
     }, []);
 
     // Prepare chart data from daily_averages
-    const chartData = insights
-        ? Object.entries(insights.daily_averages).map(([date, vals]) => ({
+    const chartData = insights?.daily_averages
+        ? Object.entries(insights.daily_averages).map(([date, vals]: any) => ({
             date: date.split('-').slice(1).join('/'), // MM/DD
             ...vals
         })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -231,12 +231,12 @@ export const Dashboard = () => {
                                 </>
                             ) : (
                                 <>
-                                    {insights?.insights.map((text, i) => (
+                                    {(insights?.insights || []).map((text: string, i: number) => (
                                         <div key={i} className="p-3 bg-amber-50 text-amber-800 rounded-lg text-sm border border-amber-100">
                                             {text}
                                         </div>
                                     ))}
-                                    {!insights?.insights.length && (
+                                    {!(insights?.insights?.length) && (
                                         <p className="text-gray-400 text-sm">No critical alerts today.</p>
                                     )}
                                 </>
