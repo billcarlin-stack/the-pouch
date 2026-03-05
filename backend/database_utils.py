@@ -21,6 +21,7 @@ from models.team import TeamSelection
 from models.woop import WoopGoal
 from models.stats import PlayerStats
 from models.calendar import CalendarEvent
+from models.user_roles import UserRole
 
 logger = logging.getLogger(__name__)
 
@@ -360,10 +361,63 @@ def initialize_and_seed():
                     player_ids=rehab_players
                 ))
 
-        # Commit everything in one huge transaction block out of memory
+        # Commit the main dataset first
         session.add_all(objects_to_add)
         session.commit()
-        
+
+        # ── Seed user_roles (Google email → role mapping) ────────────────────
+        # This is the access control list. Add your club's Google emails here.
+        # Coaches use their Google Workspace email. Players use their personal Gmail.
+        # These can be updated any time directly in the user_roles database table.
+        logger.info("Seeding user_roles access control list...")
+        user_roles_to_seed = [
+            # ── Coaches / Staff ──────────────────────────────────────────────
+            # Replace these with the actual Google emails for your coaching staff.
+            {"email": "coach@hawthornfc.com.au", "role": "coach",  "player_id": None, "name": "Head Coach"},
+            {"email": "admin@hawthornfc.com.au", "role": "coach",  "player_id": None, "name": "Admin Staff"},
+            # ── Players ───────────────────────────────────────────────────────
+            # Format: real Google email → player's jumper_no
+            # Replace with actual player emails
+            {"email": "harry.morrison@gmail.com",        "role": "player", "player_id": 1,  "name": "Harry Morrison"},
+            {"email": "mitchell.lewis@gmail.com",         "role": "player", "player_id": 2,  "name": "Mitchell Lewis"},
+            {"email": "jai.newcombe@gmail.com",           "role": "player", "player_id": 3,  "name": "Jai Newcombe"},
+            {"email": "jarman.impey@gmail.com",           "role": "player", "player_id": 4,  "name": "Jarman Impey"},
+            {"email": "james.worpel@gmail.com",           "role": "player", "player_id": 5,  "name": "James Worpel"},
+            {"email": "james.sicily@gmail.com",           "role": "player", "player_id": 6,  "name": "James Sicily"},
+            {"email": "ned.reeves@gmail.com",             "role": "player", "player_id": 7,  "name": "Ned Reeves"},
+            {"email": "sam.frost@gmail.com",              "role": "player", "player_id": 8,  "name": "Sam Frost"},
+            {"email": "changkuoth.jiath@gmail.com",       "role": "player", "player_id": 9,  "name": "Changkuoth Jiath"},
+            {"email": "karl.amon@gmail.com",              "role": "player", "player_id": 10, "name": "Karl Amon"},
+            {"email": "conor.nash@gmail.com",             "role": "player", "player_id": 11, "name": "Conor Nash"},
+            {"email": "will.day@gmail.com",               "role": "player", "player_id": 12, "name": "Will Day"},
+            {"email": "dylan.moore@gmail.com",            "role": "player", "player_id": 13, "name": "Dylan Moore"},
+            {"email": "jack.scrimshaw@gmail.com",         "role": "player", "player_id": 14, "name": "Jack Scrimshaw"},
+            {"email": "blake.hardwick@gmail.com",         "role": "player", "player_id": 15, "name": "Blake Hardwick"},
+            {"email": "massimo.dambrosio@gmail.com",      "role": "player", "player_id": 16, "name": "Massimo D'Ambrosio"},
+            {"email": "lloyd.meek@gmail.com",             "role": "player", "player_id": 17, "name": "Lloyd Meek"},
+            {"email": "mabior.chol@gmail.com",            "role": "player", "player_id": 18, "name": "Mabior Chol"},
+            {"email": "jack.ginnivan@gmail.com",          "role": "player", "player_id": 19, "name": "Jack Ginnivan"},
+            {"email": "chad.wingard@gmail.com",           "role": "player", "player_id": 20, "name": "Chad Wingard"},
+            {"email": "nick.watson@gmail.com",            "role": "player", "player_id": 21, "name": "Nick Watson"},
+            {"email": "luke.breust@gmail.com",            "role": "player", "player_id": 22, "name": "Luke Breust"},
+            {"email": "josh.weddle@gmail.com",            "role": "player", "player_id": 23, "name": "Josh Weddle"},
+            {"email": "denver.grainger-barras@gmail.com", "role": "player", "player_id": 24, "name": "Denver Grainger-Barras"},
+            {"email": "josh.ward@gmail.com",              "role": "player", "player_id": 25, "name": "Josh Ward"},
+            {"email": "jack.gunston@gmail.com",           "role": "player", "player_id": 43, "name": "Jack Gunston"},
+        ]
+
+        for u in user_roles_to_seed:
+            existing = session.query(UserRole).filter(UserRole.google_email == u["email"]).first()
+            if not existing:
+                session.add(UserRole(
+                    google_email=u["email"],
+                    role=u["role"],
+                    player_id=u["player_id"],
+                    name=u["name"],
+                ))
+        session.commit()
+        logger.info(f"user_roles seeded with {len(user_roles_to_seed)} entries.")
+
         logger.info(f"Database initialized and MASSIVE dataset seeded ({len(objects_to_add)} records).")
         return True
     except Exception as e:

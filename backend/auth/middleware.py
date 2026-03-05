@@ -1,10 +1,8 @@
 """
-The Hawk Hub — Authentication Middleware
+The Nest — Authentication Middleware
 
-Role-based access control decorator (stub implementation).
-Designed to be replaced with Firebase Auth / Cloud IAP in production.
-
-Supported roles: admin, coach, medical, analyst
+Verifies Firebase ID Tokens from the Authorization: Bearer <token> header.
+Looks up the verified email in the user_roles table to determine the user's role.
 
 Usage:
     from auth.middleware import require_role
@@ -15,79 +13,86 @@ Usage:
         ...
 """
 
+import logging
 from functools import wraps
-
 from flask import jsonify, request, g
+from firebase_admin import auth as firebase_auth
+from auth.firebase_admin_init import get_firebase_app
+from models.user_roles import get_user_by_email
 
-# Valid roles in the system
+logger = logging.getLogger(__name__)
+
 VALID_ROLES = {"admin", "coach", "medical", "analyst", "player"}
+
+
+def _get_verified_user() -> dict | None:
+    """
+    Extracts and verifies the Firebase ID Token from the Authorization header.
+    Returns the user dict from the DB, or None if invalid/missing.
+    """
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None
+
+    id_token = auth_header[len("Bearer "):]
+    if not id_token:
+        return None
+
+    try:
+        get_firebase_app()  # Ensure initialized
+        decoded = firebase_auth.verify_id_token(id_token)
+        email = decoded.get("email", "").lower().strip()
+        if not email:
+            return None
+        user = get_user_by_email(email)
+        return user
+    except firebase_auth.ExpiredIdTokenError:
+        logger.warning("Firebase token expired")
+        return None
+    except firebase_auth.InvalidIdTokenError as e:
+        logger.warning("Invalid Firebase token: %s", str(e))
+        return None
+    except Exception as e:
+        logger.error("Firebase token verification error: %s", str(e))
+        return None
 
 
 def require_role(*allowed_roles):
     """
-    Decorator that enforces role-based access control.
+    Decorator that enforces role-based access control via Firebase Auth.
 
-    Reads the `X-User-Role` header from the request and validates it
-    against the allowed roles for the endpoint.
-
-    Args:
-        *allowed_roles: One or more role strings that are permitted access.
-
-    Returns:
-        - 401 if no role header is provided
-        - 403 if the role is not in the allowed list
-        - Proceeds to the wrapped function if authorized
+    Reads the Authorization: Bearer <firebase_id_token> header, verifies it,
+    then checks the user's role from the user_roles table.
     """
-
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user_role = request.headers.get("X-User-Role", "").lower().strip()
-            player_id_header = request.headers.get("X-Player-Id", "").strip()
+            user = _get_verified_user()
 
-            if not user_role:
-                return (
-                    jsonify(
-                        {
-                            "error": "Authentication required",
-                            "message": "Missing X-User-Role header",
-                        }
-                    ),
-                    401,
-                )
+            if not user:
+                return jsonify({
+                    "error": "Authentication required",
+                    "message": "A valid Firebase ID token is required. Please sign in with Google."
+                }), 401
+
+            user_role = user.get("role", "").lower()
 
             if user_role not in VALID_ROLES:
-                return (
-                    jsonify(
-                        {
-                            "error": "Invalid role",
-                            "message": f"Role '{user_role}' is not recognized. "
-                            f"Valid roles: {', '.join(sorted(VALID_ROLES))}",
-                        }
-                    ),
-                    403,
-                )
+                return jsonify({
+                    "error": "Invalid role",
+                    "message": f"Role '{user_role}' is not recognized."
+                }), 403
 
             if user_role not in allowed_roles:
-                return (
-                    jsonify(
-                        {
-                            "error": "Forbidden",
-                            "message": f"Role '{user_role}' does not have access "
-                            f"to this resource",
-                        }
-                    ),
-                    403,
-                )
+                return jsonify({
+                    "error": "Forbidden",
+                    "message": f"You do not have permission to access this resource."
+                }), 403
 
-            # Store role and player ID in Flask's request-scoped globals
+            # Store in Flask's request-scoped globals for use in route handlers
             g.user_role = user_role
-            g.player_id = None
-            if player_id_header:
-                try:
-                    g.player_id = int(player_id_header)
-                except ValueError:
-                    pass
+            g.user_email = user.get("email")
+            g.player_id = user.get("player_id")
 
             return f(*args, **kwargs)
 

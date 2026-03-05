@@ -2,10 +2,11 @@
   The Nest — API Service
   
   Centralized data fetching logic using Axios.
-    Configured to connect to Flask backend.
+  Configured to connect to Flask backend.
 */
 
 import axios from 'axios';
+import { auth } from './firebase';
 
 // Use relative /api so Vite proxy forwards requests to the Flask backend on port 8080
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://the-nest-api-114675580879.australia-southeast1.run.app/api';
@@ -18,20 +19,16 @@ export const api = axios.create({
     }
 });
 
-// Add request interceptor to inject auth headers from session
-api.interceptors.request.use((config) => {
-    const stored = sessionStorage.getItem('hawk_hub_user');
-    if (stored) {
+// Add request interceptor to inject Firebase Bearer token on every request
+api.interceptors.request.use(async (config) => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
         try {
-            const user = JSON.parse(stored);
-            if (user.role) {
-                config.headers['X-User-Role'] = user.role;
-            }
-            if (user.jumper_no) {
-                config.headers['X-Player-Id'] = user.jumper_no.toString();
-            }
+            // getIdToken(true) forces refresh if token is about to expire
+            const idToken = await currentUser.getIdToken();
+            config.headers['Authorization'] = `Bearer ${idToken}`;
         } catch (e) {
-            console.error('Failed to parse auth user for headers', e);
+            console.error('Failed to get Firebase ID token', e);
         }
     }
     return config;

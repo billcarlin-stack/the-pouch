@@ -41,8 +41,8 @@ export const Sidebar = () => {
     const navigate = useNavigate();
     const isCoach = user?.role === 'coach';
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
         navigate('/');
     };
 
