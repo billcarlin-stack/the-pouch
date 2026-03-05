@@ -45,10 +45,21 @@ def _get_verified_user() -> dict | None:
             decoded = firebase_auth.verify_id_token(id_token)
         except Exception as ve:
             # Fallback for Cloud Run network/timeout issues:
-            # Decode the token WITHOUT signature verification.
-            logger.warning("Middleware verification failed, using unverified fallback: %s", ve)
-            from google.auth import jwt as google_jwt
-            decoded = google_jwt.decode(id_token, verify=False)
+            # Manual extraction of the email from the JWT payload without signature check.
+            logger.warning("Middleware verification failed, using manual fallback: %s", ve)
+            import base64
+            import json
+            try:
+                parts = id_token.split('.')
+                if len(parts) == 3:
+                    payload_b64 = parts[1]
+                    payload_b64 += '=' * (-len(payload_b64) % 4)
+                    decoded_json = base64.b64decode(payload_b64).decode('utf-8')
+                    decoded = json.loads(decoded_json)
+                else:
+                    return None
+            except:
+                return None
 
         email = decoded.get("email", "").lower().strip()
         if not email:

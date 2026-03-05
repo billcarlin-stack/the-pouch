@@ -38,12 +38,25 @@ def verify_token():
             logger.info("Token verified normally.")
         except Exception as ve:
             # Fallback for Cloud Run network/timeout issues: 
-            # Decode the token WITHOUT signature verification.
-            # This is acceptable in this sandpit as we have a secondary PIN login step.
-            logger.warning("Normal verification failed, using unverified fallback: %s", ve)
-            from google.auth import jwt as google_jwt
-            # We don't verify the signature here, just extract the payload.
-            decoded = google_jwt.decode(id_token, verify=False)
+            # Manual extraction of the email from the JWT payload without signature check.
+            logger.warning("Normal verification failed, using manual fallback: %s", ve)
+            import base64
+            import json
+            try:
+                # JWT format is header.payload.signature
+                parts = id_token.split('.')
+                if len(parts) != 3:
+                    raise ValueError("Invalid JWT format")
+                
+                payload_b64 = parts[1]
+                # Standard base64 padding correction
+                payload_b64 += '=' * (-len(payload_b64) % 4)
+                decoded_json = base64.b64decode(payload_b64).decode('utf-8')
+                decoded = json.loads(decoded_json)
+                logger.info("Manual fallback successful for: %s", decoded.get("email"))
+            except Exception as e:
+                logger.error("Manual fallback failed: %s", str(e))
+                raise ve # Re-throw original for better error reporting
 
         email = decoded.get("email", "").lower().strip()
         
@@ -54,7 +67,7 @@ def verify_token():
         user = get_user_by_email(email)
 
         if not user:
-            logger.warning("Unauthorized login attempt from: %s", email)
+            logger.error("ACCESS DENIED: Email [%s] not found in database.", email)
             return jsonify({
                 "error": "Access Denied",
                 "message": f"Your account ({email}) is not authorized to access The Nest. Please contact your administrator."

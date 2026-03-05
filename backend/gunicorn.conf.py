@@ -16,8 +16,8 @@ worker_class = "sync"
 worker_tmp_dir = "/dev/shm"
 
 # Timeouts
-timeout = 120
-graceful_timeout = 30
+timeout = 300
+graceful_timeout = 60
 keepalive = 5
 
 # Logging

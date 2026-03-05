@@ -410,7 +410,11 @@ def initialize_and_seed():
 
         for u in user_roles_to_seed:
             existing = session.query(UserRole).filter(UserRole.google_email == u["email"]).first()
-            if not existing:
+            if existing:
+                existing.role = u["role"]
+                existing.player_id = u["player_id"]
+                existing.name = u["name"]
+            else:
                 session.add(UserRole(
                     google_email=u["email"],
                     role=u["role"],
@@ -418,7 +422,7 @@ def initialize_and_seed():
                     name=u["name"],
                 ))
         session.commit()
-        logger.info(f"user_roles seeded with {len(user_roles_to_seed)} entries.")
+        logger.info(f"user_roles seeded and UPSERTED with {len(user_roles_to_seed)} entries.")
 
         logger.info(f"Database initialized and MASSIVE dataset seeded ({len(objects_to_add)} records).")
         return True
