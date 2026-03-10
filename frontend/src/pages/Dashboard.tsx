@@ -20,7 +20,7 @@ import {
     Zap
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import hfcLogo from '../assets/intelia-logo.png';
+import hfcLogo from '../assets/hfc-logo.png';
 import { DailySchedule } from '../components/dashboard/DailySchedule';
 
 const Skeleton = ({ className }: { className?: string }) => (

@@ -9,9 +9,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, LogOut, ClipboardCheck, Sparkles, UserCircle, Calendar, MessageSquareCode, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '../../context/AuthContext';
-import { PoweredBy } from '../common/PoweredBy';
 
-import hfcLogo from '../../assets/intelia-logo.png';
+import hfcLogo from '../../assets/hfc-logo.png';
 
 const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: string }) => (
     <NavLink
@@ -116,11 +115,6 @@ export const Sidebar = () => {
                     </>
                 )}
             </nav>
-
-            {/* Powered By Intelia */}
-            <div className="pb-4">
-                <PoweredBy />
-            </div>
 
             {/* Footer / User Profile */}
             <div className="p-6">

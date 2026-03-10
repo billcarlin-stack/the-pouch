@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import hfcLogo from '../assets/intelia-logo.png';
-import { PoweredBy } from '../components/common/PoweredBy';
+import hfcLogo from '../assets/hfc-logo.png';
 
 // Google "G" Logo SVG
 const GoogleIcon = () => (
@@ -85,10 +84,6 @@ const LoginPage = () => {
                             Access is restricted to authorised Hawthorn FC accounts
                         </p>
                     </div>
-                </div>
-
-                <div className="mt-8">
-                    <PoweredBy />
                 </div>
 
                 <p className="text-center text-amber-300/20 text-[10px] font-bold uppercase tracking-widest mt-6">
