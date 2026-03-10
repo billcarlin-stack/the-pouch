@@ -20,7 +20,7 @@ export const ImpersonateDropdown = () => {
 
     useEffect(() => {
         // Only run for admins
-        if (user?.role !== 'admin') return;
+        if (!user?.is_admin) return;
 
         const stored = sessionStorage.getItem('hawk_hub_impersonate');
         if (stored) {
@@ -30,7 +30,7 @@ export const ImpersonateDropdown = () => {
         const fetchPlayers = async () => {
             setLoading(true);
             try {
-                const { data } = await api.get('/team/players');
+                const { data } = await api.get('/players');
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 setPlayers(data.sort((a: any, b: any) => a.jumper_no - b.jumper_no));
             } catch (e) {
@@ -41,7 +41,7 @@ export const ImpersonateDropdown = () => {
         };
 
         fetchPlayers();
-    }, [user?.role]);
+    }, [user?.is_admin]);
 
     // Determine display name
     let displayName = "Admin (Real)";
@@ -53,7 +53,7 @@ export const ImpersonateDropdown = () => {
         }
     }
 
-    if (user?.role !== 'admin') return null;
+    if (!user?.is_admin) return null;
 
     const handleSelect = (role: string, player_id: number | null) => {
         const imp = { role, player_id };

@@ -106,7 +106,7 @@ export const Sidebar = () => {
                 )}
 
                 {/* Admin-only items */}
-                {user?.role === 'admin' && (
+                {user?.is_admin && (
                     <>
                         <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
                             System

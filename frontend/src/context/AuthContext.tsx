@@ -5,6 +5,8 @@ import { api } from '../services/api';
 
 export interface AuthUser {
     role: 'coach' | 'player' | 'admin';
+    real_role: 'coach' | 'player' | 'admin';
+    is_admin: boolean;
     name: string;
     jumper_no: number | null;
     player_id: number | null;
