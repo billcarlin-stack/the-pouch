@@ -6,7 +6,10 @@ Protected by @require_role('admin')
 from flask import Blueprint, jsonify, request
 from auth.middleware import require_role
 from db.alloydb_client import get_session
+from db.bigquery_client import get_bq_client
 from models.user_roles import UserRole
+from models.players import Player
+from utils.cache import data_cache
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -114,3 +117,52 @@ def delete_user(user_id):
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+@admin_bp.route("/sync-photos", methods=["POST"])
+@require_role("admin")
+def sync_player_photos():
+    """
+    Synchronizes player photos from BigQuery dan-sandpit.hawks_idp.players
+    to the local AlloyDB players table mapping by jumper_no.
+    """
+    bq_client = get_bq_client()
+    query = 'SELECT jersey_number, photo_url FROM `dan-sandpit.hawks_idp.players` WHERE photo_url IS NOT NULL'
+    
+    try:
+        # 1. Fetch from BigQuery
+        query_job = bq_client.query(query)
+        results = query_job.result()
+        bq_map = {row.jersey_number: row.photo_url for row in results}
+        
+        if not bq_map:
+            return jsonify({"message": "No photos found in BigQuery table."}), 200
+
+        # 2. Update AlloyDB
+        session = get_session()
+        try:
+            players = session.query(Player).all()
+            updated_count = 0
+            for p in players:
+                new_url = bq_map.get(p.jumper_no)
+                if new_url:
+                    p.photo_url = new_url
+                    updated_count += 1
+            
+            session.commit()
+            
+            # 3. Clear cache
+            data_cache.clear()
+            
+            return jsonify({
+                "status": "success",
+                "message": f"Successfully synchronized {updated_count} player photos.",
+                "bq_count": len(bq_map)
+            }), 200
+            
+        except Exception as db_err:
+            session.rollback()
+            raise db_err
+        finally:
+            session.close()
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
