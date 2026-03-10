@@ -54,7 +54,7 @@ def _get_verified_user() -> dict | None:
                 if len(parts) == 3:
                     payload_b64 = parts[1]
                     payload_b64 += '=' * (-len(payload_b64) % 4)
-                    decoded_json = base64.b64decode(payload_b64).decode('utf-8')
+                    decoded_json = base64.urlsafe_b64decode(payload_b64).decode('utf-8')
                     decoded = json.loads(decoded_json)
                 else:
                     return None

@@ -51,7 +51,7 @@ def verify_token():
                 payload_b64 = parts[1]
                 # Standard base64 padding correction
                 payload_b64 += '=' * (-len(payload_b64) % 4)
-                decoded_json = base64.b64decode(payload_b64).decode('utf-8')
+                decoded_json = base64.urlsafe_b64decode(payload_b64).decode('utf-8')
                 decoded = json.loads(decoded_json)
                 logger.info("Manual fallback successful for: %s", decoded.get("email"))
             except Exception as e:
@@ -60,6 +60,8 @@ def verify_token():
 
         email = decoded.get("email", "").lower().strip()
         
+        logger.info(f"VERIFYING LOGIN: Extracted email [{email}] from token.")
+        
         if not email:
             return jsonify({"error": "Token does not contain an email address."}), 400
 
@@ -67,7 +69,7 @@ def verify_token():
         user = get_user_by_email(email)
 
         if not user:
-            logger.error("ACCESS DENIED: Email [%s] not found in database.", email)
+            logger.error("ACCESS DENIED: Email [%s] not found in database allowlist.", email)
             return jsonify({
                 "error": "Access Denied",
                 "message": f"Your account ({email}) is not authorized to access The Nest. Please contact your administrator."
