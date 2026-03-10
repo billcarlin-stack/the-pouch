@@ -6,7 +6,7 @@
 */
 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, LogOut, ClipboardCheck, Sparkles, UserCircle, Calendar, MessageSquareCode } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, LogOut, ClipboardCheck, Sparkles, UserCircle, Calendar, MessageSquareCode, Shield } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '../../context/AuthContext';
 import { PoweredBy } from '../common/PoweredBy';
@@ -40,7 +40,7 @@ const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: stri
 export const Sidebar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const isCoach = user?.role === 'coach';
+    const isCoach = user?.role === 'coach' || user?.role === 'admin';
 
     const handleLogout = async () => {
         await logout();
@@ -103,6 +103,16 @@ export const Sidebar = () => {
                         <NavItem to="/team-builder" icon={ClipboardList} label="Team Builder" />
                         <NavItem to="/ratings/input" icon={Target} label="Coach Ratings" />
                         <NavItem to="/ratings/compare" icon={Users} label="Rating Comparison" />
+                    </>
+                )}
+
+                {/* Admin-only items */}
+                {user?.role === 'admin' && (
+                    <>
+                        <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
+                            System
+                        </div>
+                        <NavItem to="/admin/settings" icon={Shield} label="Access Control" />
                     </>
                 )}
             </nav>

@@ -15,13 +15,15 @@ import DailyCheckIn from './pages/DailyCheckIn';
 import CalendarPage from './pages/CalendarPage';
 import HawkAiPage from './pages/HawkAiPage';
 
+import AdminSettings from './pages/AdminSettings';
+
 /**
  * Route guard: only renders children if user has the required role.
  * Players trying to access coach-only routes get redirected to /.
  */
 const CoachOnly = ({ children }: { children: React.ReactElement }) => {
   const { user } = useAuth();
-  if (user?.role !== 'coach') return <Navigate to="/" replace />;
+  if (user?.role !== 'coach' && user?.role !== 'admin') return <Navigate to="/" replace />;
   return children;
 };
 
@@ -31,6 +33,15 @@ const CoachOnly = ({ children }: { children: React.ReactElement }) => {
 const PlayerOnly = ({ children }: { children: React.ReactElement }) => {
   const { user } = useAuth();
   if (user?.role !== 'player') return <Navigate to="/" replace />;
+  return children;
+};
+
+/**
+ * Route guard: only renders children if user is an admin.
+ */
+const AdminOnly = ({ children }: { children: React.ReactElement }) => {
+  const { user } = useAuth();
+  if (user?.role !== 'admin') return <Navigate to="/" replace />;
   return children;
 };
 
@@ -55,17 +66,20 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={user?.role === 'coach' ? <Dashboard /> : <Navigate to={`/players/${user?.jumper_no ?? user?.player_id}`} replace />} />
+        <Route index element={(user?.role === 'coach' || user?.role === 'admin') ? <Dashboard /> : <Navigate to={`/players/${user?.jumper_no ?? user?.player_id}`} replace />} />
 
         {/* Player profile — accessible to both (coaches view any, players view their own) */}
         <Route path="players/:id" element={<PlayerDetail />} />
 
-        {/* Coach-only routes */}
+        {/* Coach-only routes (Admins also allowed) */}
         <Route path="players" element={<CoachOnly><PlayersList /></CoachOnly>} />
         <Route path="stats" element={<CoachOnly><StatsPage /></CoachOnly>} />
         <Route path="ratings/input" element={<CoachOnly><CoachRatings /></CoachOnly>} />
         <Route path="ratings/compare" element={<CoachOnly><RatingComparison /></CoachOnly>} />
         <Route path="team-builder" element={<CoachOnly><TeamBuilder /></CoachOnly>} />
+
+        {/* Admin-only routes */}
+        <Route path="admin/settings" element={<AdminOnly><AdminSettings /></AdminOnly>} />
 
         {/* Shared routes */}
         <Route path="injuries" element={<InjuryDashboard />} />

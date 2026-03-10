@@ -4,7 +4,7 @@ import { auth, googleProvider } from '../services/firebase';
 import { api } from '../services/api';
 
 export interface AuthUser {
-    role: 'coach' | 'player';
+    role: 'coach' | 'player' | 'admin';
     name: string;
     jumper_no: number | null;
     player_id: number | null;
@@ -18,7 +18,6 @@ interface AuthContextType {
     loading: boolean;
     error: string | null;
     loginWithGoogle: () => Promise<boolean>;
-    loginWithPin: (pin: string) => Promise<boolean>;
     logout: () => Promise<void>;
 }
 
@@ -36,15 +35,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setFirebaseUser(fbUser);
             if (fbUser) {
                 // Re-verify with backend to ensure Google account is still authorized
+                // and fetch the complete user profile
                 try {
                     const idToken = await fbUser.getIdToken();
-                    await api.post('/auth/verify', { idToken });
-
-                    // If backend accepts the Google account, see if we already have a PIN session
-                    const stored = sessionStorage.getItem('hawk_hub_user');
-                    if (stored) {
-                        setUser(JSON.parse(stored));
-                    }
+                    const resp = await api.post('/auth/verify', { idToken });
+                    const authUser = resp.data;
+                    sessionStorage.setItem('hawk_hub_user', JSON.stringify(authUser));
+                    setUser(authUser);
                 } catch (e: any) {
                     const msg = e.response?.data?.message || e.response?.data?.error || 'Access denied.';
                     setError(msg);
@@ -71,7 +68,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const idToken = await result.user.getIdToken();
 
             // Verify token with our backend to ensure it's an authorized email
-            await api.post('/auth/verify', { idToken });
+            const resp = await api.post('/auth/verify', { idToken });
+            const authUser = resp.data;
+            sessionStorage.setItem('hawk_hub_user', JSON.stringify(authUser));
+            setUser(authUser);
             setFirebaseUser(result.user);
             return true;
         } catch (e: any) {
@@ -80,28 +80,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setLoading(false);
                 return false;
             }
-            const msg = e.response?.data?.message || e.response?.data?.error || 'Sign-in failed. Please try again.';
-            setError(msg);
+            console.error("FIREBASE AUTH ERROR:", e);
+            const msg = e.response?.data?.message || e.response?.data?.error || e.message || e.code || 'Sign-in failed. Please try again.';
+            setError(`Login Error: ${msg}`);
             // If backend rejected, sign out of Firebase too
             await signOut(auth).catch(() => null);
             setLoading(false);
-            return false;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loginWithPin = async (pin: string): Promise<boolean> => {
-        setError(null);
-        setLoading(true);
-        try {
-            const resp = await api.post('/auth/login', { pin });
-            const authUser = resp.data;
-            sessionStorage.setItem('hawk_hub_user', JSON.stringify(authUser));
-            setUser(authUser);
-            return true;
-        } catch (e: any) {
-            setError(e.response?.data?.error || 'Invalid PIN');
             return false;
         } finally {
             setLoading(false);
@@ -117,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, firebaseUser, loading, error, loginWithGoogle, loginWithPin, logout }}>
+        <AuthContext.Provider value={{ user, firebaseUser, loading, error, loginWithGoogle, logout }}>
             {children}
         </AuthContext.Provider>
     );

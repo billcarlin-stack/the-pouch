@@ -32,19 +32,21 @@ api.interceptors.request.use(async (config) => {
         }
     }
 
-    // 2. PIN Role Layer (X- headers)
-    const storedPinSession = sessionStorage.getItem('hawk_hub_user');
-    if (storedPinSession) {
+    // 2. Impersonation Layer (X-Impersonate- headers)
+    const impersonateSession = sessionStorage.getItem('hawk_hub_impersonate');
+    if (impersonateSession) {
         try {
-            const user = JSON.parse(storedPinSession);
-            if (user.role) {
-                config.headers['X-User-Role'] = user.role;
+            const imp = JSON.parse(impersonateSession);
+            if (imp.role) {
+                config.headers['X-Impersonate-Role'] = imp.role;
             }
-            if (user.jumper_no || user.player_id) {
-                config.headers['X-Player-Id'] = (user.jumper_no || user.player_id).toString();
+            if (imp.player_id !== undefined && imp.player_id !== null) {
+                config.headers['X-Impersonate-Player-Id'] = imp.player_id.toString();
+            } else {
+                config.headers['X-Impersonate-Player-Id'] = 'null';
             }
         } catch (e) {
-            console.error('Failed to parse PIN user for headers', e);
+            console.error('Failed to parse impersonation headers', e);
         }
     }
 
