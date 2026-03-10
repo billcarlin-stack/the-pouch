@@ -35,5 +35,9 @@ class SimpleCache:
             if key in self._cache:
                 del self._cache[key]
 
+    def clear(self):
+        with self._lock:
+            self._cache.clear()
+
 # Global instance
 data_cache = SimpleCache(default_ttl=300) # 5 minutes
