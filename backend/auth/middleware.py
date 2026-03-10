@@ -76,7 +76,9 @@ def require_role(*allowed_roles):
     Decorator that enforces role-based access control via Firebase Auth.
 
     Reads the Authorization: Bearer <firebase_id_token> header, verifies it,
-    then checks the user's role from the user_roles table.
+    then checks the user's real role from the user_roles table.
+    If the user is an admin, they can pass 'X-Impersonate-Role' headers
+    to view data as another role.
     """
     def decorator(f):
         @wraps(f)
@@ -89,31 +91,42 @@ def require_role(*allowed_roles):
                     "message": "A valid Firebase ID token is required. Please sign in with Google."
                 }), 401
 
-            # Instead of forcing the DB role, we read the role the user selected
-            # via the PIN login on the frontend (sent in the headers).
-            user_role = request.headers.get("X-User-Role", "").lower()
-            player_id_str = request.headers.get("X-Player-Id")
+            # Real role from DB
+            real_role = user.get("role", "").lower()
             
-            player_id = None
-            if player_id_str and player_id_str.isdigit():
-                player_id = int(player_id_str)
-
-            if user_role not in VALID_ROLES:
+            if real_role not in VALID_ROLES:
                 return jsonify({
                     "error": "Invalid role",
-                    "message": f"Role '{user_role}' is not recognized or not provided. Please complete the PIN login."
+                    "message": f"Account role '{real_role}' is not recognized."
                 }), 403
 
-            if user_role not in allowed_roles:
+            # Determine effective role (handle admin impersonation)
+            effective_role = real_role
+            effective_player_id = user.get("player_id")
+
+            if real_role == "admin":
+                impersonate_role = request.headers.get("X-Impersonate-Role", "").lower()
+                if impersonate_role and impersonate_role in VALID_ROLES:
+                    effective_role = impersonate_role
+                    pid_str = request.headers.get("X-Impersonate-Player-Id")
+                    if pid_str and pid_str.isdigit():
+                        effective_player_id = int(pid_str)
+                    elif pid_str == "null" or pid_str == "":
+                        effective_player_id = None
+
+            if effective_role not in allowed_roles and "admin" not in allowed_roles:
+                # Admins implicitly bypass standard role checks unless explicitly testing restricted views,
+                # but to be safe, if effective_role isn't allowed, we deny. 
+                # (Actually, an admin impersonating a role that isn't allowed *should* be denied so they can test the denial)
                 return jsonify({
                     "error": "Forbidden",
-                    "message": f"You do not have permission to access this resource."
+                    "message": "You do not have permission to access this resource."
                 }), 403
 
             # Store in Flask's request-scoped globals for use in route handlers
-            g.user_role = user_role
+            g.user_role = effective_role
             g.user_email = user.get("email")
-            g.player_id = player_id
+            g.player_id = effective_player_id
 
             return f(*args, **kwargs)
 

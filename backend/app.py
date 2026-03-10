@@ -63,6 +63,7 @@ def create_app(config=None):
     from routes.woop import woop_bp
     from routes.calendar import calendar_bp
     from routes.fitness import fitness_bp
+    from routes.admin import admin_bp
 
     app.register_blueprint(players_bp)
     app.register_blueprint(idp_bp)
@@ -78,6 +79,7 @@ def create_app(config=None):
     app.register_blueprint(woop_bp, url_prefix='/api')
     app.register_blueprint(calendar_bp, url_prefix='/api')
     app.register_blueprint(fitness_bp, url_prefix='/api/v1/fitness')
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
 
     # ── Temporary Admin/Seed Route ────────────────────────────────
     @app.route('/api/admin/seed', methods=['GET'])

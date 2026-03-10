@@ -375,7 +375,7 @@ def initialize_and_seed():
             # authorised Intelia staff members with Coach access.
             {"email": "joel.collins@intelia.com.au",   "role": "coach",  "player_id": None, "name": "Joel Collins"},
             {"email": "direnc.uysal@intelia.com.au",   "role": "coach",  "player_id": None, "name": "Direnc Uysal"},
-            {"email": "bill.carlin@intelia.com.au",    "role": "coach",  "player_id": None, "name": "Bill Carlin"},
+            {"email": "bill.carlin@intelia.com.au",    "role": "admin",  "player_id": None, "name": "Bill Carlin"},
             {"email": "daniel.zillmann@intelia.com.au", "role": "coach",  "player_id": None, "name": "Daniel Zillmann"},
             # ── Players ───────────────────────────────────────────────────────
             # Format: real Google email → player's jumper_no
