@@ -11,7 +11,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../../context/AuthContext';
 import { PoweredBy } from '../common/PoweredBy';
 
-import hfcLogo from '../../assets/hfc-logo.png';
+import hfcLogo from '../../assets/intelia-logo.png';
 
 const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: string }) => (
     <NavLink

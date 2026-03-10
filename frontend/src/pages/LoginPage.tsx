@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import hfcLogo from '../assets/hfc-logo.png';
+import hfcLogo from '../assets/intelia-logo.png';
 import { PoweredBy } from '../components/common/PoweredBy';
 
 // Google "G" Logo SVG
