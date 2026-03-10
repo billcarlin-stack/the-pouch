@@ -75,16 +75,34 @@ def verify_token():
                 "message": f"Your account ({email}) is not authorized to access The Nest. Please contact your administrator."
             }), 403
 
+        real_role = user.get("role", "").lower()
+        effective_role = real_role
+        effective_player_id = user.get("player_id")
+
+        # Support impersonation during verify if the user is an admin
+        if real_role == "admin":
+            imp_role = request.headers.get("X-Impersonate-Role", "").lower()
+            from auth.middleware import VALID_ROLES
+            if imp_role and imp_role in VALID_ROLES:
+                effective_role = imp_role
+                pid_str = request.headers.get("X-Impersonate-Player-Id")
+                if pid_str and pid_str.isdigit():
+                    effective_player_id = int(pid_str)
+                elif pid_str == "null" or pid_str == "":
+                    effective_player_id = None
+
         parts = user.get("name", "Unknown User").split()
         initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) >= 2 else user.get("name", "U")[:2].upper()
 
         return jsonify({
             "authorized": True,
             "email": email,
-            "role": user.get("role"),
+            "role": effective_role,
+            "real_role": real_role,
+            "is_admin": real_role == "admin",
             "name": user.get("name"),
-            "player_id": user.get("player_id"),
-            "jumper_no": user.get("player_id"),
+            "player_id": effective_player_id,
+            "jumper_no": effective_player_id,
             "initials": initials
         }), 200
 
