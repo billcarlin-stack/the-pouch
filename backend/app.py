@@ -64,6 +64,8 @@ def create_app(config=None):
     from routes.calendar import calendar_bp
     from routes.fitness import fitness_bp
     from routes.admin import admin_bp
+    from routes.opposition import opposition_bp
+    from routes.timeline import timeline_bp
 
     app.register_blueprint(players_bp)
     app.register_blueprint(idp_bp)
@@ -80,6 +82,8 @@ def create_app(config=None):
     app.register_blueprint(calendar_bp, url_prefix='/api')
     app.register_blueprint(fitness_bp, url_prefix='/api/v1/fitness')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
+    app.register_blueprint(opposition_bp, url_prefix='/api/opposition')
+    app.register_blueprint(timeline_bp, url_prefix='/api/timeline')
 
     # ── Temporary Admin/Seed Route ────────────────────────────────
     @app.route('/api/admin/seed', methods=['GET'])
@@ -102,6 +106,19 @@ def create_app(config=None):
                 "message": "Seeding failed. Check server logs.",
                 "detail": str(e)
             }), 500
+
+    @app.route('/api/admin/users/debug', methods=['GET'])
+    def debug_users():
+        try:
+            from models.user_roles import UserRole
+            from db.alloydb_client import get_session
+            session = get_session()
+            users = session.query(UserRole).all()
+            user_list = [{"email": u.google_email, "role": u.role, "name": u.name} for u in users]
+            session.close()
+            return jsonify(user_list), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
     # ── Global Error Handlers ─────────────────────────────────────
     @app.errorhandler(404)

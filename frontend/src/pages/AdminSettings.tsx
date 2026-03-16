@@ -21,7 +21,6 @@ const AdminSettings = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [editingUser, setEditingUser] = useState<UserRole | null>(null);
-    const [isSyncing, setIsSyncing] = useState(false);
     const [formData, setFormData] = useState({
         google_email: '',
         name: '',
@@ -39,20 +38,6 @@ const AdminSettings = () => {
             setError(e.response?.data?.error || 'Failed to load users');
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleSyncPhotos = async () => {
-        if (!window.confirm('This will fetch the latest player photos from BigQuery and update the database. Continue?')) return;
-        
-        setIsSyncing(true);
-        try {
-            const { data } = await api.post('/admin/sync-photos');
-            alert(data.message || 'Photos synchronized successfully!');
-        } catch (e: any) {
-            alert(e.response?.data?.error || 'Failed to sync photos');
-        } finally {
-            setIsSyncing(false);
         }
     };
 
@@ -136,23 +121,13 @@ const AdminSettings = () => {
                     </h1>
                     <p className="text-gray-500 mt-1">Manage system access, roles, and connected Google accounts.</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={handleSyncPhotos}
-                        disabled={isSyncing}
-                        className="bg-white hover:bg-gray-50 text-gray-700 px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors border border-gray-200 shadow-sm disabled:opacity-50"
-                    >
-                        {isSyncing ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} className="rotate-45" />}
-                        Sync Player Photos
-                    </button>
-                    <button
-                        onClick={openCreateModal}
-                        className="bg-hfc-brown hover:bg-hfc-brown/90 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-lg shadow-black/10"
-                    >
-                        <Plus size={20} />
-                        Add Authorised Account
-                    </button>
-                </div>
+                <button
+                    onClick={openCreateModal}
+                    className="bg-hfc-brown hover:bg-hfc-brown/90 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-lg shadow-black/10"
+                >
+                    <Plus size={20} />
+                    Add Authorised Account
+                </button>
             </div>
 
             {/* Controls */}

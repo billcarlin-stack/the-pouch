@@ -1,0 +1,32 @@
+steps:
+  # Build the Docker image with VITE_API_URL baked in at build time
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'VITE_API_URL=https://the-nest-api-114675580879.australia-southeast1.run.app/api'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'
+      - '.'
+
+  # Push the image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'the-nest-frontend'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'
+      - '--region'
+      - 'australia-southeast1'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '80'
+
+images:
+  - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'

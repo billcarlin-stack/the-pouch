@@ -8,6 +8,7 @@ import os
 import random
 import logging
 import uuid
+import json
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import sessionmaker
 
@@ -29,49 +30,68 @@ logger = logging.getLogger(__name__)
 # Data Helpers
 # ──────────────────────────────────────────────────────────────────────────────
 
-PLAYERS_DATA = [
-    {'jumper_no': 1, 'name': 'Harry Morrison', 'age': 25, 'height_cm': 184, 'games': 90, 'position': 'Mid/Def', 'status': 'Green'},
-    {'jumper_no': 2, 'name': 'Mitchell Lewis', 'age': 25, 'height_cm': 199, 'games': 75, 'position': 'Key Forward', 'status': 'Amber'},
-    {'jumper_no': 3, 'name': 'Jai Newcombe', 'age': 22, 'height_cm': 186, 'games': 60, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 4, 'name': 'Jarman Impey', 'age': 28, 'height_cm': 178, 'games': 180, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 5, 'name': 'James Worpel', 'age': 25, 'height_cm': 186, 'games': 110, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 6, 'name': 'James Sicily', 'age': 29, 'height_cm': 188, 'games': 140, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 7, 'name': 'Ned Reeves', 'age': 25, 'height_cm': 210, 'games': 45, 'position': 'Ruck', 'status': 'Green'},
-    {'jumper_no': 8, 'name': 'Sam Frost', 'age': 30, 'height_cm': 194, 'games': 160, 'position': 'Key Def', 'status': 'Amber'},
-    {'jumper_no': 9, 'name': 'Changkuoth Jiath', 'age': 24, 'height_cm': 185, 'games': 50, 'position': 'Def/Mid', 'status': 'Red'},
-    {'jumper_no': 10, 'name': 'Karl Amon', 'age': 28, 'height_cm': 181, 'games': 140, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 11, 'name': 'Conor Nash', 'age': 25, 'height_cm': 198, 'games': 85, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 12, 'name': 'Will Day', 'age': 22, 'height_cm': 189, 'games': 60, 'position': 'Mid/Def', 'status': 'Green'},
-    {'jumper_no': 13, 'name': 'Dylan Moore', 'age': 24, 'height_cm': 177, 'games': 80, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 14, 'name': 'Jack Scrimshaw', 'age': 25, 'height_cm': 193, 'games': 85, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 15, 'name': 'Blake Hardwick', 'age': 27, 'height_cm': 182, 'games': 150, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 16, 'name': "Massimo D'Ambrosio", 'age': 20, 'height_cm': 178, 'games': 15, 'position': 'Def/Mid', 'status': 'Green'},
-    {'jumper_no': 17, 'name': 'Lloyd Meek', 'age': 25, 'height_cm': 204, 'games': 30, 'position': 'Ruck', 'status': 'Green'},
-    {'jumper_no': 18, 'name': 'Mabior Chol', 'age': 27, 'height_cm': 200, 'games': 65, 'position': 'Key Forward', 'status': 'Amber'},
-    {'jumper_no': 19, 'name': 'Jack Ginnivan', 'age': 21, 'height_cm': 177, 'games': 45, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 20, 'name': 'Chad Wingard', 'age': 30, 'height_cm': 182, 'games': 220, 'position': 'Forward', 'status': 'Red'},
-    {'jumper_no': 21, 'name': 'Nick Watson', 'age': 19, 'height_cm': 170, 'games': 10, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 22, 'name': 'Luke Breust', 'age': 33, 'height_cm': 184, 'games': 285, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 23, 'name': 'Josh Weddle', 'age': 19, 'height_cm': 192, 'games': 20, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 24, 'name': 'Denver Grainger-Barras', 'age': 21, 'height_cm': 195, 'games': 30, 'position': 'Key Def', 'status': 'Amber'},
-    {'jumper_no': 25, 'name': 'Josh Ward', 'age': 20, 'height_cm': 182, 'games': 35, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 26, 'name': 'Bodie Ryan', 'age': 18, 'height_cm': 188, 'games': 0, 'position': 'Defender', 'status': 'Green'},
-    {'jumper_no': 27, 'name': 'Will McCabe', 'age': 18, 'height_cm': 197, 'games': 0, 'position': 'Key Def', 'status': 'Green'},
-    {'jumper_no': 28, 'name': 'Cam Mackenzie', 'age': 20, 'height_cm': 188, 'games': 15, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 29, 'name': 'Jai Serong', 'age': 21, 'height_cm': 193, 'games': 10, 'position': 'Mid/Fwd', 'status': 'Green'},
-    {'jumper_no': 30, 'name': 'Sam Butler', 'age': 21, 'height_cm': 184, 'games': 20, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 31, 'name': 'Connor MacDonald', 'age': 21, 'height_cm': 185, 'games': 40, 'position': 'Mid/Fwd', 'status': 'Green'},
-    {'jumper_no': 32, 'name': 'Finn Maginness', 'age': 23, 'height_cm': 189, 'games': 35, 'position': 'Midfielder', 'status': 'Green'},
-    {'jumper_no': 33, 'name': "Jack O'Sullivan", 'age': 19, 'height_cm': 177, 'games': 0, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 34, 'name': 'Ethan Phillips', 'age': 24, 'height_cm': 196, 'games': 0, 'position': 'Def', 'status': 'Green'},
-    {'jumper_no': 35, 'name': 'Calsher Dear', 'age': 18, 'height_cm': 194, 'games': 0, 'position': 'Key Fwd', 'status': 'Green'},
-    {'jumper_no': 36, 'name': 'James Blanck', 'age': 23, 'height_cm': 196, 'games': 30, 'position': 'Key Def', 'status': 'Red'},
-    {'jumper_no': 37, 'name': 'Josh Bennetts', 'age': 19, 'height_cm': 178, 'games': 0, 'position': 'Forward', 'status': 'Green'},
-    {'jumper_no': 38, 'name': 'Max Ramsden', 'age': 21, 'height_cm': 203, 'games': 5, 'position': 'Ruck/Fwd', 'status': 'Green'},
-    {'jumper_no': 40, 'name': 'Seamus Mitchell', 'age': 22, 'height_cm': 181, 'games': 15, 'position': 'Def/Fwd', 'status': 'Green'},
-    {'jumper_no': 43, 'name': 'Jack Gunston', 'age': 32, 'height_cm': 193, 'games': 250, 'position': 'Forward', 'status': 'Amber'},
-    {'jumper_no': 44, 'name': 'Henry Hustwaite', 'age': 19, 'height_cm': 195, 'games': 5, 'position': 'Midfielder', 'status': 'Green'},
-]
+KNOWN_PROFILES = {
+    1: {'age': 25, 'height_cm': 184, 'games': 90, 'position': 'Mid/Def', 'status': 'Green'},
+    2: {'age': 25, 'height_cm': 199, 'games': 75, 'position': 'Key Forward', 'status': 'Amber'},
+    3: {'age': 22, 'height_cm': 186, 'games': 60, 'position': 'Midfielder', 'status': 'Green'},
+    4: {'age': 28, 'height_cm': 178, 'games': 180, 'position': 'Defender', 'status': 'Green'},
+    5: {'age': 25, 'height_cm': 186, 'games': 110, 'position': 'Midfielder', 'status': 'Green'},
+    6: {'age': 29, 'height_cm': 188, 'games': 140, 'position': 'Defender', 'status': 'Green'},
+    7: {'age': 25, 'height_cm': 210, 'games': 45, 'position': 'Ruck', 'status': 'Green'},
+    8: {'age': 30, 'height_cm': 194, 'games': 160, 'position': 'Key Def', 'status': 'Amber'},
+    9: {'age': 24, 'height_cm': 185, 'games': 50, 'position': 'Def/Mid', 'status': 'Red'},
+    10: {'age': 28, 'height_cm': 181, 'games': 140, 'position': 'Midfielder', 'status': 'Green'},
+    11: {'age': 25, 'height_cm': 198, 'games': 85, 'position': 'Midfielder', 'status': 'Green'},
+    12: {'age': 22, 'height_cm': 189, 'games': 60, 'position': 'Mid/Def', 'status': 'Green'},
+    13: {'age': 24, 'height_cm': 177, 'games': 80, 'position': 'Forward', 'status': 'Green'},
+    14: {'age': 25, 'height_cm': 193, 'games': 85, 'position': 'Defender', 'status': 'Green'},
+    15: {'age': 27, 'height_cm': 182, 'games': 150, 'position': 'Defender', 'status': 'Green'},
+    16: {'age': 20, 'height_cm': 178, 'games': 15, 'position': 'Def/Mid', 'status': 'Green'},
+    17: {'age': 25, 'height_cm': 204, 'games': 30, 'position': 'Ruck', 'status': 'Green'},
+    18: {'age': 27, 'height_cm': 200, 'games': 65, 'position': 'Key Forward', 'status': 'Amber'},
+    19: {'age': 21, 'height_cm': 177, 'games': 45, 'position': 'Forward', 'status': 'Green'},
+    20: {'age': 30, 'height_cm': 182, 'games': 220, 'position': 'Forward', 'status': 'Red'},
+    21: {'age': 19, 'height_cm': 170, 'games': 10, 'position': 'Forward', 'status': 'Green'},
+    22: {'age': 33, 'height_cm': 184, 'games': 285, 'position': 'Forward', 'status': 'Green'},
+    23: {'age': 19, 'height_cm': 192, 'games': 20, 'position': 'Defender', 'status': 'Green'},
+    24: {'age': 21, 'height_cm': 195, 'games': 30, 'position': 'Key Def', 'status': 'Amber'},
+    25: {'age': 20, 'height_cm': 182, 'games': 35, 'position': 'Midfielder', 'status': 'Green'},
+    26: {'age': 18, 'height_cm': 188, 'games': 0, 'position': 'Defender', 'status': 'Green'},
+    27: {'age': 18, 'height_cm': 197, 'games': 0, 'position': 'Key Def', 'status': 'Green'},
+    28: {'age': 20, 'height_cm': 188, 'games': 15, 'position': 'Midfielder', 'status': 'Green'},
+    29: {'age': 21, 'height_cm': 193, 'games': 10, 'position': 'Mid/Fwd', 'status': 'Green'},
+    30: {'age': 21, 'height_cm': 184, 'games': 20, 'position': 'Forward', 'status': 'Green'},
+    31: {'age': 21, 'height_cm': 185, 'games': 40, 'position': 'Mid/Fwd', 'status': 'Green'},
+    32: {'age': 23, 'height_cm': 189, 'games': 35, 'position': 'Midfielder', 'status': 'Green'},
+    33: {'age': 19, 'height_cm': 177, 'games': 0, 'position': 'Forward', 'status': 'Green'},
+    34: {'age': 24, 'height_cm': 196, 'games': 0, 'position': 'Def', 'status': 'Green'},
+    35: {'age': 18, 'height_cm': 194, 'games': 0, 'position': 'Key Fwd', 'status': 'Green'},
+    36: {'age': 23, 'height_cm': 196, 'games': 30, 'position': 'Key Def', 'status': 'Red'},
+    37: {'age': 19, 'height_cm': 178, 'games': 0, 'position': 'Forward', 'status': 'Green'},
+    38: {'age': 21, 'height_cm': 203, 'games': 5, 'position': 'Ruck/Fwd', 'status': 'Green'},
+    40: {'age': 22, 'height_cm': 181, 'games': 15, 'position': 'Def/Fwd', 'status': 'Green'},
+    43: {'age': 32, 'height_cm': 193, 'games': 250, 'position': 'Forward', 'status': 'Amber'},
+    44: {'age': 19, 'height_cm': 195, 'games': 5, 'position': 'Midfielder', 'status': 'Green'},
+}
+
+roster_path = os.path.join(os.path.dirname(__file__), 'hawthorn_roster_clean.json')
+with open(roster_path, 'r', encoding='utf-8') as f:
+    scraped_players = json.load(f)
+
+PLAYERS_DATA = []
+for p in scraped_players:
+    jumper = p['jumper']
+    known = KNOWN_PROFILES.get(jumper, {'age': 21, 'height_cm': 185, 'games': 10, 'position': 'Midfielder', 'status': 'Green'})
+    PLAYERS_DATA.append({
+        'jumper_no': jumper,
+        'name': p['name'],
+        'photo_url': p['photo'],
+        'age': known['age'],
+        'height_cm': known['height_cm'],
+        'games': known['games'],
+        'position': known['position'],
+        'status': known['status']
+    })
 
 HFC_PLAYER_IDS = [p['jumper_no'] for p in PLAYERS_DATA]
 PLAYER_POSITIONS = {p['jumper_no']: p['position'].lower().replace('/def', '').replace('/fwd', '').replace('/mid', '') for p in PLAYERS_DATA}
@@ -183,6 +203,7 @@ def initialize_and_seed():
             players_to_add.append(Player(
                 jumper_no=p_data['jumper_no'],
                 name=p_data['name'],
+                photo_url=p_data['photo_url'],
                 age=p_data['age'],
                 height_cm=p_data['height_cm'],
                 weight_kg=84, # More realistic default

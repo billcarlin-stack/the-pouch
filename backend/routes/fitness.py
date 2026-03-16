@@ -20,8 +20,11 @@ print("DEBUG: Routes Fitness Blueprint loaded")
 @require_role("admin", "coach", "medical", "analyst", "player")
 def get_session(player_id):
     """Returns the latest GPS session data for a player."""
+    phases_param = request.args.get("phases")
+    phases = phases_param.split(",") if phases_param else None
+
     try:
-        session = get_latest_session(player_id)
+        session = get_latest_session(player_id, phases)
         if not session:
             return jsonify({"session": None, "message": "No session data available"}), 200
         return jsonify({"session": session}), 200

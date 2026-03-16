@@ -14,6 +14,8 @@ import WoopGoals from './pages/WoopGoals';
 import DailyCheckIn from './pages/DailyCheckIn';
 import CalendarPage from './pages/CalendarPage';
 import HawkAiPage from './pages/HawkAiPage';
+import OppositionPreviews from './pages/OppositionPreviews';
+import EventTimeline from './pages/EventTimeline';
 
 import AdminSettings from './pages/AdminSettings';
 
@@ -77,6 +79,9 @@ function AppRoutes() {
         <Route path="ratings/input" element={<CoachOnly><CoachRatings /></CoachOnly>} />
         <Route path="ratings/compare" element={<CoachOnly><RatingComparison /></CoachOnly>} />
         <Route path="team-builder" element={<CoachOnly><TeamBuilder /></CoachOnly>} />
+        
+        <Route path="match-center/previews" element={<CoachOnly><OppositionPreviews /></CoachOnly>} />
+        <Route path="match-center/timeline" element={<CoachOnly><EventTimeline /></CoachOnly>} />
 
         {/* Admin-only routes */}
         <Route path="admin/settings" element={<AdminOnly><AdminSettings /></AdminOnly>} />

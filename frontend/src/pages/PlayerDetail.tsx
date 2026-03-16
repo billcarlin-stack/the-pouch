@@ -141,6 +141,7 @@ export const PlayerDetail = () => {
     const [fitnessPBs, setFitnessPBs] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'overview' | 'fitness'>('overview');
+    const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
 
     useEffect(() => {
         if (id) {
@@ -151,7 +152,7 @@ export const PlayerDetail = () => {
                 ApiService.getStats2025({ jumper_no: Number(id) }),
                 ApiService.getWellbeing(id, 1),
                 ApiService.getWoopGoals(Number(id)),
-                ApiService.getFitnessSession(id),
+                ApiService.getFitnessSession(id, selectedPhases),
                 ApiService.getFitnessPbs(id)
             ]).then(([p, r, allInj, s, w, woop, fitS, fitP]) => {
                 if (p.status === 'fulfilled') {
@@ -170,6 +171,15 @@ export const PlayerDetail = () => {
             }).finally(() => setLoading(false));
         }
     }, [id]);
+
+    // Refetch fitness session when phases change
+    useEffect(() => {
+        if (id && !loading) {
+            ApiService.getFitnessSession(id, selectedPhases).then(res => {
+                setFitnessSession(res.session);
+            }).catch(console.error);
+        }
+    }, [selectedPhases, id]);
 
     if (loading) return <div className="p-20 text-center text-gray-400">Loading Profile...</div>;
     if (!player) return <div className="p-20 text-center text-gray-400">Player not found</div>;
@@ -474,10 +484,32 @@ export const PlayerDetail = () => {
                 {activeTab === 'fitness' && (
                     /* Fitness & Performance Section */
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center gap-2">
-                            <Activity className="text-hfc-brown" size={24} />
-                            Fitness & GPS Performance
-                        </h3>
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <h3 className="font-bold text-xl text-gray-900 flex items-center gap-2">
+                                <Activity className="text-hfc-brown" size={24} />
+                                Fitness & GPS Performance
+                            </h3>
+                            {!loading && fitnessSession && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Phase of Play:</span>
+                                    <select
+                                        multiple
+                                        value={selectedPhases}
+                                        onChange={(e) => {
+                                            const options = Array.from(e.target.selectedOptions, option => option.value);
+                                            setSelectedPhases(options);
+                                        }}
+                                        className="text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-amber-400 min-w-[150px]"
+                                    >
+                                        <option value="Offense">Offense</option>
+                                        <option value="Defense">Defense</option>
+                                        <option value="Stoppages">Stoppages</option>
+                                        <option value="Bench">Bench</option>
+                                        <option value="Late-Quarter">Late-Quarter</option>
+                                    </select>
+                                </div>
+                            )}
+                        </div>
                         <FitnessTab
                             session={fitnessSession}
                             pbs={fitnessPBs}

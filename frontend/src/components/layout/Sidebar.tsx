@@ -97,6 +97,12 @@ export const Sidebar = () => {
                 {isCoach && (
                     <>
                         <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
+                            Match Center
+                        </div>
+                        <NavItem to="/match-center/previews" icon={Target} label="Opposition Previews" />
+                        <NavItem to="/match-center/timeline" icon={Activity} label="Event Timeline" />
+
+                        <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
                             Coaching
                         </div>
                         <NavItem to="/team-builder" icon={ClipboardList} label="Team Builder" />

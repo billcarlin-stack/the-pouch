@@ -380,8 +380,12 @@ export const ApiService = {
     },
 
     // Fitness
-    getFitnessSession: async (playerId: number | string) => {
-        const response = await api.get<{ session: FitnessSession | null }>(`/v1/fitness/session/${playerId}`);
+    getFitnessSession: async (playerId: number | string, phases?: string[]) => {
+        let url = `/v1/fitness/session/${playerId}`;
+        if (phases && phases.length > 0) {
+            url += `?phases=${phases.join(',')}`;
+        }
+        const response = await api.get<{ session: FitnessSession | null }>(url);
         return response.data;
     },
     getFitnessPbs: async (playerId: number | string) => {
