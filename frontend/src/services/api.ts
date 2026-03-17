@@ -391,6 +391,12 @@ export const ApiService = {
     getFitnessPbs: async (playerId: number | string) => {
         const response = await api.get<{ pbs: FitnessPBs | null }>(`/v1/fitness/pbs/${playerId}`);
         return response.data;
+    },
+
+    // Engagement
+    getEngagement: async (playerId: number | string) => {
+        const response = await api.get<{ engagement: PlayerEngagement | null }>(`/engagement/${playerId}`);
+        return response.data;
     }
 };
 
@@ -403,4 +409,25 @@ export interface WellbeingSurvey {
     notes: string;
     submitted_at: string;
     readiness?: number;
+}
+
+export interface PlayerEngagement {
+    jumper_no: number;
+    listing?: string;
+    dob?: string;
+    state?: string;
+    has_children?: boolean;
+    program?: string;
+    area_of_schooling?: string;
+    education_study?: string;
+    university?: string;
+    study_monday?: boolean;
+    study_wednesday?: boolean;
+    study_thursday?: boolean;
+    certificate_1?: string;
+    certificate_2?: string;
+    body_load_tier?: number;
+    body_goal?: string;
+    community_engaged?: boolean;
+    engagement_notes?: string;
 }

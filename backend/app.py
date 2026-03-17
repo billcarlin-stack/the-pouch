@@ -66,6 +66,7 @@ def create_app(config=None):
     from routes.admin import admin_bp
     from routes.opposition import opposition_bp
     from routes.timeline import timeline_bp
+    from routes.engagement import engagement_bp
 
     app.register_blueprint(players_bp)
     app.register_blueprint(idp_bp)
@@ -84,6 +85,7 @@ def create_app(config=None):
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
     app.register_blueprint(opposition_bp, url_prefix='/api/opposition')
     app.register_blueprint(timeline_bp, url_prefix='/api/timeline')
+    app.register_blueprint(engagement_bp, url_prefix='/api/engagement')
 
     # ── Temporary Admin/Seed Route ────────────────────────────────
     @app.route('/api/admin/seed', methods=['GET'])
