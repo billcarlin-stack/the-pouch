@@ -4,7 +4,7 @@ from models.players import Player
 from models.wellbeing import WellbeingSurvey
 from models.injuries import InjuryLog
 from models.idp_ratings import IdpRating
-from db.alloydb_client import get_session
+from db.cloudsql_client import get_session
 from sqlalchemy import func
 
 ai_bp = Blueprint('ai', __name__)
@@ -16,7 +16,7 @@ def ask_hawk():
     
     session = get_session()
     
-    # Simple logic engine to mimic AI behavior by querying AlloyDB
+    # Simple logic engine to mimic AI behavior by querying Cloud SQL
     try:
         if 'sleep' in question or 'energy' in question:
             # Join WellbeingSurvey and Player to get names of those with lowest sleep

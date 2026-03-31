@@ -4,29 +4,103 @@
   3-tab player profile:
     1. Personal Information (bio, engagement, education, community)
     2. Footy Overview (training plan, stats, IDP radar, WOOP goals, match ratings, injuries)
-    3. Fitness Performance (GPS session, PBs, phase-of-play filtering)
+    3. Fitness Performance (GPS session, PBs)
+
+  FIX: All useState/useEffect hooks are declared at the top of the component,
+       BEFORE any early returns, to comply with React Rules of Hooks.
+  FIX: Replaced Recharts with native SVG charts to resolve React 19 compatibility issues.
 */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ApiService, formatPlayerImage, getMatchRatings } from '../services/api';
+
 import type { Player, Injury, PlayerStats, PlayerEngagement } from '../services/api';
 import {
     ChevronLeft, Share2, Printer, Activity, Target,
     User, Trophy, MapPin, GraduationCap, Heart,
-    BookOpen, Users, Dumbbell, Calendar, Award
+    BookOpen, Users, Dumbbell, Calendar, Award, Plus
 } from 'lucide-react';
-import { clsx } from 'clsx';
-import {
-    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-    ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis,
-    Tooltip, Cell, Legend
-} from 'recharts';
+import clsx from 'clsx';
 import { FitnessTab } from '../components/FitnessTab';
+import AddPlayerToTeamModal from '../components/modals/AddPlayerToTeamModal';
+
+
+
+// ─── Native SVG Charts ────────────────────────────────────────────────────────
+
+
+
+const NativeMatchRatingsChart = ({ data, size }: { data: any[]; size: { w: number; h: number } }) => {
+    if (!data || data.length === 0) return <div className="flex h-full items-center justify-center text-gray-400 font-medium">No match rating data available.</div>;
+
+    const padding = { top: 40, right: 20, bottom: 60, left: 20 };
+    const chartW = size.w - padding.left - padding.right;
+    const chartH = size.h - padding.top - padding.bottom;
+    const barWidth = Math.min(25, (chartW / data.length) * 0.6);
+    const xStep = chartW / (data.length || 1);
+
+    const getY = (val: number) => padding.top + chartH - (val / 5) * chartH;
+
+    const linePoints = data.map((d, i) => {
+        const x = padding.left + i * xStep + xStep / 2;
+        const y = getY(d.avg3);
+        return `${x},${y}`;
+    }).join(' ');
+
+    return (
+        <svg width={size.w} height={size.h} viewBox={`0 0 ${size.w} ${size.h}`}>
+            {/* Bars */}
+            {data.map((d, i) => {
+                const x = padding.left + i * xStep + (xStep - barWidth) / 2;
+                const h = (d.rating / 5) * chartH;
+                const y = padding.top + chartH - h;
+                const color = d.rating >= 4 ? '#10B981' : d.rating >= 3 ? '#F59E0B' : '#EF4444';
+                
+                return (
+                    <g key={`bar-${i}`}>
+                        <rect x={x} y={y} width={barWidth} height={h} fill={color} rx="4" />
+                        <text
+                            x={padding.left + i * xStep + xStep / 2}
+                            y={size.h - padding.bottom + 20}
+                            textAnchor="middle"
+                            fill="#9ca3af"
+                            fontSize="10"
+                            transform={`rotate(-45, ${padding.left + i * xStep + xStep / 2}, ${size.h - padding.bottom + 20})`}
+                        >
+                            {d.round}
+                        </text>
+                    </g>
+                );
+            })}
+
+            {/* Line for 3-Match Avg */}
+            <polyline
+                points={linePoints}
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            
+            {/* Line Dots */}
+            {data.map((d, i) => {
+                const x = padding.left + i * xStep + xStep / 2;
+                const y = getY(d.avg3);
+                return (
+                    <circle key={`dot-${i}`} cx={x} cy={y} r="4" fill="#fbbf24" stroke="#fff" strokeWidth="2" />
+                );
+            })}
+        </svg>
+    );
+};
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const ProfileHeader = ({ player, stats2025 }: { player: Player; stats2025: PlayerStats | null }) => (
+const ProfileHeader = ({ player, stats2025, isCoach }: { player: Player; stats2025: PlayerStats | null; isCoach: boolean }) => (
+
     <div className="bg-hfc-brown rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-hfc-brown/20 to-transparent" />
         <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
@@ -82,7 +156,7 @@ const ProfileHeader = ({ player, stats2025 }: { player: Player; stats2025: Playe
                         ].map(({ label, value }) => (
                             <div key={label} className="flex flex-col">
                                 <span className="text-[10px] text-amber-300 font-black uppercase tracking-widest mb-1">{label}</span>
-                                <span className="text-xl font-black text-white">{(value ?? 0).toFixed(1)}</span>
+                                <span className="text-xl font-black text-white">{Number(value ?? 0).toFixed(1)}</span>
                             </div>
                         ))}
                     </div>
@@ -90,12 +164,25 @@ const ProfileHeader = ({ player, stats2025 }: { player: Player; stats2025: Playe
             </div>
 
             {/* Readiness */}
-            <div className="hidden md:block text-right">
-                <div className={`text-6xl font-black ${player.readiness && player.readiness.score > 8 ? 'text-green-400' : 'text-gold-400'}`}>
-                    {player.readiness?.score?.toFixed(1) || '—'}
+            <div className="hidden md:flex flex-col items-end gap-4">
+                <div className="text-right">
+                    <div className={`text-6xl font-black ${player.readiness && player.readiness.score > 8 ? 'text-green-400' : 'text-gold-400'}`}>
+                        {player.readiness?.score ? Number(player.readiness.score).toFixed(1) : '—'}
+                    </div>
+                    <div className="text-xs text-amber-300 uppercase tracking-widest">Readiness</div>
                 </div>
-                <div className="text-xs text-amber-300 uppercase tracking-widest">Readiness</div>
+                
+                {isCoach && (
+                    <button 
+                        onClick={() => (window as any).openTeamModal?.()}
+                        className="flex items-center gap-2 px-6 py-3 bg-gold-400 text-hfc-brown rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-white transition-all shadow-[0_10px_20px_-5px_rgba(246,176,0,0.4)]"
+                    >
+                        <Plus size={16} />
+                        Add to Team
+                    </button>
+                )}
             </div>
+
         </div>
     </div>
 );
@@ -146,9 +233,14 @@ const AttributeCard = ({ title, text }: { title: string; text?: string }) => (
 
 export const PlayerDetail = () => {
     const { id } = useParams();
+    const { user } = useAuth();
+    const isCoach = user?.role === 'coach' || user?.role === 'admin';
+
+
+    // ── ALL hooks must be declared here, before any early returns ──
     const [player, setPlayer] = useState<Player | null>(null);
     const [matchRatings, setMatchRatings] = useState<any[]>([]);
-    const [aggregatedRatings, setAggregatedRatings] = useState<any[]>([]);
+
     const [playerInjuries, setPlayerInjuries] = useState<Injury[]>([]);
     const [stats2025, setStats2025] = useState<PlayerStats | null>(null);
     const [latestWellbeing, setLatestWellbeing] = useState<any>(null);
@@ -158,64 +250,78 @@ export const PlayerDetail = () => {
     const [engagement, setEngagement] = useState<PlayerEngagement | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'personal' | 'footy' | 'fitness'>('personal');
-    const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
+    const [showTeamModal, setShowTeamModal] = useState(false);
+
+    const chartRef = useRef<HTMLDivElement>(null);
+
+    const [chartSize, setChartSize] = useState({ w: 500, h: 300 });
+
+    useEffect(() => {
+        const obs = new ResizeObserver(() => {
+            if (chartRef.current) {
+                setChartSize({ w: chartRef.current.offsetWidth, h: chartRef.current.offsetHeight });
+            }
+        });
+        if (chartRef.current) obs.observe(chartRef.current);
+        return () => obs.disconnect();
+    }, []);
+
 
     useEffect(() => {
         if (id) {
             Promise.allSettled([
                 ApiService.getPlayer(id),
-                ApiService.getRatings(id),
                 ApiService.getInjuries(),
                 ApiService.getStats2025({ jumper_no: Number(id) }),
                 ApiService.getWellbeing(id, 1),
                 ApiService.getWoopGoals(Number(id)),
-                ApiService.getFitnessSession(id, selectedPhases),
+                ApiService.getFitnessSession(id),
+
                 ApiService.getFitnessPbs(id),
                 ApiService.getEngagement(id),
-            ]).then(([p, r, allInj, s, w, woop, fitS, fitP, eng]) => {
-                if (p.status === 'fulfilled') {
+            ]).then(([p, allInj, s, w, woop, fitS, fitP, eng]) => {
+
+                if (p.status === 'fulfilled' && p.value) {
                     setPlayer(p.value);
-                    setMatchRatings(getMatchRatings(p.value.jumper_no));
+                    if (p.value.jumper_no) {
+                        setMatchRatings(getMatchRatings(p.value.jumper_no));
+                    }
                 }
-                if (r.status === 'fulfilled') setAggregatedRatings(r.value.aggregated);
-                if (allInj.status === 'fulfilled') setPlayerInjuries(allInj.value.filter((i: Injury) => i.player_id === Number(id)));
-                if (s.status === 'fulfilled' && s.value.length > 0) setStats2025(s.value[0]);
-                if (w.status === 'fulfilled' && w.value.length > 0) setLatestWellbeing(w.value[0]);
-                if (woop.status === 'fulfilled') setWoopGoals(woop.value);
-                if (fitS.status === 'fulfilled') setFitnessSession(fitS.value.session);
-                if (fitP.status === 'fulfilled') setFitnessPBs(fitP.value.pbs);
-                if (eng.status === 'fulfilled') setEngagement(eng.value.engagement);
-            }).finally(() => setLoading(false));
+                if (allInj.status === 'fulfilled' && Array.isArray(allInj.value)) setPlayerInjuries(allInj.value.filter((i: Injury) => i.player_id === Number(id)));
+
+                if (s.status === 'fulfilled' && Array.isArray(s.value) && s.value.length > 0) setStats2025(s.value[0]);
+                if (w.status === 'fulfilled' && Array.isArray(w.value) && w.value.length > 0) setLatestWellbeing(w.value[0]);
+                if (woop.status === 'fulfilled' && Array.isArray(woop.value)) setWoopGoals(woop.value);
+                if (fitS.status === 'fulfilled') setFitnessSession(fitS.value?.session ?? null);
+                if (fitP.status === 'fulfilled') setFitnessPBs(fitP.value?.pbs ?? null);
+                if (eng.status === 'fulfilled') setEngagement(eng.value?.engagement ?? null);
+            }).catch(console.error).finally(() => setLoading(false));
         }
     }, [id]);
 
-    useEffect(() => {
-        if (id && !loading) {
-            ApiService.getFitnessSession(id, selectedPhases).then(res => {
-                setFitnessSession(res.session);
-            }).catch(console.error);
-        }
-    }, [selectedPhases, id]);
 
+
+    // Expose modal toggle to sub-component
+    useEffect(() => {
+        (window as any).openTeamModal = () => setShowTeamModal(true);
+        return () => { delete (window as any).openTeamModal; };
+    }, []);
+
+    // ── Early returns AFTER all hooks ──
     if (loading) return <div className="p-20 text-center text-gray-400">Loading Profile...</div>;
     if (!player) return <div className="p-20 text-center text-gray-400">Player not found</div>;
 
+    // ── Derived state (computed after hooks) ──
     const chartMatchData = matchRatings.map((m, idx) => {
         const last3 = matchRatings.slice(Math.max(0, idx - 2), idx + 1);
-        const sum = last3.reduce((s, r) => s + (r.rating || 0), 0);
+        const sum = last3.reduce((s, r) => s + (Number(r.rating) || 0), 0);
         return { ...m, avg3: Number((last3.length > 0 ? sum / last3.length : 0).toFixed(1)) };
     });
 
-    const idpData = aggregatedRatings.map(r => ({
-        subject: r.category, Coach: r.coach, Self: r.self, Squad: r.squad, fullMark: 10,
-    }));
 
-    const compositeScore = idpData.length > 0
-        ? (idpData.reduce((sum, d) => sum + (d.Coach || 0), 0) / idpData.length).toFixed(1)
-        : '0.0';
 
     const matchAvg = matchRatings.length > 0
-        ? (matchRatings.reduce((sum, r) => sum + (r.rating || 0), 0) / matchRatings.length).toFixed(1)
+        ? (matchRatings.reduce((sum, r) => sum + Number(r.rating || 0), 0) / matchRatings.length).toFixed(1)
         : '0.0';
 
     const TABS = [
@@ -224,7 +330,6 @@ export const PlayerDetail = () => {
         { key: 'fitness',  label: 'Fitness Performance', icon: Activity },
     ] as const;
 
-    // Study days for display
     const studyDays = [
         engagement?.study_monday && 'Monday',
         engagement?.study_wednesday && 'Wednesday',
@@ -232,7 +337,16 @@ export const PlayerDetail = () => {
     ].filter(Boolean).join(', ') || 'None';
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 relative">
+            {showTeamModal && player && (
+                <AddPlayerToTeamModal 
+                    player={player} 
+                    onClose={() => setShowTeamModal(false)} 
+                    onSuccess={() => {
+                        // Optionally refresh data
+                    }}
+                />
+            )}
             {/* Navigation */}
             <div className="flex items-center justify-between">
                 <Link to="/players" className="flex items-center gap-2 text-gray-500 hover:text-hfc-brown transition-colors font-medium">
@@ -246,7 +360,8 @@ export const PlayerDetail = () => {
             </div>
 
             {/* Header */}
-            <ProfileHeader player={player} stats2025={stats2025} />
+            <ProfileHeader player={player} stats2025={stats2025} isCoach={isCoach} />
+
 
             {/* Tab Navigation */}
             <div className="flex gap-1 p-1 bg-gray-100/50 rounded-2xl w-fit">
@@ -349,8 +464,8 @@ export const PlayerDetail = () => {
                                     {[
                                         { label: 'Sleep', value: latestWellbeing.sleep_score },
                                         { label: 'Soreness', value: latestWellbeing.soreness_score },
-                                        { label: 'Mood', value: 10 - latestWellbeing.stress_score },
-                                        { label: 'Readiness', value: ((latestWellbeing.sleep_score + latestWellbeing.soreness_score + (10 - latestWellbeing.stress_score)) / 3).toFixed(1), gold: true },
+                                        { label: 'Mood', value: 10 - Number(latestWellbeing.stress_score || 0) },
+                                        { label: 'Readiness', value: ((Number(latestWellbeing.sleep_score || 0) + Number(latestWellbeing.soreness_score || 0) + (10 - Number(latestWellbeing.stress_score || 0))) / 3).toFixed(1), gold: true },
                                     ].map(({ label, value, gold }: any) => (
                                         <div key={label} className="text-center bg-gray-50 rounded-xl p-3">
                                             <div className={`text-xl font-bold ${gold ? 'text-gold-500' : 'text-gray-900'}`}>{value}/10</div>
@@ -376,30 +491,7 @@ export const PlayerDetail = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                        {/* IDP Radar */}
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h3 className="font-bold text-xl text-gray-900 border-b-2 border-gold-400 pb-2 mb-6">
-                                Skill Radar — Coach vs Self vs Squad Avg
-                            </h3>
-                            <div className="h-96 w-full relative">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <RadarChart cx="50%" cy="50%" outerRadius="70%" data={idpData}>
-                                        <PolarGrid stroke="#e5e7eb" />
-                                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 500 }} />
-                                        <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
-                                        <Radar name="Squad Average" dataKey="Squad" stroke="#6366f1" strokeWidth={2} strokeDasharray="4 4" fill="transparent" />
-                                        <Radar name="Player Self-Rating" dataKey="Self" stroke="#fbbf24" strokeWidth={3} fill="#fbbf24" fillOpacity={0.1} />
-                                        <Radar name="Coach Rating" dataKey="Coach" stroke="#6a5a52" strokeWidth={2} fill="#6a5a52" fillOpacity={0.5} />
-                                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }} />
-                                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold' }} />
-                                    </RadarChart>
-                                </ResponsiveContainer>
-                                <div className="absolute top-0 right-0 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                    <div className="text-xl font-bold text-gray-900">{compositeScore}</div>
-                                    <div className="text-[10px] text-gray-500 uppercase">Coach Avg</div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         {/* Match Ratings */}
                         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -410,21 +502,8 @@ export const PlayerDetail = () => {
                                     <span className="text-gray-400 text-xs ml-2">({matchRatings.length} matches)</span>
                                 </div>
                             </div>
-                            <div className="h-80 w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <ComposedChart data={chartMatchData}>
-                                        <XAxis dataKey="round" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#9ca3af' }} angle={-45} textAnchor="end" height={50} />
-                                        <YAxis hide domain={[0, 5]} />
-                                        <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                                        <Legend verticalAlign="top" height={36} iconType="rect" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
-                                        <Bar name="Match Rating" dataKey="rating" radius={[4, 4, 0, 0]} barSize={20}>
-                                            {chartMatchData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.rating >= 4 ? '#10B981' : entry.rating >= 3 ? '#F59E0B' : '#EF4444'} />
-                                            ))}
-                                        </Bar>
-                                        <Line name="3-Match Avg" type="monotone" dataKey="avg3" stroke="#fbbf24" strokeWidth={3} dot={{ fill: '#fbbf24', r: 4, strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                                    </ComposedChart>
-                                </ResponsiveContainer>
+                            <div ref={chartRef} className="h-80 w-full">
+                                <NativeMatchRatingsChart data={chartMatchData} size={chartSize} />
                             </div>
                         </div>
 
@@ -437,21 +516,21 @@ export const PlayerDetail = () => {
                                 </h3>
                                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
                                     {[
-                                        { label: 'Games', value: stats2025.games_played, unit: '' },
-                                        { label: 'AF Score', value: stats2025.af_avg, unit: '' },
-                                        { label: 'Disposals', value: stats2025.disposals_avg, unit: '' },
-                                        { label: 'Kicks', value: stats2025.kicks_avg, unit: '' },
-                                        { label: 'Handballs', value: stats2025.handballs_avg, unit: '' },
-                                        { label: 'Marks', value: stats2025.marks_avg, unit: '' },
-                                        { label: 'Tackles', value: stats2025.tackles_avg, unit: '' },
-                                        { label: 'Clearances', value: stats2025.clearances_avg, unit: '' },
-                                        { label: 'Goals', value: stats2025.goals_avg, unit: '' },
-                                        { label: 'Hitouts', value: stats2025.hitouts_avg, unit: '' },
-                                        { label: 'Rating Pts', value: stats2025.rating_points, unit: '' },
-                                    ].map(({ label, value, unit }) => (
+                                        { label: 'Games', value: stats2025.games_played },
+                                        { label: 'AF Score', value: stats2025.af_avg },
+                                        { label: 'Disposals', value: stats2025.disposals_avg },
+                                        { label: 'Kicks', value: stats2025.kicks_avg },
+                                        { label: 'Handballs', value: stats2025.handballs_avg },
+                                        { label: 'Marks', value: stats2025.marks_avg },
+                                        { label: 'Tackles', value: stats2025.tackles_avg },
+                                        { label: 'Clearances', value: stats2025.clearances_avg },
+                                        { label: 'Goals', value: stats2025.goals_avg },
+                                        { label: 'Hitouts', value: stats2025.hitouts_avg },
+                                        { label: 'Rating Pts', value: stats2025.rating_points },
+                                    ].map(({ label, value }) => (
                                         <div key={label} className="text-center bg-gray-50 rounded-xl p-3">
                                             <div className="text-xl font-bold text-hfc-brown">
-                                                {typeof value === 'number' ? value.toFixed(value % 1 === 0 ? 0 : 1) : value ?? '—'}{unit}
+                                                {typeof value !== 'undefined' && value !== null ? Number(value).toFixed(Number(value) % 1 === 0 ? 0 : 1) : '—'}
                                             </div>
                                             <div className="text-[10px] text-gray-400 uppercase tracking-widest">{label}</div>
                                         </div>
@@ -551,24 +630,12 @@ export const PlayerDetail = () => {
                         </h3>
                         {fitnessSession && (
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Phase of Play:</span>
-                                <select
-                                    multiple
-                                    value={selectedPhases}
-                                    onChange={(e) => {
-                                        const options = Array.from(e.target.selectedOptions, o => o.value);
-                                        setSelectedPhases(options);
-                                    }}
-                                    className="text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-amber-400 min-w-[150px]"
-                                >
-                                    <option value="Offense">Offense</option>
-                                    <option value="Defense">Defense</option>
-                                    <option value="Stoppages">Stoppages</option>
-                                    <option value="Bench">Bench</option>
-                                    <option value="Late-Quarter">Late-Quarter</option>
-                                </select>
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest px-3 py-1 bg-gray-50 rounded-lg">
+                                    Last Session: {new Date(fitnessSession.session_date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}
+                                </span>
                             </div>
                         )}
+
                     </div>
                     <FitnessTab
                         session={fitnessSession}

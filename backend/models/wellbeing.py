@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, func
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from models.players import Player
 import logging
 
@@ -19,7 +19,7 @@ class WellbeingSurvey(Base):
 
 def submit_survey(data: dict) -> dict:
     """
-    Inserts a wellbeing survey record into AlloyDB.
+    Inserts a wellbeing survey record into Cloud SQL.
     """
     session = get_session()
     try:
@@ -49,7 +49,7 @@ def submit_survey(data: dict) -> dict:
 
 def get_surveys_for_player(jumper_no: int, limit: int = 90) -> list[dict]:
     """
-    Retrieves wellbeing survey history for a player from AlloyDB.
+    Retrieves wellbeing survey history for a player from Cloud SQL.
     """
     session = get_session()
     try:
@@ -67,7 +67,7 @@ def get_surveys_for_player(jumper_no: int, limit: int = 90) -> list[dict]:
 
 def get_surveys_with_notes(limit: int = 20) -> list[dict]:
     """
-    Retrieves recent wellbeing surveys that are 'critical' from AlloyDB.
+    Retrieves recent wellbeing surveys that are 'critical' from Cloud SQL.
     """
     session = get_session()
     try:

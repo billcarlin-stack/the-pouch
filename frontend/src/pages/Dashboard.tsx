@@ -102,7 +102,7 @@ export const Dashboard = () => {
             <div className="flex items-center justify-between bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-hfc-brown/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-black text-hfc-brown tracking-tight uppercase">Team Performance Hub</h1>
+                    <h1 className="text-3xl font-black text-emerald-600 tracking-tight uppercase">Team Performance Hub</h1>
                     <p className="text-gray-500 font-medium mt-1">Real-time squad analytics for coaching insight.</p>
                 </div>
                 <div className="bg-hfc-brown/5 p-4 rounded-2xl relative z-10 group">

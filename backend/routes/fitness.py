@@ -7,7 +7,7 @@ Endpoints:
 """
 
 import logging
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models.fitness import get_latest_session, get_fitness_pbs
 from auth.middleware import require_role
 

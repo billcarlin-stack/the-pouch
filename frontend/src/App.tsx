@@ -16,8 +16,12 @@ import CalendarPage from './pages/CalendarPage';
 import HawkAiPage from './pages/HawkAiPage';
 import OppositionPreviews from './pages/OppositionPreviews';
 import EventTimeline from './pages/EventTimeline';
-
+import PlayerComparison from './pages/MatchCenter/PlayerComparison';
 import AdminSettings from './pages/AdminSettings';
+import { PlayerReview } from './pages/PlayerReview';
+
+
+
 
 /**
  * Route guard: only renders children if user has the required role.
@@ -82,6 +86,7 @@ function AppRoutes() {
         
         <Route path="match-center/previews" element={<CoachOnly><OppositionPreviews /></CoachOnly>} />
         <Route path="match-center/timeline" element={<CoachOnly><EventTimeline /></CoachOnly>} />
+        <Route path="match-center/comparison" element={<CoachOnly><PlayerComparison /></CoachOnly>} />
 
         {/* Admin-only routes */}
         <Route path="admin/settings" element={<AdminOnly><AdminSettings /></AdminOnly>} />
@@ -94,6 +99,8 @@ function AppRoutes() {
         {/* Player-only routes */}
         <Route path="checkin" element={<PlayerOnly><DailyCheckIn /></PlayerOnly>} />
         <Route path="woop" element={<PlayerOnly><WoopGoals /></PlayerOnly>} />
+        <Route path="ratings/player-review" element={<PlayerOnly><PlayerReview /></PlayerOnly>} />
+
 
         <Route path="idp" element={<div className="p-10">IDP Module Coming Soon</div>} />
         <Route path="*" element={<Navigate to="/" replace />} />

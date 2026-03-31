@@ -6,8 +6,8 @@
 */
 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, LogOut, ClipboardCheck, Sparkles, UserCircle, Calendar, MessageSquareCode, Shield } from 'lucide-react';
-import { clsx } from 'clsx';
+import { LayoutDashboard, Users, Activity, Target, BarChart2, ClipboardList, LogOut, ClipboardCheck, Sparkles, UserCircle, Calendar, MessageSquareCode, Shield, Sword } from 'lucide-react';
+import clsx from 'clsx';
 import { useAuth } from '../../context/AuthContext';
 
 import hfcLogo from '../../assets/hfc-logo.png';
@@ -85,13 +85,17 @@ export const Sidebar = () => {
                 <NavItem to="/injuries" icon={Activity} label="Injury Log" />
                 <NavItem to="/calendar" icon={Calendar} label="Squad Calendar" />
 
-                {/* Player-only items */}
-                {!isCoach && (
+                {/* Player-only items (Hidden from coaches/admins) */}
+                {user?.role === 'player' && (
                     <>
                         <NavItem to="/checkin" icon={ClipboardCheck} label="Daily Check-In" />
                         <NavItem to="/woop" icon={Sparkles} label="WOOP Goals" />
+                        <NavItem to="/ratings/player-review" icon={Target} label="Player Review" />
                     </>
                 )}
+
+
+
 
                 {/* Coach-only items */}
                 {isCoach && (
@@ -101,13 +105,15 @@ export const Sidebar = () => {
                         </div>
                         <NavItem to="/match-center/previews" icon={Target} label="Opposition Previews" />
                         <NavItem to="/match-center/timeline" icon={Activity} label="Event Timeline" />
+                        <NavItem to="/match-center/comparison" icon={Sword} label="Player Comparison" />
 
                         <div className="pt-8 pb-3 px-4 text-[10px] font-black text-amber-300/40 uppercase tracking-[0.2em]">
                             Coaching
                         </div>
                         <NavItem to="/team-builder" icon={ClipboardList} label="Team Builder" />
-                        <NavItem to="/ratings/input" icon={Target} label="Coach Ratings" />
-                        <NavItem to="/ratings/compare" icon={Users} label="Rating Comparison" />
+                        <NavItem to="/ratings/input" icon={ClipboardCheck} label="Coach Review" />
+                        <NavItem to="/ratings/compare" icon={BarChart2} label="Post Match Player Review" />
+
                     </>
                 )}
 

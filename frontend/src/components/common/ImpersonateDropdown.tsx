@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { api } from '../../services/api';
+import { ApiService } from '../../services/api';
 import { Eye, ChevronDown, Check, Loader2 } from 'lucide-react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 
 interface Player {
     jumper_no: number;
@@ -24,15 +24,23 @@ export const ImpersonateDropdown = () => {
 
         const stored = sessionStorage.getItem('hawk_hub_impersonate');
         if (stored) {
-            setCurrentImp(JSON.parse(stored));
+            try {
+                setCurrentImp(JSON.parse(stored));
+            } catch (err) {
+                console.error("Invalid impersonation session", err);
+                sessionStorage.removeItem('hawk_hub_impersonate');
+            }
         }
 
         const fetchPlayers = async () => {
             setLoading(true);
             try {
-                const { data } = await api.get('/players');
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                setPlayers(data.sort((a: any, b: any) => a.jumper_no - b.jumper_no));
+                const data = await ApiService.getPlayers();
+                if (Array.isArray(data)) {
+                    setPlayers([...data].sort((a, b) => (a.jumper_no || 0) - (b.jumper_no || 0)));
+                } else {
+                    setPlayers([]);
+                }
             } catch (e) {
                 console.error("Failed to load players for impersonate dropdown", e);
             } finally {

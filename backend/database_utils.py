@@ -1,6 +1,6 @@
 """
 The Hawk Hub — Database Utilities
-Massive Seeder logic for initializing and seeding AlloyDB with the FULL Hawthorn dataset, 
+Massive Seeder logic for initializing and seeding Cloud SQL with the FULL Hawthorn dataset, 
 including highly granular coaching ratings, real AFL player statistics, WOOP goals, and injury logs.
 """
 
@@ -12,7 +12,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import sessionmaker
 
-from db.alloydb_client import Base, get_engine
+from db.cloudsql_client import Base, get_engine
 from models.players import Player
 from models.fitness import FitnessSession, FitnessPBs
 from models.ratings import CoachRating
@@ -175,6 +175,18 @@ POSITION_PROFILES = {
     "key forward": {"distance_km": (10, 14), "top_speed": (31, 35), "hr_avg": (148, 165), "hsd_m": (900, 1600), "sprints": (15, 27), "acc": (45, 80)},
     "key def":    {"distance_km": (11, 15), "top_speed": (29, 33), "hr_avg": (150, 166), "hsd_m": (1000, 1800), "sprints": (16, 28), "acc": (50, 85)},
 }
+
+# ── Team Builder Positions ────────────────────────────────────────────────────
+TEAM_POSITIONS = [
+    "B_LEFT", "FB", "B_RIGHT",
+    "HB_LEFT", "CHB", "HB_RIGHT",
+    "W_LEFT", "R", "C", "W_RIGHT",
+    "RR", "ROV",
+    "HF_LEFT", "CHF", "HF_RIGHT",
+    "FP_LEFT", "FF", "FP_RIGHT",
+    "BENCH_1", "BENCH_2", "BENCH_3", "BENCH_4", "BENCH_5",
+    "CONSID_1", "CONSID_2", "CONSID_3", "CONSID_4"
+]
 
 def rnd(a, b, decimals=1):
     return round(random.uniform(a, b), decimals)
@@ -381,6 +393,15 @@ def initialize_and_seed():
                     end_time=event_date.replace(hour=11, minute=0, second=0),
                     player_ids=rehab_players
                 ))
+
+        # -- Team Selections (Initial empty slots for Team Builder) --
+        logger.info("Initializing Team Builder positions...")
+        for pos_id in TEAM_POSITIONS:
+            objects_to_add.append(TeamSelection(
+                position_id=pos_id,
+                player_id=None,
+                notes=""
+            ))
 
         # Commit the main dataset first
         session.add_all(objects_to_add)

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Text
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from config import get_config
 from utils.cache import data_cache
 
@@ -45,7 +45,7 @@ class Player(Base):
 
 def get_all_players() -> list[dict]:
     """
-    Fetches all players from AlloyDB ordered by jumper number.
+    Fetches all players from Cloud SQL ordered by jumper number.
     """
     cached = data_cache.get("all_players")
     if cached:

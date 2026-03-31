@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, Float, DateTime
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class IdpRating(Base):
 
 def get_idp_for_player(jumper_no: int) -> dict | None:
     """
-    Returns IDP ratings for a given player from AlloyDB.
+    Returns IDP ratings for a given player from Cloud SQL.
     """
     session = get_session()
     try:
@@ -41,7 +41,7 @@ def get_idp_for_player(jumper_no: int) -> dict | None:
 
 def get_idp_for_players(jumper_nos: list[int]) -> list[dict]:
     """
-    Returns IDP ratings for multiple players from AlloyDB.
+    Returns IDP ratings for multiple players from Cloud SQL.
     """
     session = get_session()
     try:

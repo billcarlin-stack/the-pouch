@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class FitnessSession(Base):
 
 def get_latest_session(player_id: int, phases: list = None) -> dict | None:
     """
-    Returns the most recent GPS/training session for a player from AlloyDB.
+    Returns the most recent GPS/training session for a player from Cloud SQL.
     If 'phases' is provided, recalculates metrics via dynamic SQL based on game phases.
     """
     session = get_session()
@@ -122,7 +122,7 @@ class FitnessPBs(Base):
 
 def get_fitness_pbs(player_id: int) -> dict | None:
     """
-    Returns the personal best fitness metrics for a player from AlloyDB.
+    Returns the personal best fitness metrics for a player from Cloud SQL.
     """
     session = get_session()
     try:

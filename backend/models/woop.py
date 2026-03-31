@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text, text
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from datetime import datetime
 import uuid
 

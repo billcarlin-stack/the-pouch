@@ -192,6 +192,36 @@ export interface TeamPosition {
     position_id: string;
     player_id: number | null;
     notes: string;
+    rotation_color?: string;
+    rotation_minutes?: number;
+}
+
+export interface SavedSquad {
+    id: number;
+    name: string;
+    data: string;
+    created_at: string;
+}
+
+
+export interface SquadAggregates {
+    average_age: number;
+    total_games: number;
+    projected_metres_gained: number;
+    projected_clearances: number;
+}
+
+export interface PlayerComparisonStats {
+    contested_possessions: number;
+    metres_gained: number;
+    clearances: number;
+    score_involvements: number;
+    tackles: number;
+}
+
+export interface PlayerComparisonResponse {
+    players: Record<string, PlayerComparisonStats>;
+    opponent_context: string;
 }
 
 // AFL Fantasy player IDs mapped by Hawthorn jumper number
@@ -319,12 +349,36 @@ export const ApiService = {
         const response = await api.get<TeamPosition[]>('/team/builder');
         return response.data;
     },
-    updateTeamSelection: async (posId: string, playerId: number | null, notes: string) => {
+    updateTeamSelection: async (posId: string, playerId: number | null, notes: string, rotationColor?: string, rotationMinutes?: number) => {
         const response = await api.post('/team/builder', {
             position_id: posId,
             player_id: playerId,
-            notes: notes
+            notes: notes,
+            rotation_color: rotationColor,
+            rotation_minutes: rotationMinutes
         });
+        return response.data;
+    },
+    getSavedSquads: async () => {
+        const response = await api.get<SavedSquad[]>('/team/saved');
+        return response.data;
+    },
+    saveSquad: async (name: string) => {
+        const response = await api.post('/team/saved', { name });
+        return response.data;
+    },
+    loadSquad: async (squadId: number) => {
+        const response = await api.post(`/team/saved/${squadId}/load`);
+        return response.data;
+    },
+
+    getSquadAggregates: async (playerIds: number[]) => {
+        const response = await api.post<SquadAggregates>('/squad-builder/aggregates', { player_ids: playerIds });
+        return response.data;
+    },
+    compareSquadPlayers: async (p1: number, p2: number, opponent?: string) => {
+        const url = `/squad-builder/compare?p1=${p1}&p2=${p2}${opponent ? `&opponent=${opponent}` : ''}`;
+        const response = await api.get<PlayerComparisonResponse>(url);
         return response.data;
     },
 

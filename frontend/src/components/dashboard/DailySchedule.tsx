@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Calendar, Clock, ChevronRight, Info } from 'lucide-react';
 import { ApiService } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 
 export const DailySchedule = () => {
     const { user } = useAuth();
@@ -35,8 +35,9 @@ export const DailySchedule = () => {
         fetchToday();
     }, [user]);
 
-    const getTypeStyles = (type: string) => {
-        switch (type.toLowerCase()) {
+    const getTypeStyles = (type: string | null | undefined) => {
+        const t = (type || '').toLowerCase();
+        switch (t) {
             case 'main session': return 'bg-amber-100 text-hfc-brown border-amber-200';
             case 'weights': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
             case 'rehab': return 'bg-red-100 text-red-800 border-red-200';
@@ -72,9 +73,9 @@ export const DailySchedule = () => {
                             <div className="bg-white border border-gray-100 p-4 rounded-2xl hover:border-hfc-brown/30 hover:shadow-md transition-all duration-300 relative overflow-hidden">
                                 <div className={clsx(
                                     "absolute left-0 top-0 bottom-0 w-1",
-                                    event.type.toLowerCase() === 'main session' ? 'bg-hfc-brown' :
-                                        event.type.toLowerCase() === 'weights' ? 'bg-indigo-500' :
-                                            event.type.toLowerCase() === 'rehab' ? 'bg-red-500' : 'bg-gray-400'
+                                    event.type?.toLowerCase() === 'main session' ? 'bg-hfc-brown' :
+                                        event.type?.toLowerCase() === 'weights' ? 'bg-indigo-500' :
+                                            event.type?.toLowerCase() === 'rehab' ? 'bg-red-500' : 'bg-gray-400'
                                 )} />
 
                                 <div className="flex items-center justify-between gap-4">

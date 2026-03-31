@@ -1,7 +1,7 @@
 """
 The Nest — Player Engagement Seed Script
 
-Populates the `player_engagement` AlloyDB table with realistic placeholder
+Populates the `player_engagement` Cloud SQL table with realistic placeholder
 data for all 44 Hawthorn FC players, based on the AFL Player Engagement 2026
 spreadsheet format.
 
@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.engagement import PlayerEngagement
-from db.alloydb_client import Base
+from db.cloudsql_client import Base
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",

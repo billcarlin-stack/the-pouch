@@ -6,12 +6,12 @@ steps:
       - '--build-arg'
       - 'VITE_API_URL=https://the-nest-api-114675580879.australia-southeast1.run.app/api'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/the-nest-frontend:latest'
       - '.'
 
   # Push the image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/the-nest-frontend:latest']
 
   # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -21,7 +21,7 @@ steps:
       - 'deploy'
       - 'the-nest-frontend'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/the-nest-frontend:latest'
       - '--region'
       - 'australia-southeast1'
       - '--allow-unauthenticated'
@@ -29,4 +29,4 @@ steps:
       - '80'
 
 images:
-  - 'gcr.io/$PROJECT_ID/the-nest-frontend:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/the-nest-frontend:latest'

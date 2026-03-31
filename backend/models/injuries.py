@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from models.players import Player
 from config import get_config
 
@@ -23,7 +23,7 @@ class InjuryLog(Base):
 
 def log_injury(data: dict) -> dict:
     """
-    Logs an injury and updates the player's status in AlloyDB.
+    Logs an injury and updates the player's status in Cloud SQL.
     """
     session = get_session()
     try:
@@ -69,7 +69,7 @@ def log_injury(data: dict) -> dict:
 
 def get_injury_history() -> list[dict]:
     """
-    Fetches injury history from AlloyDB.
+    Fetches injury history from Cloud SQL.
     """
     session = get_session()
     try:

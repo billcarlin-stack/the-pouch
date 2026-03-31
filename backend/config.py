@@ -29,16 +29,29 @@ class Config:
     BQ_AVAILABILITY_TABLE = "team_availability"
     BQ_COACH_RATINGS_TABLE = "coach_ratings"
 
-    # AlloyDB / PostgreSQL
+    # Cloud SQL / PostgreSQL
     @property
     def DATABASE_URL(self):
+        # 1. Check for Cloud SQL Auth Proxy (Unix Socket) Env Vars (Preferred for Production)
+        conn_name = os.environ.get("DB_CONNECTION_NAME")
+        db_pass = os.environ.get("DB_PASSWORD")
+        db_name = os.environ.get("DB_NAME", "hfc_prod")
+        db_user = os.environ.get("DB_USER", "postgres")
+
+        if conn_name and db_pass:
+            # Construct Unix socket URL for Cloud Run
+            # Format: postgresql+pg8000://<user>:<pass>@/<db>?unix_sock=/cloudsql/<conn_name>/.s.PGSQL.5432
+            return f"postgresql+pg8000://{db_user}:{db_pass}@/{db_name}?unix_sock=/cloudsql/{conn_name}/.s.PGSQL.5432"
+
+        # 2. Fallback to legacy DATABASE_URL string
         url = os.environ.get(
             "DATABASE_URL", 
             "postgresql://postgres:postgres@localhost:5432/hfc_dev"
         )
-        # Ensure sslmode=require for production/AlloyDB if not specified
+        
+        # Ensure sslmode=require for legacy connections if not specified
         if "10.31.0.2" in url or os.environ.get("FLASK_ENV") == "production":
-            if "sslmode" not in url:
+            if "sslmode" not in url and "unix_sock" not in url:
                 separator = "&" if "?" in url else "?"
                 url = f"{url}{separator}sslmode=require"
         return url

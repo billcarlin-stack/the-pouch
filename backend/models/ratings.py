@@ -2,7 +2,7 @@ import uuid
 import random
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from config import get_config
 
 _config = get_config()
@@ -17,11 +17,13 @@ class CoachRating(Base):
     rating_value = Column(Integer, nullable=False)
     notes = Column(Text)
     date = Column(String(10)) # YYYY-MM-DD
+    source = Column(String(20), nullable=False, default='coach') # 'coach' or 'player'
     created_at = Column(DateTime, default=datetime.utcnow)
+
 
 def submit_rating(data: dict) -> dict:
     """
-    Submits a coach rating for a player skill using AlloyDB.
+    Submits a coach rating for a player skill using Cloud SQL.
     """
     session = get_session()
     try:
@@ -31,10 +33,12 @@ def submit_rating(data: dict) -> dict:
             skill_name=data["skill_name"],
             rating_value=int(data["rating_value"]),
             notes=data.get("notes", ""),
-            date=datetime.now().strftime("%Y-%m-%d")
+            date=datetime.now().strftime("%Y-%m-%d"),
+            source=data.get("source", "coach")
         )
         session.add(new_rating)
         session.commit()
+
         return {"message": "Rating submitted successfully"}
     except Exception as e:
         session.rollback()
@@ -44,18 +48,20 @@ def submit_rating(data: dict) -> dict:
 
 def get_player_ratings(player_id: int) -> dict:
     """
-    Fetches the latest coach ratings for a player from AlloyDB.
+    Fetches the latest coach ratings for a player from Cloud SQL.
     """
     session = get_session()
     try:
         # Get all ratings for this player, ordered by created_at desc
         ratings_objs = session.query(CoachRating).filter(CoachRating.player_id == player_id).order_by(CoachRating.created_at.desc()).all()
         
-        # Deduplicate to get only the latest rating per skill
+        # Deduplicate to get only the latest rating per skill, separated by source
         coach_ratings = {}
+        self_ratings = {}
+        
         for r in ratings_objs:
             key = f"{r.skill_category}_{r.skill_name}"
-            if key not in coach_ratings:
+            if r.source == 'coach' and key not in coach_ratings:
                 coach_ratings[key] = {
                     "category": r.skill_category,
                     "skill": r.skill_name,
@@ -63,6 +69,15 @@ def get_player_ratings(player_id: int) -> dict:
                     "notes": r.notes,
                     "date": r.date
                 }
+            elif r.source == 'player' and key not in self_ratings:
+                self_ratings[key] = {
+                    "category": r.skill_category,
+                    "skill": r.skill_name,
+                    "rating": r.rating_value,
+                    "notes": r.notes,
+                    "date": r.date
+                }
+
                 
         comparison_data = []
         
@@ -91,15 +106,21 @@ def get_player_ratings(player_id: int) -> dict:
                     return group
             return None
 
-        # Process Granular Data
-        for key, data in coach_ratings.items():
-            coach_val = data["rating"]
-            skill = data["skill"]
-            category = data["category"]
+        # Process Granular Data (Join Coach and Self)
+        all_skills = set(list(coach_ratings.keys()) + list(self_ratings.keys()))
+        
+        for key in all_skills:
+            coach_data = coach_ratings.get(key)
+            self_data = self_ratings.get(key)
             
-            # Mock values for Self and Squad
-            self_val = max(1, min(10, coach_val + random.randint(-2, 2)))
-            squad_val = max(1, min(10, coach_val + random.randint(-1, 2)))
+            skill = coach_data["skill"] if coach_data else self_data["skill"]
+            category = coach_data["category"] if coach_data else self_data["category"]
+            
+            coach_val = coach_data["rating"] if coach_data else 0
+            self_val = self_data["rating"] if self_data else 0
+            
+            # Use random for squad avg only in demo context, or leave 0
+            squad_val = max(1, min(10, (coach_val or self_val) + random.randint(-1, 2)))
             
             comparison_data.append({
                 "skill": skill,
@@ -107,26 +128,28 @@ def get_player_ratings(player_id: int) -> dict:
                 "coach_rating": coach_val,
                 "self_rating": self_val,
                 "squad_avg": squad_val,
-                "gap": coach_val - self_val
+                "gap": coach_val - self_val if (coach_val and self_val) else 0
             })
+
 
             # Add to aggregation
             group = get_group(skill)
             if group:
-                aggregated[group]["coach"].append(coach_val)
-                aggregated[group]["self"].append(self_val)
+                if coach_val: aggregated[group]["coach"].append(coach_val)
+                if self_val: aggregated[group]["self"].append(self_val)
                 aggregated[group]["squad"].append(squad_val)
+
 
         # Finalize Aggregated Data
         aggregated_data = []
         import statistics
         for group, vals in aggregated.items():
-            if vals["coach"]:
+            if vals["coach"] or vals["self"]:
                 aggregated_data.append({
                     "category": group,
-                    "coach": round(statistics.mean(vals["coach"]), 1),
-                    "self": round(statistics.mean(vals["self"]), 1),
-                    "squad": round(statistics.mean(vals["squad"]), 1)
+                    "coach": round(statistics.mean(vals["coach"]), 1) if vals["coach"] else 0,
+                    "self": round(statistics.mean(vals["self"]), 1) if vals["self"] else 0,
+                    "squad": round(statistics.mean(vals["squad"]), 1) if vals["squad"] else 0
                 })
 
         return {

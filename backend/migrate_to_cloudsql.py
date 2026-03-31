@@ -1,6 +1,6 @@
 from google.cloud import bigquery
 from sqlalchemy.orm import sessionmaker
-from db.alloydb_client import get_engine, init_db, get_session
+from db.cloudsql_client import get_engine, init_db, get_session
 from models.players import Player
 from models.ratings import CoachRating
 from models.wellbeing import WellbeingSurvey
@@ -291,7 +291,7 @@ def migrate_stats():
         print(f"No player stats table found or error: {e}")
 
 if __name__ == "__main__":
-    print("Initializing AlloyDB schema...")
+    print("Initializing Cloud SQL schema...")
     init_db()
     
     migrate_players()

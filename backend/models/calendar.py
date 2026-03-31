@@ -2,7 +2,7 @@ import logging
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime, JSON
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class CalendarEvent(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 def create_event(data: dict) -> dict:
-    """Inserts a calendar event record into AlloyDB."""
+    """Inserts a calendar event record into Cloud SQL."""
     session = get_session()
     try:
         record = CalendarEvent(
@@ -50,7 +50,7 @@ def create_event(data: dict) -> dict:
         session.close()
 
 def get_events(start_date: str = None, end_date: str = None, player_id: int = None) -> list[dict]:
-    """Retrieves calendar events from AlloyDB."""
+    """Retrieves calendar events from Cloud SQL."""
     session = get_session()
     try:
         query = session.query(CalendarEvent)
@@ -84,7 +84,7 @@ def get_events(start_date: str = None, end_date: str = None, player_id: int = No
         session.close()
 
 def delete_event(event_id: str):
-    """Deletes a calendar event from AlloyDB."""
+    """Deletes a calendar event from Cloud SQL."""
     session = get_session()
     try:
         event = session.query(CalendarEvent).filter(CalendarEvent.id == event_id).first()

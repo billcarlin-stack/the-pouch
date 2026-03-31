@@ -10,7 +10,7 @@ Stores AFL Player Engagement 2026 fields:
 
 import logging
 from sqlalchemy import Column, Integer, String, Boolean, Date, Text
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 
 logger = logging.getLogger(__name__)
 

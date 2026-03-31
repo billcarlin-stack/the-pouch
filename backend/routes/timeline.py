@@ -1,6 +1,6 @@
 import logging
 from flask import Blueprint, jsonify
-from db.alloydb_client import get_session
+from db.cloudsql_client import get_session
 from sqlalchemy import text
 
 logger = logging.getLogger(__name__)

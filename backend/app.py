@@ -67,6 +67,7 @@ def create_app(config=None):
     from routes.opposition import opposition_bp
     from routes.timeline import timeline_bp
     from routes.engagement import engagement_bp
+    from routes.squad_builder import squad_builder_bp
 
     app.register_blueprint(players_bp)
     app.register_blueprint(idp_bp)
@@ -86,6 +87,7 @@ def create_app(config=None):
     app.register_blueprint(opposition_bp, url_prefix='/api/opposition')
     app.register_blueprint(timeline_bp, url_prefix='/api/timeline')
     app.register_blueprint(engagement_bp, url_prefix='/api/engagement')
+    app.register_blueprint(squad_builder_bp, url_prefix='/api/squad-builder')
 
     # ── Temporary Admin/Seed Route ────────────────────────────────
     @app.route('/api/admin/seed', methods=['GET'])
@@ -113,7 +115,7 @@ def create_app(config=None):
     def debug_users():
         try:
             from models.user_roles import UserRole
-            from db.alloydb_client import get_session
+            from db.cloudsql_client import get_session
             session = get_session()
             users = session.query(UserRole).all()
             user_list = [{"email": u.google_email, "role": u.role, "name": u.name} for u in users]

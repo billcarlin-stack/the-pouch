@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 from models.players import Player
 
 class PlayerStats(Base):

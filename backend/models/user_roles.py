@@ -11,7 +11,7 @@ or manually in the database.
 
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
-from db.alloydb_client import Base, get_session
+from db.cloudsql_client import Base, get_session
 
 
 class UserRole(Base):

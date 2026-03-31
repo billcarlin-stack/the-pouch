@@ -9,18 +9,18 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 try:
-    from db.alloydb_client import init_db
-    from seeds.seed_alloydb_players import seed_alloydb
-    from seeds.seed_alloydb_fitness import seed_alloydb_fitness
+    from db.cloudsql_client import init_db
+    from seeds.seed_cloudsql_players import seed_cloudsql
+    from seeds.seed_cloudsql_fitness import seed_cloudsql_fitness
     
     logger.info("Initializing database schema...")
     init_db()
     
     logger.info("Running player seed...")
-    seed_alloydb()
+    seed_cloudsql()
     
     logger.info("Running fitness seed...")
-    seed_alloydb_fitness()
+    seed_cloudsql_fitness()
     
     logger.info("SUCCESS!")
 except Exception as e:

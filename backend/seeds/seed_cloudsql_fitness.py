@@ -1,7 +1,7 @@
 """
-The Nest — AlloyDB Fitness Data Seed Script
+The Nest — Cloud SQL Fitness Data Seed Script
 
-Populates AlloyDB with:
+Populates Cloud SQL with:
   - fitness_sessions: Daily GPS/training data
   - fitness_pbs: Personal best records
 
@@ -68,8 +68,8 @@ PB_RANGES = {
 def rnd(a, b, decimals=1):
     return round(random.uniform(a, b), decimals)
 
-def seed_alloydb_fitness():
-    print(f"🚀 Connecting to AlloyDB: {DATABASE_URL.split('@')[-1]}")
+def seed_cloudsql_fitness():
+    print(f"🚀 Connecting to Cloud SQL: {DATABASE_URL.split('@')[-1]}")
     engine = create_engine(DATABASE_URL)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
@@ -138,7 +138,7 @@ def seed_alloydb_fitness():
         db.add_all(pbs_to_add)
         db.commit()
         print(f"  ✅ Added {len(pbs_to_add)} PB records.")
-        print("\n✨ AlloyDB Fitness seeding complete!")
+        print("\n✨ Cloud SQL Fitness seeding complete!")
 
     except Exception as e:
         db.rollback()
@@ -147,4 +147,4 @@ def seed_alloydb_fitness():
         db.close()
 
 if __name__ == "__main__":
-    seed_alloydb_fitness()
+    seed_cloudsql_fitness()

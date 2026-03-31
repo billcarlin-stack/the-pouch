@@ -1,7 +1,7 @@
 import logging
 from flask import Blueprint, jsonify, request
 from sqlalchemy import text
-from db.alloydb_client import get_session
+from db.cloudsql_client import get_session
 import json
 
 logger = logging.getLogger(__name__)
@@ -45,8 +45,8 @@ def ask_opposition():
     try:
         session = get_session()
         
-        # Simulating pgvector retrieval with AlloyDB built-in ML embeddings.
-        # The prompt requires: "The backend must rely on AlloyDB's automatic embeddings for vector search. 
+        # Simulating pgvector retrieval with Cloud SQL built-in ML embeddings.
+        # The prompt requires: "The backend must rely on Cloud SQL's automatic embeddings for vector search. 
         # Do not use manual embedding generation in the Python code; assume the database handles the vectorization of the PDF tables and charts."
         
         sql = text("""

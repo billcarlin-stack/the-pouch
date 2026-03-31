@@ -1,7 +1,7 @@
-import { Bot, Search } from 'lucide-react';
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { api } from '../services/api';
-import clsx from 'clsx';
+import { Bot, Search } from 'lucide-react';
+import { clsx } from 'clsx';
 
 const TEAMS = [
     { id: 'ADE', name: 'Adelaide Crows' },
@@ -31,7 +31,7 @@ export const OppositionPreviews = () => {
     ]);
     const [loading, setLoading] = useState(false);
 
-    const handleAsk = async (e: React.FormEvent) => {
+    const handleAsk = async (e: FormEvent) => {
         e.preventDefault();
         if (!query.trim()) return;
 

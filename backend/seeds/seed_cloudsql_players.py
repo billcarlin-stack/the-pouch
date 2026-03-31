@@ -1,5 +1,5 @@
 """
-The Hawk Hub — AlloyDB Seed Script
+The Hawk Hub — Cloud SQL Seed Script
 Populates the PostgreSQL 'players_2026' table with the player roster.
 """
 
@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.players import Player
-from db.alloydb_client import Base
+from db.cloudsql_client import Base
 
 # Configuration
 DATABASE_URL = os.environ.get(
@@ -64,7 +64,7 @@ PLAYERS_DATA = [
     {'jumper_no': 44, 'name': 'Henry Hustwaite', 'age': 19, 'height_cm': 195, 'games': 5, 'position': 'Midfielder', 'status': 'Green'},
 ]
 
-def seed_alloydb():
+def seed_cloudsql():
     print(f"Connecting to: {DATABASE_URL.split('@')[-1]}") # Log host only for safety
     engine = create_engine(DATABASE_URL)
     Base.metadata.create_all(bind=engine)
@@ -95,9 +95,9 @@ def seed_alloydb():
         print(f"Successfully seeded {len(PLAYERS_DATA)} players.")
     except Exception as e:
         session.rollback()
-        print(f"Error seeding AlloyDB: {e}")
+        print(f"Error seeding Cloud SQL: {e}")
     finally:
         session.close()
 
 if __name__ == "__main__":
-    seed_alloydb()
+    seed_cloudsql()

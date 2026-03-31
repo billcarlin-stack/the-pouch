@@ -1,13 +1,13 @@
 import logging
 from sqlalchemy import func, case
-from db.alloydb_client import get_session
+from db.cloudsql_client import get_session
 from models.players import Player
 
 logger = logging.getLogger(__name__)
 
 def get_team_availability() -> dict:
     """
-    Returns a squad-wide availability summary from AlloyDB.
+    Returns a squad-wide availability summary from Cloud SQL.
     """
     session = get_session()
     try:
