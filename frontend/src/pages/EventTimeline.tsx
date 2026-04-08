@@ -33,42 +33,48 @@ export const EventTimeline = () => {
     }, []);
 
     if (loading) {
-        return <div className="p-20 text-center font-bold text-amber-600 uppercase tracking-widest">Loading Match Timeline...</div>;
+        return <div className="p-20 text-center font-bold text-gold-400 uppercase tracking-widest">Loading Match Timeline...</div>;
     }
 
     return (
-        <div className="p-8 max-w-[800px] mx-auto space-y-8 animate-in fade-in duration-500">
-            <div>
-                <h1 className="text-4xl font-black text-hfc-brown uppercase tracking-tighter">Event Timeline</h1>
-                <p className="text-amber-500 font-bold uppercase tracking-widest text-xs mt-2">Ball-in-Play CTR Data Feed</p>
+        <div className="p-8 max-w-[1000px] mx-auto space-y-10 animate-in fade-in duration-700 relative">
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">Ball-in-Play CTR Data Feed</span>
+                </div>
+                <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
+                    Event <span className="text-gold-400">Timeline</span>
+                </h1>
             </div>
 
-            <div className="relative before:absolute before:inset-0 before:ml-12 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-amber-400 before:via-amber-200 before:to-transparent">
+            <div className="relative before:absolute before:inset-0 before:ml-12 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-gold-400/50 before:via-gold-400/20 before:to-transparent">
                 {events.map((event, idx) => (
-                    <div key={event.id || idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mt-6 first:mt-0">
+                    <div key={event.id || idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mt-8 first:mt-0">
                         {/* Avatar Marker */}
-                        <div className="flex items-center justify-center w-24 h-24 rounded-full border-4 border-white bg-hfc-brown shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 transition-transform duration-300 group-hover:scale-110 overflow-hidden">
+                        <div className="flex items-center justify-center w-24 h-24 rounded-full border-4 border-[#0F0A07] bg-[#1A1411] shadow-[0_0_20px_rgba(246,176,0,0.2)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 transition-transform duration-500 group-hover:scale-110 overflow-hidden">
                             <img 
                                 src={formatPlayerImage(event.player_id, undefined, event.player_name)} 
                                 alt={event.player_name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
                             />
                         </div>
 
                         {/* Event Card */}
-                        <div className="w-[calc(100%-7rem)] md:w-[calc(50%-4rem)] bg-white p-5 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md transition-shadow">
-                            <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-bold text-lg text-gray-900 leading-tight">{event.player_name}</h3>
-                                <div className="flex items-center gap-1 text-[10px] font-black text-amber-500 bg-amber-50 px-2 py-1 rounded-md uppercase tracking-wider">
-                                    <Clock size={12} />
+                        <div className="w-[calc(100%-7rem)] md:w-[calc(50%-4rem)] bg-[#1A1411] p-6 rounded-[2rem] shadow-2xl border border-white/5 group-hover:border-gold-400/30 transition-all duration-500 relative overflow-hidden group-hover:shadow-[0_10px_30px_rgba(246,176,0,0.15)]">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div className="flex flex-col xl:flex-row xl:justify-between xl:items-start mb-4 gap-4 relative z-10">
+                                <h3 className="font-black text-xl text-white tracking-tight font-space uppercase leading-none">{event.player_name}</h3>
+                                <div className="flex items-center gap-2 text-[10px] font-black text-gold-400 bg-gold-500/10 px-4 py-2 rounded-full uppercase tracking-[0.2em] font-work border border-gold-400/20 w-fit">
+                                    <Clock size={12} className="shrink-0" />
                                     {event.quarter} • {event.time_remaining}
                                 </div>
                             </div>
-                            <p className="text-gray-600 font-medium">{event.action}</p>
+                            <p className="text-white/70 font-medium font-work italic leading-relaxed relative z-10">{event.action}</p>
                             
                             {event.coordinates && (
-                                <div className="mt-3 flex items-center gap-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">
-                                    <Navigation size={12} />
+                                <div className="mt-5 pt-4 border-t border-white/5 flex items-center gap-2 text-[9px] font-black text-gold-400/60 uppercase tracking-[0.3em] font-work relative z-10">
+                                    <Navigation size={12} className="shrink-0" />
                                     COORD: {event.coordinates}
                                 </div>
                             )}
@@ -77,8 +83,9 @@ export const EventTimeline = () => {
                 ))}
 
                 {events.length === 0 && !loading && (
-                    <div className="bg-white p-8 rounded-2xl text-center text-gray-400 border border-gray-100 font-medium">
-                        No events found in the CTR data feed for this match.
+                    <div className="bg-white/5 p-12 rounded-[3rem] text-center text-white/40 border border-white/5 font-work flex flex-col items-center gap-4">
+                        <Clock size={32} className="opacity-20" />
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em]">No events found in the CTR data feed for this match.</span>
                     </div>
                 )}
             </div>

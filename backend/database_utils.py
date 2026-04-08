@@ -185,7 +185,8 @@ TEAM_POSITIONS = [
     "HF_LEFT", "CHF", "HF_RIGHT",
     "FP_LEFT", "FF", "FP_RIGHT",
     "BENCH_1", "BENCH_2", "BENCH_3", "BENCH_4", "BENCH_5",
-    "CONSID_1", "CONSID_2", "CONSID_3", "CONSID_4"
+    "EXT_1", "EXT_2", "EXT_3", "EXT_4", "EXT_5",
+    "COACH_NOTES"
 ]
 
 def rnd(a, b, decimals=1):
@@ -283,23 +284,43 @@ def initialize_and_seed():
                     date=(today - timedelta(days=random.randint(2, 20))).strftime("%Y-%m-%d")
                 ))
 
-            # -- Granular Coach Ratings --
-            for cat, traits in [("Technical", TECHNICAL_TRAITS), ("Tactical", TACTICAL_TRAITS), ("Physical", PHYSICAL_TRAITS), ("Mental", MENTAL_TRAITS)]:
-                for trait in traits:
-                    # Skew ratings slightly higher for high-end players
-                    base_rating = random.randint(5, 8)
-                    if player_id in [3, 6, 12, 13]: # Absolute stars
-                        base_rating = random.randint(7, 10)
+            # -- Granular Ratings (4 Rounds) --
+            for round_idx in range(4):
+                round_date = today - timedelta(days=round_idx * 7)
+                for cat, traits in [("Technical", TECHNICAL_TRAITS), ("Tactical", TACTICAL_TRAITS), ("Physical", PHYSICAL_TRAITS), ("Mental", MENTAL_TRAITS)]:
+                    for trait in traits:
+                        # Coach Rating
+                        base_rating = random.randint(4, 9)
+                        if player_id in [3, 6, 12, 13]: # High-end players
+                            base_rating = random.randint(7, 10)
+                        elif player_id in [1, 10, 11, 21]: # Mix it up with some lower/developing
+                            base_rating = random.randint(2, 6)
+                            
+                        objects_to_add.append(CoachRating(
+                            id=str(uuid.uuid4()),
+                            player_id=player_id,
+                            skill_category=cat,
+                            skill_name=trait,
+                            rating_value=base_rating,
+                            source='coach',
+                            notes="Coach assessment",
+                            date=round_date.strftime("%Y-%m-%d")
+                        ))
                         
-                    objects_to_add.append(CoachRating(
-                        id=str(uuid.uuid4()),
-                        player_id=player_id,
-                        skill_category=cat,
-                        skill_name=trait,
-                        rating_value=base_rating,
-                        notes="Needs slight refinement." if base_rating < 7 else "Elite level capability.",
-                        date=today.strftime("%Y-%m-%d")
-                    ))
+                        # Player Self Rating (Usually close to coach, but with some gaps)
+                        self_rating = base_rating + random.randint(-1, 2)
+                        self_rating = max(1, min(10, self_rating))
+                        
+                        objects_to_add.append(CoachRating(
+                            id=str(uuid.uuid4()),
+                            player_id=player_id,
+                            skill_category=cat,
+                            skill_name=trait,
+                            rating_value=self_rating,
+                            source='player',
+                            notes="Self assessment",
+                            date=round_date.strftime("%Y-%m-%d")
+                        ))
             
             # -- Sessions & Wellbeing (Last 7 Days) --
             for days_ago in range(1, 8):

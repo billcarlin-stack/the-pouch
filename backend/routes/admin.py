@@ -214,3 +214,40 @@ def re_init_database():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@admin_bp.route("/seed", methods=["GET"])
+@require_role("admin")
+def admin_seed():
+    """Synchronous seeding route using consolidated database_utils.
+    """
+    try:
+        from database_utils import initialize_and_seed
+        initialize_and_seed()
+        
+        return jsonify({
+            "status": "success", 
+            "message": "Database initialized and seeded successfully (Simplified Version)"
+        }), 200
+        
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Seeding failed: {str(e)}", exc_info=True)
+        return jsonify({
+            "status": "error",
+            "message": "Seeding failed. Check server logs.",
+            "detail": str(e)
+        }), 500
+
+@admin_bp.route("/users/debug", methods=["GET"])
+@require_role("admin")
+def debug_users():
+    try:
+        from models.user_roles import UserRole
+        from db.cloudsql_client import get_session
+        session = get_session()
+        users = session.query(UserRole).all()
+        user_list = [{"email": u.google_email, "role": u.role, "name": u.name} for u in users]
+        session.close()
+        return jsonify(user_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

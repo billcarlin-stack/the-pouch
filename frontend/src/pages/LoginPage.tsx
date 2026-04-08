@@ -36,32 +36,35 @@ const LoginPage = () => {
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo + Title */}
                 <div className="text-center mb-10">
-                    <div className="inline-flex bg-white rounded-3xl p-3 shadow-2xl shadow-black/40 mb-6">
-                        <img src={hfcLogo} alt="HFC" className="h-16 w-auto" />
+                    <div className="inline-flex bg-[#1A1411] border border-white/10 rounded-3xl p-4 shadow-2xl shadow-black/60 mb-8 relative group">
+                        <div className="absolute inset-0 bg-gold-400/5 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <img src={hfcLogo} alt="HFC" className="h-16 w-auto relative z-10" />
                     </div>
-                    <h1 className="text-3xl font-black text-white tracking-tight font-outfit uppercase">
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
                         The <span className="text-gold-400">Nest</span>
                     </h1>
-                    <p className="text-amber-300/50 text-sm font-medium mt-2 tracking-wide">
+                    <p className="text-gold-400/40 text-[10px] font-black uppercase tracking-[0.4em] mt-3 font-work">
                         High Performance Analytics Portal
                     </p>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl space-y-6">
-                    <div className="text-center">
-                        <h2 className="text-white font-bold text-xl">Welcome Back</h2>
-                        <p className="text-amber-300/50 text-sm font-medium mt-1">
-                            Sign in with your authorised Google account
+                <div className="bg-[#1A1411] backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] space-y-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div className="text-center relative z-10">
+                        <h2 className="text-white font-black text-2xl uppercase font-space tracking-tight">Identity <span className="text-gold-400">Required</span></h2>
+                        <p className="text-white/40 text-[11px] font-medium font-work italic mt-2">
+                            Access restricted to authorised HFC personnel.
                         </p>
                     </div>
 
                     {/* Error message */}
                     {error && (
-                        <div className="space-y-3">
-                            <div className="flex items-start gap-2 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                                <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
-                                <p className="text-red-300 text-sm font-medium">{error}</p>
+                        <div className="space-y-3 relative z-10 animate-in shake duration-500">
+                            <div className="flex items-start gap-4 p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                                <AlertCircle size={20} className="text-rose-400 shrink-0" />
+                                <p className="text-rose-300 text-xs font-bold font-work italic leading-relaxed">{error}</p>
                             </div>
                         </div>
                     )}
@@ -69,26 +72,29 @@ const LoginPage = () => {
                     <button
                         onClick={handleGoogleSignIn}
                         disabled={loading || isSigningIn}
-                        className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-4 px-6 rounded-2xl text-sm hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-black/20 active:scale-95"
+                        className="w-full flex items-center justify-center gap-4 bg-white/5 border border-white/10 text-white font-black py-5 px-6 rounded-2xl text-[11px] uppercase tracking-[0.2em] font-work hover:bg-white/10 hover:border-gold-400/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg active:scale-[0.98] relative z-10 group/btn"
                     >
                         {isSigningIn || loading ? (
-                            <Loader2 size={20} className="animate-spin text-gray-500" />
+                            <Loader2 size={24} className="animate-spin text-gold-400" />
                         ) : (
-                            <GoogleIcon />
+                            <div className="bg-white p-2 rounded-lg group-hover/btn:scale-110 transition-transform">
+                                <GoogleIcon />
+                            </div>
                         )}
-                        {isSigningIn || loading ? 'Signing in...' : 'Sign in with Google'}
+                        <span>{isSigningIn || loading ? 'Authenticating...' : 'Sign in with Google'}</span>
                     </button>
 
-                    <div className="pt-4 border-t border-white/5 text-center">
-                        <p className="text-amber-300/30 text-[10px] font-bold uppercase tracking-widest">
-                            Access is restricted to authorised Hawthorn FC accounts
+                    <div className="pt-6 border-t border-white/5 text-center relative z-10 text-white">
+                        <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.3em] font-work">
+                            End-to-end encrypted session monitoring active
                         </p>
                     </div>
                 </div>
 
-                <p className="text-center text-amber-300/20 text-[10px] font-bold uppercase tracking-widest mt-6">
-                    Hawthorn Football Club © 2026 · Secured by Google
+                <p className="text-center text-white/10 text-[9px] font-black uppercase tracking-[0.4em] mt-10 font-work">
+                    Hawthorn Football Club © 2026 · ELITE INTEL SYSTEM
                 </p>
+
             </div>
         </div>
     );

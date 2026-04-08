@@ -104,14 +104,14 @@ const PlayerComparison = () => {
             return (
                 <div className="flex items-center gap-4 py-3 group border-b border-hfc-brown/10 last:border-0">
                     <div className="flex-1 flex justify-end items-center gap-3">
-                        <span className="text-sm text-hfc-brown font-black">{p1Val || '-'}</span>
+                        <span className="text-sm text-white font-black">{p1Val || '-'}</span>
                     </div>
                     <div className="w-[120px] text-center flex flex-col items-center gap-1">
-                        {icon && <div className="text-hfc-brown/40 transition-colors">{icon}</div>}
-                        <span className="text-[9px] font-black uppercase tracking-widest text-hfc-brown/60 group-hover:text-hfc-brown transition-colors">{label}</span>
+                        {icon && <div className="text-white/40 transition-colors">{icon}</div>}
+                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">{label}</span>
                     </div>
                     <div className="flex-1 flex justify-start items-center gap-3">
-                        <span className="text-sm text-hfc-brown font-black">{p2Val || '-'}</span>
+                        <span className="text-sm text-white font-black">{p2Val || '-'}</span>
                     </div>
                 </div>
             );
@@ -127,7 +127,7 @@ const PlayerComparison = () => {
             <div className="flex items-center gap-4 py-3 group border-b border-hfc-brown/10 last:border-0">
                 {/* P1 Bar */}
                 <div className="flex-1 flex justify-end items-center gap-3">
-                    <span className={clsx("text-sm transition-colors", isP1Better ? "text-gold-500 font-black" : "text-hfc-brown/60 font-bold")}>
+                    <span className={clsx("text-sm transition-colors", isP1Better ? "text-gold-500 font-black" : "text-white/60 font-bold")}>
                         {p1N > 0 ? p1N : '-'}
                     </span>
                     <div className="h-2 bg-hfc-brown/10 rounded-full w-full max-w-[140px] overflow-hidden flex justify-end">
@@ -140,8 +140,8 @@ const PlayerComparison = () => {
 
                 {/* Label */}
                 <div className="w-[120px] text-center flex flex-col items-center gap-1">
-                    {icon && <div className="text-hfc-brown/40 group-hover:text-gold-500/80 transition-colors">{icon}</div>}
-                    <span className="text-[9px] font-black uppercase tracking-widest text-hfc-brown/60 group-hover:text-hfc-brown transition-colors">{label}</span>
+                    {icon && <div className="text-white/40 group-hover:text-gold-500/80 transition-colors">{icon}</div>}
+                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">{label}</span>
                 </div>
 
                 {/* P2 Bar */}
@@ -152,7 +152,7 @@ const PlayerComparison = () => {
                             style={{ width: `${(p2N / maxVal) * 100}%` }}
                         />
                     </div>
-                    <span className={clsx("text-sm transition-colors", isP2Better ? "text-gold-500 font-black" : "text-hfc-brown/60 font-bold")}>
+                    <span className={clsx("text-sm transition-colors", isP2Better ? "text-gold-500 font-black" : "text-white/60 font-bold")}>
                         {p2N > 0 ? p2N : '-'}
                     </span>
                 </div>
@@ -163,7 +163,7 @@ const PlayerComparison = () => {
     const PlayerSelector = ({ selected, onSelect, label, side }: { selected: Player | null, onSelect: (p: Player | null) => void, label: string, side: 'A' | 'B' }) => (
         <div className="flex-1 min-w-[300px] flex flex-col gap-4">
             <div className="flex items-center justify-between px-4">
-                <span className="text-[10px] font-black uppercase text-hfc-brown/50 tracking-[0.2em]">{label}</span>
+                <span className="text-[10px] font-black uppercase text-white/50 tracking-[0.2em]">{label}</span>
                 {selected && (
                     <button onClick={() => onSelect(null)} className="text-[10px] font-black text-red-500/80 uppercase hover:text-red-500 transition-colors">Reset</button>
                 )}
@@ -184,15 +184,15 @@ const PlayerComparison = () => {
                             <div className={clsx("absolute -bottom-2 -right-2 font-black text-sm px-3 py-1.5 rounded-xl z-20 shadow-xl", side === 'A' ? "bg-hfc-brown text-gold-400" : "bg-hfc-brown/80 text-gold-500")}>#{selected.jumper_no}</div>
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-2xl font-black text-hfc-brown uppercase tracking-tight truncate">{selected.name}</h3>
+                            <h3 className="text-2xl font-black text-white uppercase tracking-tight truncate">{selected.name}</h3>
                             <div className="flex gap-6 mt-4">
                                 <div>
-                                    <div className="text-[10px] text-hfc-brown/50 font-black uppercase tracking-widest">Games</div>
-                                    <div className="text-lg font-black text-hfc-brown">{selected.games}</div>
+                                    <div className="text-[10px] text-white/50 font-black uppercase tracking-widest">Games</div>
+                                    <div className="text-lg font-black text-white">{selected.games}</div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] text-hfc-brown/50 font-black uppercase tracking-widest">Age</div>
-                                    <div className="text-lg font-black text-hfc-brown">{selected.age}</div>
+                                    <div className="text-[10px] text-white/50 font-black uppercase tracking-widest">Age</div>
+                                    <div className="text-lg font-black text-white">{selected.age}</div>
                                 </div>
                             </div>
                         </div>
@@ -200,19 +200,19 @@ const PlayerComparison = () => {
                 </div>
             ) : (
                 <div className="flex-1 bg-hfc-brown/5 border-2 border-dashed border-hfc-brown/20 rounded-3xl flex flex-col items-center justify-center p-8 gap-4 text-center hover:bg-hfc-brown/10 transition-colors cursor-pointer group" onClick={() => document.getElementById('player-search')?.focus()}>
-                    <div className="h-16 w-16 rounded-2xl bg-hfc-brown/10 flex items-center justify-center text-hfc-brown/40 group-hover:scale-110 transition-transform">
+                    <div className="h-16 w-16 rounded-2xl bg-hfc-brown/10 flex items-center justify-center text-white/40 group-hover:scale-110 transition-transform">
                         <Users size={32} />
                     </div>
                     <div>
-                        <p className="text-sm font-black text-hfc-brown/60 uppercase tracking-widest">Select Player {side}</p>
-                        <p className="text-[11px] text-hfc-brown/40 font-bold mt-1 uppercase tracking-widest">Use the squad list to choose subjects</p>
+                        <p className="text-sm font-black text-white/60 uppercase tracking-widest">Select Player {side}</p>
+                        <p className="text-[11px] text-white/40 font-bold mt-1 uppercase tracking-widest">Use the squad list to choose subjects</p>
                     </div>
                 </div>
             )}
         </div>
     );
 
-    if (loading) return <div className="p-20 text-center text-hfc-brown/40 uppercase font-black tracking-widest animate-pulse">Initializing Comparison Core...</div>;
+    if (loading) return <div className="p-20 text-center text-white/40 uppercase font-black tracking-widest animate-pulse">Initializing Comparison Core...</div>;
 
     return (
         <div className="p-8 max-w-[1600px] mx-auto space-y-12 animate-in fade-in duration-700">
@@ -220,12 +220,12 @@ const PlayerComparison = () => {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-hfc-brown/10 pb-10">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                        <div className="bg-gold-500 p-2 rounded-lg text-hfc-brown">
+                        <div className="bg-gold-500 p-2 rounded-lg text-white">
                             <Sword size={24} />
                         </div>
-                        <span className="text-xs font-black text-hfc-brown/60 uppercase tracking-[0.4em]">Strategic Match Center</span>
+                        <span className="text-xs font-black text-white/60 uppercase tracking-[0.4em]">Strategic Match Center</span>
                     </div>
-                    <h1 className="text-7xl font-black text-hfc-brown uppercase font-outfit tracking-tighter leading-none">
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
                         Player <span className="text-gold-400 bg-hfc-brown px-4 rounded-2xl inline-block -rotate-2 transform shadow-lg">Comparison</span>
                     </h1>
                 </div>
@@ -236,20 +236,20 @@ const PlayerComparison = () => {
                 {/* Search & List */}
                 <div className="space-y-6">
                     <div className="relative">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-hfc-brown/40" size={20} />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40" size={20} />
                         <input 
                             id="player-search"
                             type="text"
                             placeholder="SEARCH SQUAD..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-[#f8f6f0] border-2 border-hfc-brown/10 rounded-[2rem] py-6 pl-16 pr-6 text-base text-hfc-brown placeholder:text-hfc-brown/30 focus:outline-none focus:border-gold-500/50 transition-all font-black uppercase tracking-widest shadow-sm"
+                            className="w-full bg-[#f8f6f0] border-2 border-hfc-brown/10 rounded-[2rem] py-6 pl-16 pr-6 text-base text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-black uppercase tracking-widest shadow-sm"
                         />
                     </div>
                     
                     <div className="bg-[#f8f6f0] border border-hfc-brown/10 rounded-[2.5rem] overflow-hidden shadow-inner p-4 space-y-2 max-h-[700px] overflow-y-auto custom-scrollbar">
                         <div className="px-4 py-2 mb-2">
-                            <span className="text-[10px] font-black text-hfc-brown/50 uppercase tracking-[0.2em]">Active Roster</span>
+                            <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Active Roster</span>
                         </div>
                         {filteredPlayers.map(player => {
                             const isP1 = p1?.jumper_no === player.jumper_no;
@@ -265,24 +265,24 @@ const PlayerComparison = () => {
                                     }}
                                     className={clsx(
                                         "w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300",
-                                        isP1 ? "bg-gold-400 border-gold-500 text-hfc-brown shadow-md translate-x-1" : 
-                                        isP2 ? "bg-gold-500 border-gold-600 text-hfc-brown shadow-md translate-x-1" :
-                                        "bg-transparent border-transparent text-hfc-brown hover:bg-hfc-brown/5 hover:border-hfc-brown/10"
+                                        isP1 ? "bg-gold-400 border-gold-500 text-white shadow-md translate-x-1" : 
+                                        isP2 ? "bg-gold-500 border-gold-600 text-white shadow-md translate-x-1" :
+                                        "bg-transparent border-transparent text-white hover:bg-hfc-brown/5 hover:border-hfc-brown/10"
                                     )}
                                 >
                                     <div className={clsx(
                                         "h-12 w-12 rounded-xl flex items-center justify-center font-black text-sm shrink-0",
-                                        isP1 || isP2 ? "bg-hfc-brown text-gold-400" : "bg-hfc-brown/10 text-hfc-brown/60"
+                                        isP1 || isP2 ? "bg-hfc-brown text-gold-400" : "bg-hfc-brown/10 text-white/60"
                                     )}>
                                         {player.jumper_no}
                                     </div>
                                     <div className="text-left flex-1 min-w-0">
-                                        <div className="text-sm font-black uppercase tracking-tight truncate text-hfc-brown">{player.name}</div>
+                                        <div className="text-sm font-black uppercase tracking-tight truncate text-white">{player.name}</div>
                                     </div>
                                     {(isP1 || isP2) ? (
-                                        <div className="h-6 w-6 rounded-full bg-black/10 flex items-center justify-center text-hfc-brown"><X size={14} /></div>
+                                        <div className="h-6 w-6 rounded-full bg-black/10 flex items-center justify-center text-white"><X size={14} /></div>
                                     ) : (
-                                        <ChevronRight size={16} className="text-hfc-brown/20 group-hover:text-hfc-brown/60 transition-colors" />
+                                        <ChevronRight size={16} className="text-white/20 group-hover:text-white/60 transition-colors" />
                                     )}
                                 </button>
                             );
@@ -315,7 +315,7 @@ const PlayerComparison = () => {
                         {fetchingComparison ? (
                             <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#f8f6f0]/80 backdrop-blur-sm z-10 rounded-[3rem]">
                                 <Activity className="text-gold-500 animate-spin" size={48} />
-                                <p className="text-xs font-black uppercase tracking-[0.5em] text-hfc-brown animate-pulse">Running Projections...</p>
+                                <p className="text-xs font-black uppercase tracking-[0.5em] text-white animate-pulse">Running Projections...</p>
                             </div>
                         ) : p1 && p2 && p1Stats && p2Stats && p1Ratings && p2Ratings ? (
                             <div className="space-y-16 py-4 relative z-10">
@@ -324,8 +324,8 @@ const PlayerComparison = () => {
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-hfc-brown/10" />
                                         <div className="flex items-center gap-3 bg-hfc-brown/5 border border-hfc-brown/10 px-6 py-2 rounded-full">
-                                            <Users size={16} className="text-hfc-brown" />
-                                            <h2 className="text-lg font-black text-hfc-brown uppercase tracking-widest">Physical Profile</h2>
+                                            <Users size={16} className="text-white" />
+                                            <h2 className="text-lg font-black text-white uppercase tracking-widest">Physical Profile</h2>
                                         </div>
                                         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-hfc-brown/10" />
                                     </div>
@@ -341,8 +341,8 @@ const PlayerComparison = () => {
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-hfc-brown/10" />
                                         <div className="flex items-center gap-3 bg-hfc-brown/5 border border-hfc-brown/10 px-6 py-2 rounded-full">
-                                            <TrendingUp size={16} className="text-hfc-brown" />
-                                            <h2 className="text-lg font-black text-hfc-brown uppercase tracking-widest">Match Statistics</h2>
+                                            <TrendingUp size={16} className="text-white" />
+                                            <h2 className="text-lg font-black text-white uppercase tracking-widest">Match Statistics</h2>
                                         </div>
                                         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-hfc-brown/10" />
                                     </div>
@@ -365,8 +365,8 @@ const PlayerComparison = () => {
                                         <div className="flex items-center gap-4 mb-8">
                                             <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-hfc-brown/10" />
                                             <div className="flex items-center gap-3 bg-hfc-brown/5 border border-hfc-brown/10 px-6 py-2 rounded-full">
-                                                <Brain size={16} className="text-hfc-brown" />
-                                                <h2 className="text-lg font-black text-hfc-brown uppercase tracking-widest">{cat.category} Assessment</h2>
+                                                <Brain size={16} className="text-white" />
+                                                <h2 className="text-lg font-black text-white uppercase tracking-widest">{cat.category} Assessment</h2>
                                             </div>
                                             <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-hfc-brown/10" />
                                         </div>
@@ -386,12 +386,12 @@ const PlayerComparison = () => {
                             </div>
                         ) : (
                             <div className="flex-1 min-h-[500px] flex flex-col items-center justify-center gap-8 text-center p-12 relative z-10">
-                                <div className="h-32 w-32 rounded-[2.5rem] bg-hfc-brown/5 border-2 border-hfc-brown/10 flex items-center justify-center text-hfc-brown/20 group shadow-inner">
+                                <div className="h-32 w-32 rounded-[2.5rem] bg-hfc-brown/5 border-2 border-hfc-brown/10 flex items-center justify-center text-white/20 group shadow-inner">
                                     <Sword size={64} className="group-hover:rotate-12 group-hover:text-gold-500 transition-all duration-500" />
                                 </div>
                                 <div className="space-y-4">
-                                    <h3 className="text-4xl font-black text-hfc-brown uppercase tracking-tight">System Ready</h3>
-                                    <p className="text-sm text-hfc-brown/60 font-bold uppercase tracking-widest max-w-[400px] leading-relaxed">
+                                    <h3 className="text-4xl font-black text-white uppercase tracking-tight">System Ready</h3>
+                                    <p className="text-sm text-white/60 font-bold uppercase tracking-widest max-w-[400px] leading-relaxed">
                                         Select two athletes to generate a comprehensive <span className="text-gold-500 font-black">Player Comparison</span>.
                                     </p>
                                 </div>

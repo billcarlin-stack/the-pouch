@@ -9,7 +9,7 @@ class TeamSelection(Base):
     player_id = Column(Integer)
     rotation_color = Column(String(50))
     rotation_minutes = Column(Integer)
-    notes = Column(String(255))
+    notes = Column(String)
     updated_at = Column(DateTime(timezone=True), server_default=text('now()'), onupdate=text('now()'))
 
 

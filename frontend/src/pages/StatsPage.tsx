@@ -66,20 +66,20 @@ const StatsPage = () => {
         <th
             onClick={() => handleSort(sortKey)}
             className={clsx(
-                "px-4 py-5 text-center text-[11px] font-black uppercase tracking-[0.2em] cursor-pointer hover:bg-white/10 transition-colors group relative",
-                sortConfig.key === sortKey ? "text-gold-400 bg-white/5" : "text-amber-200/60"
+                "px-4 py-6 text-center text-[10px] font-black uppercase tracking-[0.3em] cursor-pointer hover:bg-white/10 transition-all group relative font-space",
+                sortConfig.key === sortKey ? "text-gold-400 bg-white/5" : "text-white/20"
             )}
         >
             <div className="flex items-center gap-2 justify-center">
                 <span className="hidden xl:inline">{label}</span>
                 <span className="xl:hidden">{shortLabel || label}</span>
-                <div className="flex flex-col opacity-40 group-hover:opacity-100 transition-opacity">
-                    <ChevronUp size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'asc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
-                    <ChevronDown size={10} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
+                <div className="flex flex-col opacity-20 group-hover:opacity-100 transition-opacity">
+                    <ChevronUp size={8} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'asc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
+                    <ChevronDown size={8} className={clsx(sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'text-gold-400 opacity-100' : 'opacity-40')} />
                 </div>
             </div>
             {sortConfig.key === sortKey && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gold-400 shadow-[0_0_10px_rgba(246,176,0,0.5)]" />
             )}
         </th>
     );
@@ -92,28 +92,34 @@ const StatsPage = () => {
     );
 
     return (
-        <div className="p-8 max-w-[1600px] mx-auto space-y-8 animate-in fade-in duration-700">
+        <div className="p-8 max-w-[1600px] mx-auto space-y-12 animate-in fade-in duration-700">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-8">
-                <div>
-                    <h1 className="text-5xl font-black text-hfc-brown tracking-tighter font-outfit uppercase">
-                        SQUAD <span className="text-hfc-brown">STATS</span>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-white/5 pb-10">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">Performance</span>
+                    </div>
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
+                        Squad <span className="text-gold-400">Metrics</span>
                     </h1>
-                    <p className="text-amber-300 font-bold uppercase tracking-widest text-[10px] mt-2">2025 Performance Analytics Engine</p>
+                    <p className="text-white/40 font-medium font-work italic">
+                        "High-velocity data processing for elite performance analysis."
+                    </p>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-6">
                     {/* View Toggle */}
-                    <div className="bg-black/40 p-1.5 rounded-2xl border border-white/10 flex shadow-inner">
+                    <div className="bg-[#1A1411] p-1.5 rounded-full border border-white/10 flex shadow-2xl">
                         {['Total', 'Average'].map((mode) => (
                             <button
                                 key={mode}
                                 onClick={() => setViewMode(mode as any)}
                                 className={clsx(
-                                    "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300",
+                                    "px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 font-work",
                                     viewMode === mode
-                                        ? "bg-hfc-brown text-white shadow-lg"
-                                        : "text-amber-200/40 hover:text-white"
+                                        ? "bg-gold-500 text-[#0F0A07] shadow-[0_5px_20px_-5px_rgba(246,176,0,0.4)]"
+                                        : "text-white/20 hover:text-white"
                                 )}
                             >
                                 {mode}
@@ -123,26 +129,28 @@ const StatsPage = () => {
 
                     {/* Search */}
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-300/40 group-focus-within:text-gold-400 transition-colors" size={16} />
+                        <div className="absolute inset-0 bg-gold-400/10 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700"></div>
+                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold-400 transition-colors" size={18} />
                         <input
                             type="text"
-                            placeholder="SEARCH PERSONNEL..."
+                            placeholder="SEARCH SQUAD..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-black/20 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-xs font-bold text-white placeholder:text-amber-300/30 focus:outline-none focus:ring-2 focus:ring-gold-400/20 focus:border-gold-400/40 transition-all w-72 uppercase tracking-widest"
+                            className="bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-8 text-[11px] font-black text-white placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 transition-all w-80 uppercase tracking-[0.2em] font-work relative z-10"
                         />
                     </div>
                 </div>
             </div>
 
             {/* Table Container */}
-            <div className="rounded-[2.5rem] overflow-hidden border border-white/15 shadow-2xl bg-[#081829]/80">
-                <div className="overflow-x-auto custom-scrollbar">
+            <div className="rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl bg-[#0F0A07] relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/[0.02] rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="overflow-x-auto custom-scrollbar relative z-10">
                     <table className="w-full border-collapse">
                         <thead>
-                            <tr className="bg-[#071525] border-b border-white/20">
-                                <th className="px-6 py-5 text-left text-[11px] font-black text-amber-200/70 uppercase tracking-[0.2em]">RK</th>
-                                <th className="px-6 py-5 text-left text-[11px] font-black text-amber-200/70 uppercase tracking-[0.2em] min-w-[240px]">Personnel</th>
+                            <tr className="bg-white/[0.02] border-b border-white/5">
+                                <th className="px-8 py-6 text-left text-[9px] font-black text-white/20 uppercase tracking-[0.4em] font-space">#</th>
+                                <th className="px-8 py-6 text-left text-[9px] font-black text-white/20 uppercase tracking-[0.4em] font-space min-w-[280px]">Entity</th>
                                 <TableHeader label="AF SCORE" sortKey="af_avg" shortLabel="AF" />
                                 <TableHeader label="RATING" sortKey="rating_points" shortLabel="R" />
                                 <TableHeader label="GOALS" sortKey="goals_avg" shortLabel="G" />
@@ -164,34 +172,34 @@ const StatsPage = () => {
                                         "hover:bg-white/10"
                                     )}
                                 >
-                                    <td className="px-6 py-5">
-                                        <span className="text-xs font-black text-amber-200/40 border-r border-white/10 pr-4">{index + 1}</span>
+                                    <td className="px-8 py-6">
+                                        <span className="text-[10px] font-black text-white/10 uppercase tracking-widest font-space">{index + 1}</span>
                                     </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-hfc-brown to-hfc-brown border border-hfc-brown/60 flex items-center justify-center text-sm font-black text-white shadow-xl shadow-hfc-brown/20 group-hover:scale-110 transition-transform">
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-5">
+                                            <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xs font-black text-white shadow-2xl group-hover:bg-gold-500/10 group-hover:scale-110 transition-all duration-500 font-space">
                                                 {player.jumper_no}
                                             </div>
-                                            <div>
-                                                <div className="text-base font-black text-white group-hover:text-gold-400 transition-colors uppercase tracking-tight">{player.name}</div>
-                                                <div className="text-[10px] font-bold text-amber-300/70 uppercase tracking-[0.15em]">{player.position}</div>
+                                            <div className="space-y-1">
+                                                <div className="text-lg font-black text-white group-hover:text-gold-400 transition-colors uppercase tracking-tight font-space">{player.name}</div>
+                                                <div className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] font-work">{player.position}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'af_avg' ? "text-gold-400" : "text-white/90")}>{player.af_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'rating_points' ? "text-gold-400" : "text-white/90")}>{player.rating_points}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'goals_avg' ? "text-gold-400" : "text-white/90")}>{player.goals_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'af_avg' ? "text-gold-400" : "text-white/60")}>{player.af_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'rating_points' ? "text-gold-400" : "text-white/60")}>{player.rating_points}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'goals_avg' ? "text-gold-400" : "text-white/60")}>{player.goals_avg}</td>
                                     <td className={clsx(
-                                        "px-4 py-5 text-center font-black transition-all",
-                                        sortConfig.key === 'disposals_avg' ? "text-gold-400 text-base" : "text-white/90 text-sm"
+                                        "px-4 py-6 text-center font-black transition-all font-space",
+                                        sortConfig.key === 'disposals_avg' ? "text-gold-400 text-lg" : "text-white/60 text-sm"
                                     )}>
                                         {player.disposals_avg}
                                     </td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'marks_avg' ? "text-gold-400" : "text-white/90")}>{player.marks_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'tackles_avg' ? "text-gold-400" : "text-white/90")}>{player.tackles_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'clearances_avg' ? "text-gold-400" : "text-white/90")}>{player.clearances_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'kicks_avg' ? "text-gold-400" : "text-white/90")}>{player.kicks_avg}</td>
-                                    <td className={clsx("px-4 py-5 text-center font-black text-sm transition-all", sortConfig.key === 'handballs_avg' ? "text-gold-400" : "text-white/90")}>{player.handballs_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'marks_avg' ? "text-gold-400" : "text-white/60")}>{player.marks_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'tackles_avg' ? "text-gold-400" : "text-white/60")}>{player.tackles_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'clearances_avg' ? "text-gold-400" : "text-white/60")}>{player.clearances_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'kicks_avg' ? "text-gold-400" : "text-white/60")}>{player.kicks_avg}</td>
+                                    <td className={clsx("px-4 py-6 text-center font-black text-sm transition-all font-space", sortConfig.key === 'handballs_avg' ? "text-gold-400" : "text-white/60")}>{player.handballs_avg}</td>
                                 </tr>
                             ))}
                         </tbody>

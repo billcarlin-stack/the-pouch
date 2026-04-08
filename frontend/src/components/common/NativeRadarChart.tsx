@@ -23,7 +23,7 @@ export const NativeRadarChart: React.FC<NativeRadarChartProps> = ({
     }
 }) => {
     if (!data || data.length === 0) {
-        return <div className="flex h-full items-center justify-center text-gray-400 font-medium italic">No rating data available.</div>;
+        return <div className="flex h-full items-center justify-center text-white/40 font-medium italic">No rating data available.</div>;
     }
 
     const padding = 60;

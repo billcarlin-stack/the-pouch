@@ -22,31 +22,62 @@
   --color-gold-800: #92400e;
   --color-gold-900: #78350f;
 
-  --font-sans: "Inter", "Roboto", "system-ui", "sans-serif";
+  /* Stitch Fonts */
+  --font-sans: "Work Sans", "Inter", "system-ui", "sans-serif";
+  --font-space: "Space Grotesk", "system-ui", "sans-serif";
+  --font-work: "Work Sans", "sans-serif";
   --font-outfit: "Outfit", "system-ui", "sans-serif";
   --font-mono: "Roboto Mono", "monospace";
 
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 10px -2px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 18px 36px -18px rgba(0, 0, 0, 0.6);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --shadow-gold-glow: 0 0 20px 0 rgba(246, 176, 0, 0.15);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    @apply bg-[#0F0A07]; /* Deepest Dark Base */
   }
 
   body {
-    @apply bg-[#F8FAFC] text-slate-900 antialiased font-sans;
+    @apply bg-[#0F0A07] text-white/90 antialiased font-sans transition-colors duration-500 selection:bg-gold-500/30;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-space font-black tracking-tight uppercase;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    @apply bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all text-white font-work placeholder:text-white/20;
+  }
+
+  /* Ensure selects have dark options */
+  option {
+    @apply bg-[#1A1411] text-white;
   }
 }
 
 .glass-panel {
-  @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-glass transition-all duration-300;
+  @apply bg-white/5 backdrop-blur-2xl border border-white/10 shadow-glass transition-all duration-300;
 }
 
 .premium-card {
-  @apply bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-card-hover hover:border-hfc-brown/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden;
+  @apply bg-[#1A1411] border border-white/[0.03] rounded-3xl shadow-card hover:shadow-card-hover hover:border-gold-500/20 transition-all duration-500 hover:-translate-y-1.5 overflow-hidden;
+}
+
+.stat-value {
+  @apply font-space font-bold tracking-tight text-white;
+}
+
+.stat-label {
+  @apply font-work text-[10px] font-black uppercase tracking-[0.2em] text-white/40;
 }
 
 .text-gradient {

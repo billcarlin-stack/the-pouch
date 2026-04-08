@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import { Shield, Plus, Loader2, Trash2, Edit2, Search } from 'lucide-react';
+import { Shield, Plus, Loader2, Trash2, Edit2, Search, X } from 'lucide-react';
+import { clsx } from 'clsx';
 
 interface UserRole {
     id: number;
@@ -111,19 +112,25 @@ const AdminSettings = () => {
     );
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
+        <div className="p-8 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700 relative">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/5 rounded-full -mr-48 -mt-48 blur-[100px] pointer-events-none"></div>
+
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 font-outfit uppercase tracking-tight flex items-center gap-3">
-                        <Shield className="text-gold-500" size={32} />
-                        Access Control
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/5 pb-8 relative z-10">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                        <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">System Security</span>
+                    </div>
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space flex items-center gap-4">
+                        <Shield className="text-gold-400" size={36} />
+                        Access <span className="text-gold-400">Control</span>
                     </h1>
-                    <p className="text-gray-500 mt-1">Manage system access, roles, and connected Google accounts.</p>
+                    <p className="text-white/50 font-medium text-sm font-work italic">Manage system access, roles, and connected Google accounts.</p>
                 </div>
                 <button
                     onClick={openCreateModal}
-                    className="bg-hfc-brown hover:bg-hfc-brown/90 text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-lg shadow-black/10"
+                    className="bg-gold-500 text-[#0F0A07] px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] font-work shadow-[0_5px_15px_rgba(246,176,0,0.3)] hover:scale-105 hover:bg-white transition-all flex items-center gap-2"
                 >
                     <Plus size={20} />
                     Add Authorised Account
@@ -131,73 +138,75 @@ const AdminSettings = () => {
             </div>
 
             {/* Controls */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center">
-                <div className="relative w-full md:w-96">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <div className="bg-[#1A1411] p-6 rounded-[2rem] shadow-2xl border border-white/5 flex flex-col md:flex-row gap-4 justify-between items-center relative z-10">
+                <div className="relative w-full md:w-96 group">
+                    <div className="absolute inset-0 bg-gold-400/5 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold-400 transition-colors" size={20} />
                     <input
                         type="text"
-                        placeholder="Search by name or email..."
+                        placeholder="SEARCH ACCOUNTS..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-gold-400 transition-all font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all font-black text-[11px] text-white uppercase tracking-widest placeholder:text-white/10 font-work relative z-10"
                     />
                 </div>
             </div>
 
             {/* Error / Loading */}
             {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-xl font-medium border border-red-100">
+                <div className="bg-rose-500/10 text-rose-400 p-6 rounded-[1.5rem] border border-rose-500/20 text-center font-bold font-work relative z-10">
                     Failed to load settings: {error}
                 </div>
             )}
             
             {loading ? (
-                <div className="flex justify-center items-center h-64">
-                    <Loader2 size={40} className="animate-spin text-gold-500" />
+                <div className="flex justify-center items-center h-64 relative z-10">
+                    <div className="h-10 w-10 border-4 border-gold-400/30 border-t-gold-400 rounded-full animate-spin" />
                 </div>
             ) : (
                 /* Data Table */
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-[#1A1411] rounded-[2.5rem] shadow-2xl border border-white/5 overflow-hidden relative z-10">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gray-50/50 border-b border-gray-100">
-                                    <th className="p-4 font-bold text-gray-900 text-sm uppercase tracking-wider">Name</th>
-                                    <th className="p-4 font-bold text-gray-900 text-sm uppercase tracking-wider">Google Email</th>
-                                    <th className="p-4 font-bold text-gray-900 text-sm uppercase tracking-wider">Role</th>
-                                    <th className="p-4 font-bold text-gray-900 text-sm uppercase tracking-wider">Jumper #</th>
-                                    <th className="p-4 font-bold text-gray-900 text-sm uppercase tracking-wider text-right">Actions</th>
+                                <tr className="bg-white/[0.02] border-b border-white/5">
+                                    <th className="px-8 py-6 font-black text-white/20 text-[10px] uppercase tracking-[0.3em] font-space">Name</th>
+                                    <th className="px-8 py-6 font-black text-white/20 text-[10px] uppercase tracking-[0.3em] font-space">Google Account</th>
+                                    <th className="px-8 py-6 font-black text-white/20 text-[10px] uppercase tracking-[0.3em] font-space">Permission</th>
+                                    <th className="px-8 py-6 font-black text-white/20 text-[10px] uppercase tracking-[0.3em] font-space">Identifier</th>
+                                    <th className="px-8 py-6 font-black text-white/20 text-[10px] uppercase tracking-[0.3em] font-space text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-white/[0.03]">
                                 {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
-                                        <td className="p-4 font-semibold text-gray-900">{user.name}</td>
-                                        <td className="p-4 text-gray-500 font-mono text-sm">{user.google_email}</td>
-                                        <td className="p-4">
-                                            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                                                user.role === 'admin' ? 'bg-red-100 text-red-700' :
-                                                user.role === 'coach' ? 'bg-blue-100 text-blue-700' :
-                                                'bg-green-100 text-green-700'
-                                            }`}>
+                                    <tr key={user.id} className="hover:bg-white/[0.02] transition-colors group">
+                                        <td className="px-8 py-6 font-black text-white text-lg font-space uppercase tracking-tight">{user.name}</td>
+                                        <td className="px-8 py-6 text-white/50 font-medium italic text-sm font-work lowercase">{user.google_email}</td>
+                                        <td className="px-8 py-6">
+                                            <span className={clsx(
+                                                "inline-flex px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
+                                                user.role === 'admin' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
+                                                user.role === 'coach' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' :
+                                                'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                            )}>
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-gray-600 font-mono">
+                                        <td className="px-8 py-6 text-gold-400/60 font-black font-space">
                                             {user.player_id !== null ? `#${user.player_id}` : '—'}
                                         </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => openEditModal(user)}
-                                                    className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    className="p-3 text-white/20 hover:text-white hover:bg-white/10 rounded-xl transition-all"
                                                     title="Edit"
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(user.id)}
-                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                    className="p-3 text-white/20 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
                                                     title="Revoke Access"
                                                 >
                                                     <Trash2 size={18} />
@@ -208,9 +217,7 @@ const AdminSettings = () => {
                                 ))}
                                 {filteredUsers.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-gray-500 font-medium">
-                                            No authorized users found.
-                                        </td>
+                                        <td colSpan={5} className="px-8 py-16 text-center text-white/20 font-work uppercase tracking-widest text-[10px] italic">No authorized users found.</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -221,86 +228,96 @@ const AdminSettings = () => {
 
             {/* Add/Edit Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h2 className="text-xl font-bold text-gray-900 font-outfit uppercase tracking-tight">
-                                {editingUser ? 'Edit Authorised Account' : 'Add Authorised Account'}
-                            </h2>
-                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-900 text-2xl font-light">&times;</button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F0A07]/80 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-[#1A1411] rounded-[2.5rem] border border-white/5 shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-500 relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none"></div>
+                        
+                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02] relative z-10">
+                            <div>
+                                <h2 className="text-2xl font-black text-white uppercase tracking-tight font-space">
+                                    {editingUser ? 'Update' : 'Grant'} <span className="text-gold-400">Access</span>
+                                </h2>
+                                <p className="text-white/40 text-[10px] font-black font-work uppercase tracking-[0.3em] mt-1">Configure user permissions</p>
+                            </div>
+                            <button onClick={closeModal} className="bg-white/5 border border-white/10 p-2.5 rounded-full hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+                                <X size={20} />
+                            </button>
                         </div>
-                        <form onSubmit={handleSaveUser} className="p-6 space-y-5">
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
-                                <input
-                                    required
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent font-medium"
-                                    placeholder="e.g. Sam Mitchell"
-                                />
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Google Email Address</label>
-                                <input
-                                    required
-                                    type="email"
-                                    disabled={!!editingUser}
-                                    value={formData.google_email}
-                                    onChange={e => setFormData({ ...formData, google_email: e.target.value.toLowerCase() })}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent font-medium disabled:opacity-50 disabled:bg-gray-100"
-                                    placeholder="e.g. sam.mitchell@gmail.com"
-                                />
-                                {editingUser && <p className="text-xs text-gray-500 mt-1">Email cannot be changed after creation.</p>}
-                            </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                        <form onSubmit={handleSaveUser} className="p-8 space-y-6 relative z-10">
+                            <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Access Role</label>
-                                    <select
-                                        value={formData.role}
-                                        onChange={e => setFormData({ ...formData, role: e.target.value as any })}
-                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent font-bold capitalize"
-                                    >
-                                        <option value="player">Player</option>
-                                        <option value="coach">Coach</option>
-                                        <option value="admin">System Admin</option>
-                                    </select>
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] font-work mb-3 block">Full Name</label>
+                                    <input
+                                        required
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all font-bold text-white placeholder:text-white/20 text-sm font-work"
+                                        placeholder="e.g. Sam Mitchell"
+                                    />
                                 </div>
                                 
-                                {formData.role === 'player' && (
-                                    <div className="animate-in slide-in-from-right-4">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Jumper Number</label>
-                                        <input
-                                            required
-                                            type="number"
-                                            min="1"
-                                            value={formData.player_id}
-                                            onChange={e => setFormData({ ...formData, player_id: e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-transparent font-mono"
-                                            placeholder="e.g. 5"
-                                        />
+                                <div>
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] font-work mb-3 block">Google Email Address</label>
+                                    <input
+                                        required
+                                        type="email"
+                                        disabled={!!editingUser}
+                                        value={formData.google_email}
+                                        onChange={e => setFormData({ ...formData, google_email: e.target.value.toLowerCase() })}
+                                        className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all font-bold text-white placeholder:text-white/20 text-sm font-work disabled:opacity-30 disabled:cursor-not-allowed"
+                                        placeholder="e.g. sam.mitchell@gmail.com"
+                                    />
+                                    {editingUser && <p className="text-[9px] text-white/20 mt-2 font-work italic">Email cannot be changed after creation.</p>}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] font-work mb-3 block">Access Role</label>
+                                        <select
+                                            value={formData.role}
+                                            onChange={e => setFormData({ ...formData, role: e.target.value as any })}
+                                            className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all font-bold text-white text-sm font-work appearance-none cursor-pointer"
+                                        >
+                                            <option value="player" className="bg-[#1A1411]">Player</option>
+                                            <option value="coach" className="bg-[#1A1411]">Coach</option>
+                                            <option value="admin" className="bg-[#1A1411]">System Admin</option>
+                                        </select>
                                     </div>
-                                )}
+                                    
+                                    {formData.role === 'player' && (
+                                        <div className="animate-in slide-in-from-right-4">
+                                            <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] font-work mb-3 block">Jumper Number</label>
+                                            <input
+                                                required
+                                                type="number"
+                                                min="1"
+                                                value={formData.player_id}
+                                                onChange={e => setFormData({ ...formData, player_id: e.target.value })}
+                                                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 outline-none transition-all font-black text-white text-sm font-space placeholder:text-white/20"
+                                                placeholder="e.g. 5"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                            <div className="pt-6 flex justify-end gap-4 border-t border-white/5">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-5 py-2.5 text-gray-500 font-bold hover:bg-gray-50 rounded-xl transition-colors"
+                                    className="px-6 py-3.5 text-white/40 font-black text-[10px] uppercase tracking-widest hover:text-white transition-colors font-work"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSaving}
-                                    className="px-5 py-2.5 bg-hfc-brown hover:bg-hfc-brown/90 text-white font-bold rounded-xl transition-colors flex items-center gap-2 shadow-lg shadow-black/10 disabled:opacity-50"
+                                    className="px-8 py-3.5 bg-gold-500 text-[#0F0A07] font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:bg-white hover:scale-105 transition-all flex items-center gap-2 shadow-[0_5px_15px_rgba(246,176,0,0.3)] disabled:opacity-50 font-work"
                                 >
-                                    {isSaving ? <Loader2 size={20} className="animate-spin" /> : null}
-                                    {editingUser ? 'Save Changes' : 'Grant Access'}
+                                    {isSaving ? <Loader2 size={16} className="animate-spin" /> : null}
+                                    {editingUser ? 'Save Changes' : 'Confirm Access'}
                                 </button>
                             </div>
                         </form>
@@ -312,3 +329,4 @@ const AdminSettings = () => {
 };
 
 export default AdminSettings;
+

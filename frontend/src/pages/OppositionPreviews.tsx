@@ -55,26 +55,32 @@ export const OppositionPreviews = () => {
     };
 
     return (
-        <div className="p-8 max-w-[1200px] mx-auto space-y-8 animate-in fade-in duration-500">
-            <div>
-                <h1 className="text-4xl font-black text-hfc-brown uppercase tracking-tighter">Opposition Previews</h1>
-                <p className="text-amber-500 font-bold uppercase tracking-widest text-xs mt-2">Hawk AI Scout Integration</p>
+        <div className="p-8 max-w-[1200px] mx-auto space-y-10 animate-in fade-in duration-700 relative">
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">Hawk AI Scout Integration</span>
+                </div>
+                <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
+                    Opposition <span className="text-gold-400">Previews</span>
+                </h1>
             </div>
 
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col md:flex-row min-h-[600px] overflow-hidden">
+            <div className="bg-[#1A1411] rounded-[3rem] shadow-2xl border border-white/5 flex flex-col md:flex-row min-h-[600px] overflow-hidden relative group/container">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                 {/* Sidebar for Team Selection */}
-                <div className="w-full md:w-80 border-r border-gray-100 bg-gray-50/50 p-6 flex flex-col">
-                    <h2 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Select Opponent</h2>
-                    <div className="space-y-2 overflow-y-auto custom-scrollbar flex-1 pr-2">
+                <div className="w-full md:w-80 border-r border-white/5 bg-white/[0.02] p-8 flex flex-col relative z-10">
+                    <h2 className="text-[10px] font-black text-gold-400/40 uppercase tracking-[0.3em] mb-6 font-space">Select Opponent</h2>
+                    <div className="space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-4">
                         {TEAMS.map(team => (
                             <button
                                 key={team.id}
                                 onClick={() => setSelectedTeam(team.id)}
                                 className={clsx(
-                                    "w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all",
+                                    "w-full text-left px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-300 font-work",
                                     selectedTeam === team.id
-                                        ? "bg-hfc-brown text-white shadow-md"
-                                        : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300 hover:shadow-sm"
+                                        ? "bg-gold-500/10 text-gold-400 border border-gold-400/30 shadow-[0_0_20px_rgba(246,176,0,0.1)]"
+                                        : "bg-white/5 border border-white/5 text-white/50 hover:border-gold-400/20 hover:text-white hover:bg-white/10"
                                 )}
                             >
                                 {team.name}
@@ -84,28 +90,28 @@ export const OppositionPreviews = () => {
                 </div>
 
                 {/* AI Chat Area */}
-                <div className="flex-1 flex flex-col bg-white">
-                    <div className="p-6 border-b border-gray-100 flex items-center gap-4 bg-white z-10">
-                        <div className="bg-amber-100 p-3 rounded-2xl text-amber-600">
+                <div className="flex-1 flex flex-col bg-[#0F0A07] relative z-10">
+                    <div className="p-8 border-b border-white/5 flex items-center gap-5 bg-white/[0.01]">
+                        <div className="bg-gold-400/10 p-4 rounded-2xl text-gold-400 border border-gold-400/20 shadow-lg">
                             <Bot size={24} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-black text-gray-900">Hawk AI Scout</h2>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
-                                Currently querying: {TEAMS.find(t => t.id === selectedTeam)?.name}
+                            <h2 className="text-xl font-black text-white font-space uppercase tracking-tight">Hawk AI Scout</h2>
+                            <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] font-work mt-2">
+                                Currently querying: <span className="text-gold-400">{TEAMS.find(t => t.id === selectedTeam)?.name}</span>
                             </p>
                         </div>
                     </div>
 
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/30">
+                    <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
                         {messages.map((m, i) => (
                             <div key={i} className={clsx("flex", m.role === 'user' ? "justify-end" : "justify-start")}>
                                 <div className={clsx(
-                                    "max-w-[80%] rounded-2xl p-5 text-sm font-medium leading-relaxed",
+                                    "max-w-[80%] rounded-[1.5rem] p-6 text-sm font-medium leading-relaxed font-work",
                                     m.role === 'user' 
-                                        ? "bg-hfc-brown text-white rounded-tr-none shadow-md" 
-                                        : "bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm"
+                                        ? "bg-gold-500 text-[#0F0A07] rounded-tr-none shadow-lg shadow-gold-500/10" 
+                                        : "bg-white/5 border border-white/5 text-white/90 rounded-tl-none shadow-sm italic"
                                 )}>
                                     {m.text}
                                 </div>
@@ -113,11 +119,11 @@ export const OppositionPreviews = () => {
                         ))}
                         {loading && (
                             <div className="flex justify-start">
-                                <div className="bg-white border border-gray-200 rounded-2xl p-5 rounded-tl-none shadow-sm">
-                                    <div className="flex gap-1.5 items-center h-5">
-                                        <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"></span>
-                                        <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
-                                        <span className="w-2 h-2 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+                                <div className="bg-white/5 border border-white/5 rounded-[1.5rem] p-6 rounded-tl-none shadow-sm">
+                                    <div className="flex gap-2 items-center h-5">
+                                        <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-bounce"></span>
+                                        <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+                                        <span className="w-2.5 h-2.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
                                     </div>
                                 </div>
                             </div>
@@ -125,22 +131,23 @@ export const OppositionPreviews = () => {
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-6 bg-white border-t border-gray-100">
-                        <form onSubmit={handleAsk} className="relative flex items-center">
-                            <Search className="absolute left-4 text-gray-400" size={20} />
+                    <div className="p-8 border-t border-white/5 bg-white/[0.01]">
+                        <form onSubmit={handleAsk} className="relative flex items-center group">
+                            <div className="absolute inset-0 bg-gold-400/5 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700"></div>
+                            <Search className="absolute left-6 text-white/20 group-focus-within:text-gold-400 transition-colors z-10" size={20} />
                             <input
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                placeholder={`Ask about ${TEAMS.find(t => t.id === selectedTeam)?.name}'s structure, tendencies...`}
-                                className="w-full pl-12 pr-32 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400/20 focus:border-amber-400 transition-all placeholder:text-gray-400"
+                                placeholder={`PROBE DATABASE ON ${TEAMS.find(t => t.id === selectedTeam)?.name.toUpperCase()}...`}
+                                className="w-full pl-16 pr-40 py-5 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-white focus:outline-none focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 transition-all placeholder:text-white/20 font-work relative z-10"
                             />
                             <button
                                 type="submit"
                                 disabled={loading || !query.trim()}
-                                className="absolute right-2 px-6 py-2.5 bg-hfc-brown text-white font-bold text-sm uppercase tracking-widest rounded-xl hover:bg-hfc-brown/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+                                className="absolute right-3 px-8 py-3.5 bg-gold-500 text-[#0F0A07] font-black text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_5px_15px_rgba(246,176,0,0.3)] z-10 font-work"
                             >
-                                Ask Hawk
+                                Query
                             </button>
                         </form>
                     </div>

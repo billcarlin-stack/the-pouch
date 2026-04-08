@@ -86,26 +86,26 @@ export const ImpersonateDropdown = () => {
                 className={clsx(
                     "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-all shadow-sm",
                     currentImp 
-                        ? "bg-amber-100 border-amber-300 text-amber-800"
-                        : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
+                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                        : "bg-[#1A1411] border-white/10 text-white/80 hover:bg-white/5"
                 )}
             >
-                <Eye size={16} className={currentImp ? "text-amber-600" : "text-gray-400"} />
-                {loading ? <Loader2 size={16} className="animate-spin text-gray-400" /> : displayName}
-                <ChevronDown size={14} className={clsx("text-gray-400 transition-transform", isOpen && "rotate-180")} />
+                <Eye size={16} className={currentImp ? "text-amber-600" : "text-white/40"} />
+                {loading ? <Loader2 size={16} className="animate-spin text-white/40" /> : displayName}
+                <ChevronDown size={14} className={clsx("text-white/40 transition-transform", isOpen && "rotate-180")} />
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2">
-                    <div className="px-4 py-2 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 mb-2">
+                <div className="absolute right-0 top-full mt-2 w-72 bg-[#1A1411] rounded-2xl shadow-xl border border-white/10 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2">
+                    <div className="px-4 py-2 text-xs font-black text-white/40 uppercase tracking-widest border-b border-white/5 mb-2">
                         Developer View Tools
                     </div>
                     
                     <button
                         onClick={handleClear}
                         className={clsx(
-                            "w-full text-left px-4 py-2.5 text-sm font-bold flex items-center justify-between hover:bg-gray-50",
-                            currentImp === null ? "text-gold-500 bg-gold-50/50" : "text-gray-700"
+                            "w-full text-left px-4 py-2.5 text-sm font-bold flex items-center justify-between hover:bg-[#1A1411]",
+                            currentImp === null ? "text-gold-500 bg-gold-50/50" : "text-white/80"
                         )}
                     >
                         Real Admin View
@@ -115,15 +115,15 @@ export const ImpersonateDropdown = () => {
                     <button
                         onClick={() => handleSelect('coach', null)}
                         className={clsx(
-                            "w-full text-left px-4 py-2.5 text-sm font-bold flex items-center justify-between hover:bg-gray-50",
-                            currentImp?.role === 'coach' ? "text-gold-500 bg-gold-50/50" : "text-gray-700"
+                            "w-full text-left px-4 py-2.5 text-sm font-bold flex items-center justify-between hover:bg-[#1A1411]",
+                            currentImp?.role === 'coach' ? "text-gold-500 bg-gold-50/50" : "text-white/80"
                         )}
                     >
                         Simulate Coach
                         {currentImp?.role === 'coach' && <Check size={16} />}
                     </button>
 
-                    <div className="px-4 py-2 text-xs font-black text-gray-400 uppercase tracking-widest border-t border-b border-gray-50 my-2">
+                    <div className="px-4 py-2 text-xs font-black text-white/40 uppercase tracking-widest border-t border-b border-white/5 my-2">
                         Simulate Player View
                     </div>
                     
@@ -133,13 +133,13 @@ export const ImpersonateDropdown = () => {
                                 key={p.jumper_no}
                                 onClick={() => handleSelect('player', p.jumper_no)}
                                 className={clsx(
-                                    "w-full text-left px-4 py-2 text-sm font-medium flex items-center justify-between hover:bg-gray-50",
+                                    "w-full text-left px-4 py-2 text-sm font-medium flex items-center justify-between hover:bg-[#1A1411]",
                                     currentImp?.role === 'player' && currentImp.player_id === p.jumper_no 
                                         ? "text-gold-500 bg-gold-50/50" 
-                                        : "text-gray-600"
+                                        : "text-white/80"
                                 )}
                             >
-                                <span><span className="text-gray-400 font-mono w-6 inline-block">#{p.jumper_no}</span> {p.name}</span>
+                                <span><span className="text-white/40 font-mono w-6 inline-block">#{p.jumper_no}</span> {p.name}</span>
                                 {currentImp?.role === 'player' && currentImp.player_id === p.jumper_no && <Check size={14} />}
                             </button>
                         ))}

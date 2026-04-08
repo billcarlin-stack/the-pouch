@@ -57,18 +57,18 @@ const MetricTile = ({
     accent?: boolean;
     size?: 'normal' | 'large';
 }) => (
-    <div className={`flex flex-col gap-1 bg-white rounded-2xl p-5 shadow-sm border 
-        ${accent ? 'border-amber-200 bg-amber-50' : 'border-gray-100'}
-        hover:shadow-md transition-shadow`}>
+    <div className={`flex flex-col gap-1 rounded-2xl p-5 border transition-all
+        ${accent ? 'bg-gold-500/10 border-gold-400/20' : 'bg-white/5 border-white/10'}
+        hover:border-gold-400/30`}>
         <div className="flex items-center gap-2 mb-1">
-            <Icon size={16} className={accent ? 'text-amber-500' : 'text-hfc-brown/70'} />
-            <span className={`text-[10px] font-black uppercase tracking-widest ${accent ? 'text-amber-600' : 'text-gray-400'}`}>
+            <Icon size={16} className={accent ? 'text-gold-400' : 'text-white/40'} />
+            <span className={`text-[10px] font-black uppercase tracking-widest ${accent ? 'text-gold-400' : 'text-white/40'}`}>
                 {label}
             </span>
         </div>
-        <div className={`font-black text-gray-900 ${size === 'large' ? 'text-3xl' : 'text-2xl'}`}>
+        <div className={`font-black text-white ${size === 'large' ? 'text-3xl' : 'text-2xl'}`}>
             {value}
-            {unit && <span className="text-sm font-semibold text-gray-400 ml-1">{unit}</span>}
+            {unit && <span className="text-sm font-semibold text-white/40 ml-1">{unit}</span>}
         </div>
     </div>
 );
@@ -76,11 +76,11 @@ const MetricTile = ({
 // ── Load Bar ──────────────────────────────────────────────────────────────────
 const LoadBar = ({ value, max, label, color }: { value: number; max: number; label: string; color: string }) => (
     <div className="space-y-1">
-        <div className="flex justify-between text-xs font-semibold text-gray-500">
+        <div className="flex justify-between text-xs font-semibold text-white/80">
             <span>{label}</span>
-            <span className="text-gray-900">{value}</span>
+            <span className="text-white/80">{value}</span>
         </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
             <div
                 className={`h-full rounded-full transition-all duration-700 ${color}`}
                 style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
@@ -103,26 +103,26 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
             {/* ── TODAY'S SESSION ──────────────────────────────────── */}
             <section>
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <Activity className="text-hfc-brown" size={22} />
+                    <h2 className="text-lg font-black text-white uppercase tracking-tight font-space flex items-center gap-2">
+                        <Activity className="text-gold-400" size={20} />
                         Latest Training Session
                     </h2>
                     {session && session.session_date && (
-                        <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+                        <span className="text-xs font-semibold text-white/40 bg-white/5 px-3 py-1 rounded-full">
                             {new Date(session.session_date).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}
                             {' · '}
-                            <span className="text-hfc-brown font-bold">{session.session_type || 'Training'}</span>
+                            <span className="text-white font-bold">{session.session_type || 'Training'}</span>
                         </span>
                     )}
                 </div>
 
                 {!session ? (
-                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center">
-                        <Activity className="mx-auto text-amber-400 mb-3" size={36} />
-                        <p className="font-bold text-amber-700 text-lg mb-1">
+                    <div className="bg-gold-500/10 border border-gold-400/20 rounded-2xl p-8 text-center">
+                        <Activity className="mx-auto text-gold-400 mb-3" size={36} />
+                        <p className="font-bold text-gold-400 text-lg mb-1">
                             {isInjured ? 'Rehabilitation Program' : 'No Session Data'}
                         </p>
-                        <p className="text-amber-600 text-sm">
+                        <p className="text-white/60 text-sm">
                             {isInjured
                                 ? `${playerName} is currently completing a modified rehab program. Live GPS data is unavailable during recovery.`
                                 : 'No session data available for this player.'}
@@ -143,7 +143,7 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                             <h3 className="text-sm font-black text-amber-300 uppercase tracking-widest mb-5">Session Breakdown</h3>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
                                 <div className="text-center">
-                                    <div className="text-3xl font-black text-white">{session.hsd_m ? Number(session.hsd_m).toFixed(0) : '0'}<span className="text-sm text-gray-400 ml-1">m</span></div>
+                                    <div className="text-3xl font-black text-white">{session.hsd_m ? Number(session.hsd_m).toFixed(0) : '0'}<span className="text-sm text-white/40 ml-1">m</span></div>
                                     <div className="text-[10px] text-amber-300 uppercase tracking-widest mt-1">High Speed Distance</div>
                                 </div>
                                 <div className="text-center">
@@ -173,13 +173,13 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
 
             {/* ── PERSONAL BESTS ──────────────────────────────────── */}
             <section>
-                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-                    <Trophy className="text-amber-500" size={22} />
+                <h2 className="text-lg font-black text-white uppercase tracking-tight font-space flex items-center gap-2 mb-4">
+                    <Trophy className="text-gold-400" size={20} />
                     Personal Bests
                 </h2>
 
                 {!pbs ? (
-                    <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8 text-center text-gray-400">
+                    <div className="bg-[#1A1411] border border-white/10 rounded-2xl p-8 text-center text-white/40">
                         No personal best data  recorded yet.
                     </div>
                 ) : (
@@ -239,7 +239,7 @@ export const FitnessTab = ({ session, pbs, playerName, isInjured }: {
                 )}
 
                 {pbs && pbs.date_recorded && (
-                    <p className="text-[11px] text-gray-400 mt-3 text-right">
+                    <p className="text-[11px] text-white/40 mt-3 text-right">
                         Last testing: {new Date(pbs.date_recorded).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
                 )}

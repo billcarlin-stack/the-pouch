@@ -48,7 +48,7 @@ const AddPlayerToTeamModal: React.FC<AddPlayerToTeamModalProps> = ({ player, onC
                 className={clsx(
                     "relative group flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-300",
                     isSelf
-                        ? "bg-gold-400 border-gold-500 text-hfc-brown shadow-lg"
+                        ? "bg-gold-400 border-gold-500 text-white shadow-lg"
                         : isOccupied
                             ? "bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:border-white/20"
                             : "bg-white/10 border-gold-400/30 text-gold-400 hover:bg-gold-400/20 hover:border-gold-400 active:scale-95"
@@ -103,7 +103,7 @@ const AddPlayerToTeamModal: React.FC<AddPlayerToTeamModalProps> = ({ player, onC
                         <div className="space-y-8">
                             {isAssigned && (
                                 <div className="p-4 bg-gold-400/10 border border-gold-400/20 rounded-2xl flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-xl bg-gold-400 flex items-center justify-center text-hfc-brown shadow-lg">
+                                    <div className="h-10 w-10 rounded-xl bg-gold-400 flex items-center justify-center text-white shadow-lg">
                                         <Activity size={20} />
                                     </div>
                                     <div className="flex-1">

@@ -47,7 +47,7 @@ export const HawkChat = () => {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[500px] overflow-hidden">
+        <div className="bg-[#1A1411] rounded-2xl border border-white/10 flex flex-col h-[500px] overflow-hidden">
             {/* Header */}
             <div className="bg-hfc-brown p-4 flex items-center justify-between text-white">
                 <div className="flex items-center gap-3">
@@ -63,32 +63,32 @@ export const HawkChat = () => {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#1A1411]/50">
                 {messages.map((m, i) => (
                     <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${m.sender === 'user'
                             ? 'bg-hfc-brown text-white rounded-tr-none'
-                            : 'bg-white border border-gray-100 text-gray-800 shadow-sm rounded-tl-none'
+                            : 'bg-white/5 border border-white/10 text-white/80 rounded-tl-none'
                             }`}>
                             {m.text}
                         </div>
                     </div>
                 ))}
                 {loading && (
-                    <div className="flex justify-start italic text-gray-400 text-xs animate-pulse">
+                    <div className="flex justify-start italic text-white/40 text-xs animate-pulse">
                         Hawk is thinking...
                     </div>
                 )}
             </div>
 
             {/* Footer / Input */}
-            <div className="p-4 bg-white border-t border-gray-100">
+            <div className="p-4 bg-[#0F0A07]/40 border-t border-white/5">
                 <div className="flex flex-wrap gap-2 mb-4">
                     {suggestions.map((s, i) => (
                         <button
                             key={i}
                             onClick={() => handleSend(s)}
-                            className="text-[10px] font-medium bg-gray-50 hover:bg-gold-50 hover:text-gold-700 text-gray-500 py-1 px-3 rounded-full border border-gray-100 transition-colors"
+                            className="text-[10px] font-medium bg-[#1A1411] hover:bg-gold-50 hover:text-gold-700 text-white/80 py-1 px-3 rounded-full border border-white/10 transition-colors"
                         >
                             {s}
                         </button>
@@ -103,7 +103,7 @@ export const HawkChat = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Ask KANGA.AI..."
-                        className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-hfc-brown/20"
+                        className="flex-1 bg-[#1A1411] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-hfc-brown/20"
                     />
                     <button
                         type="submit"
@@ -160,7 +160,7 @@ export const DashboardHawkAI = () => {
     };
 
     return (
-        <div className="h-full flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden relative">
+        <div className="h-full flex flex-col bg-[#1A1411] rounded-3xl border border-white/10 overflow-hidden relative">
 
             {/* === START SCREEN === */}
             {!hasStarted && (
@@ -174,10 +174,10 @@ export const DashboardHawkAI = () => {
                             <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-green-400 border-2 border-white animate-pulse" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-hfc-brown tracking-tight">
-                                KANGA<span className="text-hfc-brown">.</span>AI
+                            <h2 className="text-2xl font-black text-white tracking-tight">
+                                KANGA<span className="text-white">.</span>AI
                             </h2>
-                            <p className="text-gray-400 text-xs font-medium mt-1 tracking-wide">
+                            <p className="text-white/40 text-xs font-medium mt-1 tracking-wide">
                                 Your intelligent squad performance assistant
                             </p>
                         </div>
@@ -189,7 +189,7 @@ export const DashboardHawkAI = () => {
                             <button
                                 key={i}
                                 onClick={() => handleSend(s)}
-                                className="text-xs font-medium bg-gray-50 hover:bg-hfc-brown hover:text-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full transition-all duration-200 hover:border-hfc-brown hover:shadow-sm"
+                                className="text-xs font-medium bg-[#1A1411] hover:bg-hfc-brown hover:text-white text-white/80 border border-white/10 px-3.5 py-1.5 rounded-full transition-all duration-200 hover:border-hfc-brown hover:shadow-sm"
                             >
                                 {s}
                             </button>
@@ -208,7 +208,7 @@ export const DashboardHawkAI = () => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask KANGA.AI anything about the squad..."
-                                className="w-full bg-white border-2 border-gray-200 group-hover:border-gray-300 focus:border-hfc-brown rounded-2xl py-4 pl-5 pr-14 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:shadow-lg focus:shadow-hfc-brown/10 transition-all duration-300 shadow-sm"
+                                className="w-full bg-[#1A1411] border-2 border-white/10 group-hover:border-white/20 focus:border-gold-400 rounded-2xl py-4 pl-5 pr-14 text-sm text-white placeholder:text-white/40 focus:outline-none focus:shadow-lg focus:shadow-gold-400/10 transition-all duration-300"
                             />
                             <button
                                 type="submit"
@@ -226,21 +226,21 @@ export const DashboardHawkAI = () => {
             {hasStarted && (
                 <>
                     {/* Compact header */}
-                    <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 shrink-0">
+                    <div className="flex items-center gap-3 px-5 py-3 border-b border-white/10 shrink-0">
                         <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-hfc-brown to-hfc-brown flex items-center justify-center">
                             <Sparkles size={13} className="text-gold-400" />
                         </div>
-                        <span className="font-black text-hfc-brown text-sm tracking-tight">KANGA.AI</span>
+                        <span className="font-black text-white text-sm tracking-tight">KANGA.AI</span>
                         <div className="ml-auto flex items-center gap-1.5">
                             <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Online</span>
+                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Online</span>
                         </div>
                     </div>
 
                     {/* Messages */}
                     <div
                         ref={scrollRef}
-                        className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/40"
+                        className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#1A1411]/40"
                         style={{ scrollbarWidth: 'thin', scrollbarColor: '#e2e8f0 transparent' }}
                     >
                         {messages.map((m, i) => (
@@ -252,7 +252,7 @@ export const DashboardHawkAI = () => {
                                 )}
                                 <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.sender === 'user'
                                     ? 'bg-hfc-brown text-white rounded-tr-sm font-medium'
-                                    : 'bg-white border border-gray-100 text-gray-800 shadow-sm rounded-tl-sm'
+                                    : 'bg-white/5 border border-white/10 text-white/80 rounded-tl-sm'
                                     }`}>
                                     {m.text}
                                 </div>
@@ -263,7 +263,7 @@ export const DashboardHawkAI = () => {
                                 <div className="h-6 w-6 rounded-lg bg-hfc-brown flex items-center justify-center">
                                     <Sparkles size={10} className="text-gold-400 animate-pulse" />
                                 </div>
-                                <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm">
+                                <div className="bg-[#1A1411] border border-white/10 rounded-2xl rounded-tl-sm px-4 py-2.5">
                                     <div className="flex gap-1 items-center">
                                         <div className="h-1.5 w-1.5 rounded-full bg-hfc-brown animate-bounce" style={{ animationDelay: '0ms' }} />
                                         <div className="h-1.5 w-1.5 rounded-full bg-hfc-brown animate-bounce" style={{ animationDelay: '120ms' }} />
@@ -275,7 +275,7 @@ export const DashboardHawkAI = () => {
                     </div>
 
                     {/* Chat input */}
-                    <div className="p-3 bg-white border-t border-gray-100 shrink-0">
+                    <div className="p-3 bg-[#0F0A07]/40 border-t border-white/5 shrink-0">
                         <form
                             onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
                             className="relative"
@@ -285,7 +285,7 @@ export const DashboardHawkAI = () => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask a follow-up..."
-                                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-12 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 focus:border-hfc-brown/40 transition-all"
+                                className="w-full bg-[#1A1411] border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-white/80 placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 focus:border-hfc-brown/40 transition-all"
                                 autoFocus
                             />
                             <button

@@ -98,72 +98,81 @@ export const CoachRatings = () => {
     if (loading) return <div>Loading...</div>;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500 max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Coach Development Ratings</h1>
-                    <p className="text-gray-500">Assess player skills on a 1-10 scale.</p>
+        <div className="space-y-10 animate-in fade-in duration-700 max-w-[1200px] mx-auto p-8 relative">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-white/5 pb-8">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                        <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">Elite Development</span>
+                    </div>
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
+                        Coach <span className="text-gold-400">Ratings</span>
+                    </h1>
+                    <p className="text-white/50 text-sm font-medium font-work italic">Assess player tactical & technical skills on a 1-10 elite scale.</p>
                 </div>
 
                 {/* Player Selector */}
-                <div className="w-full md:w-72">
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Select Player</label>
+                <div className="w-full md:w-80 group">
+                    <label className="block text-[10px] font-black text-gold-400/60 uppercase tracking-[0.3em] font-work mb-3">Select Player</label>
                     <div className="relative">
                         <select
-                            className="w-full p-3 pl-10 bg-white border border-gray-200 rounded-xl appearance-none focus:ring-2 focus:ring-hfc-brown focus:outline-none font-medium shadow-sm"
+                            className="w-full p-4 pl-12 bg-white/5 border border-white/10 rounded-2xl appearance-none focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 focus:outline-none font-medium shadow-lg text-white font-work transition-all group-hover:border-white/20"
                             value={selectedPlayerId}
                             onChange={e => setSelectedPlayerId(Number(e.target.value))}
                         >
-                            <option value={0}>Choose a player...</option>
+                            <option value={0} className="bg-[#1A1411]">Choose an athlete...</option>
                             {players.map(p => (
-                                <option key={p.jumper_no} value={p.jumper_no}>#{p.jumper_no} {p.name}</option>
+                                <option key={p.jumper_no} value={p.jumper_no} className="bg-[#1A1411]">#{p.jumper_no} {p.name}</option>
                             ))}
                         </select>
-                        <User className="absolute left-3 top-3.5 text-gray-400" size={18} />
+                        <User className="absolute left-4 top-[1.125rem] text-white/30 group-focus-within:text-gold-400 transition-colors" size={20} />
                     </div>
                 </div>
             </div>
 
             {selectedPlayer && (
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-full border-2 border-hfc-brown p-1">
+                <div className="bg-[#1A1411] p-8 rounded-[2rem] shadow-2xl border border-white/5 flex items-center gap-6 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none"></div>
+                    <div className="w-24 h-24 rounded-full border-4 border-[#0F0A07] shadow-[0_0_20px_rgba(246,176,0,0.15)] relative z-10 shrink-0 overflow-hidden">
                         <img
-                            src={formatPlayerImage(selectedPlayer.jumper_no, selectedPlayer.photo_url)}
-                            alt={selectedPlayer.name}
-                            className="w-full h-full object-cover rounded-full bg-gray-100"
+                            src={formatPlayerImage(selectedPlayer?.jumper_no, selectedPlayer?.photo_url)}
+                            alt={selectedPlayer?.name}
+                            className="w-full h-full object-cover bg-[#0F0A07] grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
                         />
                     </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900">{selectedPlayer.name} #{selectedPlayer.jumper_no}</h2>
-                        <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                            <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">{selectedPlayer.position}</span>
-                            <span>{selectedPlayer.age} years old</span>
-                            <span>{selectedPlayer.games} games</span>
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-black text-white font-space tracking-tight uppercase leading-none">{selectedPlayer?.name} <span className="text-gold-400">#{selectedPlayer?.jumper_no}</span></h2>
+                        <div className="flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.1em] font-work mt-3">
+                            <span className="bg-gold-500/10 text-gold-400 px-3 py-1 rounded-full border border-gold-400/20">{selectedPlayer?.position}</span>
+                            <span className="text-white/40">{selectedPlayer?.age} YRS</span>
+                            <span className="text-white/20">•</span>
+                            <span className="text-white/40">{selectedPlayer?.games} GMS</span>
                         </div>
                     </div>
                 </div>
             )}
 
             {selectedPlayerId !== 0 && (
-                <div className="space-y-8 pb-20">
+                <div className="space-y-10 pb-24 relative">
                     {Object.entries(SKILL_CATEGORIES).map(([category, skills]) => (
-                        <div key={category} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                                <h3 className="font-bold text-lg text-gray-800">{category}</h3>
+                        <div key={category} className="bg-[#1A1411] rounded-[2.5rem] shadow-2xl border border-white/5 overflow-hidden group">
+                            <div className="bg-white/[0.02] px-8 py-6 border-b border-white/5 flex items-center gap-4">
+                                <h3 className="font-black text-2xl text-white font-space uppercase tracking-tight">{category}</h3>
+                                <span className="h-[1px] flex-1 bg-white/5"></span>
                             </div>
-                            <div className="p-6 space-y-8">
+                            <div className="p-8 space-y-10">
                                 {skills.map(skill => {
                                     const key = `${category}_${skill}`;
                                     const val = ratings[key] || 5; // Default middle
 
                                     return (
-                                        <div key={skill} className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                                            <div className="md:col-span-3">
-                                                <label className="font-medium text-gray-900 block">{skill}</label>
+                                        <div key={skill} className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center group/row">
+                                            <div className="md:col-span-4">
+                                                <label className="font-bold text-white/90 text-sm font-work uppercase tracking-wide group-hover/row:text-gold-400 transition-colors block">{skill}</label>
                                             </div>
 
-                                            <div className="md:col-span-5 flex items-center gap-4">
-                                                <span className="text-xs font-bold text-gray-400">1</span>
+                                            <div className="md:col-span-5 flex items-center gap-5">
+                                                <span className="text-[10px] font-black font-space text-white/30">1</span>
                                                 <input
                                                     type="range"
                                                     min="1"
@@ -171,19 +180,19 @@ export const CoachRatings = () => {
                                                     step="1"
                                                     value={val}
                                                     onChange={e => handleRatingChange(category, skill, Number(e.target.value))}
-                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-hfc-brown"
+                                                    className="w-full h-3 bg-white/10 rounded-full appearance-none cursor-pointer accent-gold-400 hover:bg-white/20 transition-colors"
                                                 />
-                                                <span className="text-xs font-bold text-gray-400">10</span>
-                                                <div className="w-12 h-10 flex items-center justify-center bg-hfc-brown text-white font-bold rounded-lg shadow-sm border border-amber-800">
+                                                <span className="text-[10px] font-black font-space text-white/30">10</span>
+                                                <div className="w-14 h-12 flex items-center justify-center bg-gold-400/10 text-gold-400 font-black text-xl rounded-xl shadow-lg border border-gold-400/30 font-space shadow-gold-500/10 shrink-0">
                                                     {val}
                                                 </div>
                                             </div>
 
-                                            <div className="md:col-span-4">
+                                            <div className="md:col-span-3">
                                                 <input
                                                     type="text"
-                                                    placeholder="Optional notes..."
-                                                    className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-hfc-brown focus:outline-none"
+                                                    placeholder="Optional notations..."
+                                                    className="w-full p-3 text-sm bg-white/5 border border-white/10 rounded-xl focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 focus:outline-none text-white font-work italic placeholder:text-white/20 transition-all text-[11px]"
                                                     value={notes[key] || ''}
                                                     onChange={e => handleNoteChange(category, skill, e.target.value)}
                                                 />
@@ -195,13 +204,13 @@ export const CoachRatings = () => {
                         </div>
                     ))}
 
-                    <div className="fixed bottom-0 left-64 right-0 p-4 bg-white border-t border-gray-200 flex justify-end gap-4 z-40">
+                    <div className="fixed bottom-0 left-64 right-0 p-6 bg-[#0F0A07]/90 backdrop-blur-xl border-t border-white/5 flex justify-end gap-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
                         <button
                             onClick={handleSubmit}
-                            className="bg-hfc-brown text-white px-8 py-3 rounded-xl font-bold hover:bg-amber-900 transition-colors flex items-center gap-2 shadow-lg"
+                            className="bg-gold-500 text-[#0F0A07] px-10 py-4 rounded-full font-black text-[11px] uppercase tracking-[0.2em] font-work hover:bg-white transition-all flex items-center gap-3 shadow-[0_10px_30px_-5px_rgba(246,176,0,0.4)]"
                         >
-                            <Save size={20} />
-                            Save All Ratings
+                            <Save size={18} />
+                            Commit Development Profile
                         </button>
                     </div>
                 </div>

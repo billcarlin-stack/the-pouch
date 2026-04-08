@@ -158,3 +158,89 @@ def get_player_ratings(player_id: int) -> dict:
         }
     finally:
         session.close()
+
+def get_team_matrix() -> dict:
+    """
+    Returns a matrix of all players and their granular ratings for the most recent date.
+    """
+    session = get_session()
+    try:
+        # Find the most recent date
+        latest_date_obj = session.query(CoachRating).order_by(CoachRating.date.desc()).first()
+        if not latest_date_obj:
+            return {"players": [], "skills": [], "matrix": {}}
+        
+        latest_date = latest_date_obj.date
+        
+        # Get all ratings for this date
+        ratings = session.query(CoachRating).filter(CoachRating.date == latest_date).all()
+        
+        # Build the matrix
+        matrix = {} # { player_id: { skill_name: { coach: X, self: Y } } }
+        all_skills = set()
+        player_names = {}
+        
+        from models.players import Player
+        players = session.query(Player).all()
+        for p in players:
+            player_names[p.jumper_no] = p.name
+
+        for r in ratings:
+            p_id = r.player_id
+            if p_id not in matrix:
+                matrix[p_id] = {}
+            
+            skill = r.skill_name
+            all_skills.add(skill)
+            
+            if skill not in matrix[p_id]:
+                matrix[p_id][skill] = {"coach": 0, "self": 0}
+            
+            if r.source == 'coach':
+                matrix[p_id][skill]["coach"] = r.rating_value
+            else:
+                matrix[p_id][skill]["self"] = r.rating_value
+        
+        return {
+            "date": latest_date,
+            "players": [{"id": id, "name": name} for id, name in player_names.items()],
+            "skills": sorted(list(all_skills)),
+            "matrix": matrix
+        }
+    finally:
+        session.close()
+
+def get_yearly_matrix(player_id: int) -> dict:
+    """
+    Returns a matrix of dates/rounds and granular ratings for a single player.
+    """
+    session = get_session()
+    try:
+        ratings = session.query(CoachRating).filter(CoachRating.player_id == player_id).order_by(CoachRating.date.asc()).all()
+        
+        matrix = {} # { date: { skill_name: { coach: X, self: Y } } }
+        all_skills = set()
+        
+        for r in ratings:
+            date = r.date
+            if date not in matrix:
+                matrix[date] = {}
+            
+            skill = r.skill_name
+            all_skills.add(skill)
+            
+            if skill not in matrix[date]:
+                matrix[date][skill] = {"coach": 0, "self": 0}
+            
+            if r.source == 'coach':
+                matrix[date][skill]["coach"] = r.rating_value
+            else:
+                matrix[date][skill]["self"] = r.rating_value
+                
+        return {
+            "rounds": sorted(list(matrix.keys())),
+            "skills": sorted(list(all_skills)),
+            "matrix": matrix
+        }
+    finally:
+        session.close()

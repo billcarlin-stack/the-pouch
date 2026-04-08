@@ -17,7 +17,7 @@ const PlayerCard = ({ number, name, position, age, games, status, onClick }: Pla
             case 'green': return 'bg-hfc-success';
             case 'amber': return 'bg-hfc-warning';
             case 'red': return 'bg-hfc-danger';
-            default: return 'bg-gray-400';
+            default: return 'bg-white/30';
         }
     };
 
@@ -39,7 +39,7 @@ const PlayerCard = ({ number, name, position, age, games, status, onClick }: Pla
 
             {/* Avatar Circle with Brown Blue Ring & Shadow */}
             <div className="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-hfc-brown to-amber-500 mb-6 relative shadow-md">
-                <div className="w-full h-full rounded-full border-4 border-white overflow-hidden bg-gray-50">
+                <div className="w-full h-full rounded-full border-4 border-white overflow-hidden bg-[#1A1411]">
                     <img
                         src={avatarUrl}
                         alt={name}
@@ -54,21 +54,21 @@ const PlayerCard = ({ number, name, position, age, games, status, onClick }: Pla
 
             {/* Info - Clean, Centered, Hierarchical */}
             <div className="text-center w-full">
-                <h3 className="font-bold text-hfc-brown text-xl tracking-tight mb-1 truncate">{name}</h3>
+                <h3 className="font-bold text-white text-xl tracking-tight mb-1 truncate">{name}</h3>
                 <p className="text-slate-500 font-medium text-xs uppercase tracking-widest mb-6">{position}</p>
 
                 {/* Divider */}
-                <div className="w-full h-px bg-gray-100 mb-5"></div>
+                <div className="w-full h-px bg-white/5 mb-5"></div>
 
                 {/* Stats Row */}
                 <div className="flex justify-center items-center space-x-8 text-slate-400">
-                    <div className="flex flex-col items-center group-hover:text-hfc-brown transition-colors">
-                        <span className="font-bold text-slate-700 text-lg leading-none mb-1 group-hover:text-hfc-brown">{age}</span>
+                    <div className="flex flex-col items-center group-hover:text-white transition-colors">
+                        <span className="font-bold text-slate-700 text-lg leading-none mb-1 group-hover:text-white">{age}</span>
                         <span className="text-[10px] font-bold uppercase tracking-wider">Years</span>
                     </div>
-                    <div className="w-px h-8 bg-gray-100"></div>
-                    <div className="flex flex-col items-center group-hover:text-hfc-brown transition-colors">
-                        <span className="font-bold text-slate-700 text-lg leading-none mb-1 group-hover:text-hfc-brown">{games}</span>
+                    <div className="w-px h-8 bg-white/5"></div>
+                    <div className="flex flex-col items-center group-hover:text-white transition-colors">
+                        <span className="font-bold text-slate-700 text-lg leading-none mb-1 group-hover:text-white">{games}</span>
                         <span className="text-[10px] font-bold uppercase tracking-wider">Games</span>
                     </div>
                 </div>

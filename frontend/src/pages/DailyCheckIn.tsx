@@ -65,20 +65,20 @@ const DailyCheckIn = () => {
 
     if (submitted) {
         return (
-            <div className="p-6 max-w-2xl mx-auto flex items-center justify-center min-h-[60vh]">
-                <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
-                    <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-                        <CheckCircle size={40} className="text-green-600" />
+            <div className="p-8 max-w-2xl mx-auto flex items-center justify-center min-h-[60vh]">
+                <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
+                    <div className="h-24 w-24 rounded-[2rem] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/5">
+                        <CheckCircle size={48} className="text-emerald-400" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-hfc-brown">Check-In Complete!</h2>
-                        <p className="text-gray-500 mt-2">Your readiness score: <span className={`font-black text-xl ${getScoreColor(parseFloat(readinessScore))}`}>{readinessScore}</span></p>
+                        <h2 className="text-4xl font-black text-white uppercase tracking-tight font-space">Check-In <span className="text-emerald-400">Complete</span></h2>
+                        <p className="text-white/50 mt-4 font-work text-sm">Your readiness score: <span className={`font-black text-2xl ml-2 ${getScoreColor(parseFloat(readinessScore))}`}>{readinessScore}</span></p>
                     </div>
                     <button
                         onClick={() => { setSubmitted(false); setScores({ sleep: 7, soreness: 7, mood: 7, confidence: 7 }); setNotes(''); }}
-                        className="text-sm font-bold text-hfc-brown hover:underline"
+                        className="text-[10px] font-black text-gold-400 uppercase tracking-[0.2em] hover:text-white transition-colors font-work"
                     >
-                        Submit Another
+                        Submit Another Entry
                     </button>
                 </div>
             </div>
@@ -86,44 +86,50 @@ const DailyCheckIn = () => {
     }
 
     return (
-        <div className="p-6 max-w-3xl mx-auto space-y-8 animate-in fade-in duration-700">
-            {/* Header */}
-            <div className="border-b border-gray-200 pb-6">
-                <h1 className="text-3xl font-black text-hfc-brown tracking-tight font-outfit uppercase">
-                    Daily <span className="text-hfc-brown">Check-In</span>
+        <div className="p-8 max-w-[1000px] mx-auto space-y-10 animate-in fade-in duration-700 relative">
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <span className="h-[1px] w-10 bg-gold-400/40"></span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gold-400/80 font-work">Wellbeing & Readiness</span>
+                </div>
+                <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">
+                    Daily <span className="text-gold-400">Check-In</span>
                 </h1>
-                <p className="text-gray-500 text-sm font-medium mt-1">
+                <p className="text-white/50 text-sm font-medium mt-1 font-work italic">
                     Pre-training wellbeing survey — {new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </p>
             </div>
 
             {/* Readiness Preview */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 flex items-center justify-between">
-                <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Estimated Readiness</p>
-                    <p className="text-sm text-gray-500 mt-1">Based on your current responses</p>
+            <div className="bg-[#1A1411] rounded-[2rem] border border-white/5 shadow-2xl p-8 flex items-center justify-between relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                <div className="relative z-10">
+                    <p className="text-[10px] font-black text-gold-400/60 uppercase tracking-[0.3em] font-work mb-2">Estimated Readiness</p>
+                    <p className="text-sm text-white/50 font-medium font-work italic">Based on your current responses</p>
                 </div>
-                <div className={`text-4xl font-black ${getScoreColor(parseFloat(readinessScore))}`}>
+                <div className={`text-6xl font-black font-space tracking-tighter relative z-10 ${getScoreColor(parseFloat(readinessScore))}`}>
                     {readinessScore}
-                    <span className="text-sm font-bold text-gray-300 ml-1">/10</span>
+                    <span className="text-lg font-bold text-white/20 ml-1">/10</span>
                 </div>
             </div>
 
             {/* Sliders */}
-            <div className="space-y-5">
+            <div className="space-y-6">
                 {METRICS.map(({ key, label, subtitle, emoji }) => (
-                    <div key={key} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                        <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <span className="text-2xl">{emoji}</span>
+                    <div key={key} className="bg-white/5 rounded-[2rem] border border-white/5 p-8 transition-all duration-300 hover:border-gold-400/20 group">
+                        <div className="flex items-start justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="text-3xl bg-[#1A1411] p-4 rounded-2xl border border-white/5 group-hover:border-gold-400/20 transition-all">{emoji}</div>
                                 <div>
-                                    <h3 className="font-bold text-hfc-brown">{label}</h3>
-                                    <p className="text-xs text-gray-400">{subtitle}</p>
+                                    <h3 className="font-black text-white text-xl uppercase font-space tracking-tight">{label}</h3>
+                                    <p className="text-[11px] text-white/50 font-work italic mt-1">{subtitle}</p>
                                 </div>
                             </div>
-                            <div className={`text-2xl font-black ${getScoreColor(scores[key])}`}>
-                                {scores[key]}
-                                <span className="text-xs font-bold text-gray-300 ml-1">{getScoreLabel(scores[key])}</span>
+                            <div className={`flex flex-col items-end`}>
+                                <div className={`text-4xl font-black font-space tracking-tighter ${getScoreColor(scores[key])}`}>
+                                    {scores[key]}
+                                </div>
+                                <span className={`text-[10px] font-black uppercase tracking-widest mt-1 ${getScoreColor(scores[key])}`}>{getScoreLabel(scores[key])}</span>
                             </div>
                         </div>
 
@@ -134,11 +140,11 @@ const DailyCheckIn = () => {
                                 max="10"
                                 value={scores[key]}
                                 onChange={(e) => setScores(prev => ({ ...prev, [key]: parseInt(e.target.value) }))}
-                                className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-hfc-brown"
+                                className="w-full h-3 bg-[#1A1411] rounded-full appearance-none cursor-pointer accent-gold-400"
                             />
-                            <div className="flex justify-between text-[10px] text-gray-300 font-bold mt-1 px-0.5">
+                            <div className="flex justify-between text-[10px] text-white/20 font-black mt-3 px-1 font-space">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-                                    <span key={n} className={clsx(scores[key] === n && 'text-hfc-brown font-black')}>{n}</span>
+                                    <span key={n} className={clsx(scores[key] === n && 'text-gold-400 scale-125 transition-transform')}>{n}</span>
                                 ))}
                             </div>
                         </div>
@@ -147,38 +153,40 @@ const DailyCheckIn = () => {
             </div>
 
             {/* Notes */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 block">
+            <div className="bg-[#1A1411] rounded-[2rem] border border-white/5 p-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                <label className="text-[10px] font-black text-gold-400/60 uppercase tracking-[0.3em] font-work mb-4 block relative z-10">
                     Additional Notes (Optional)
                 </label>
                 <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    rows={3}
+                    rows={4}
                     placeholder="Anything the coaching staff should know today..."
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-hfc-brown/20 resize-none"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-gold-400/50 focus:border-gold-400/50 resize-none font-work italic placeholder:text-white/20 transition-all relative z-10"
                 />
             </div>
 
             {/* Error */}
             {error && (
-                <div className="bg-red-50 text-red-700 border border-red-100 rounded-xl p-4 text-sm font-medium">
+                <div className="bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-[1.5rem] p-6 text-sm font-bold font-work text-center">
                     {error}
                 </div>
             )}
+
 
             {/* Submit */}
             <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full bg-gradient-to-r from-hfc-brown to-hfc-brown text-white font-black py-4 rounded-2xl text-sm uppercase tracking-widest hover:from-hfc-brown hover:to-hfc-brown transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-hfc-brown/20"
+                className="w-full bg-gold-500 text-[#0F0A07] font-black py-5 rounded-full text-[11px] uppercase tracking-[0.2em] font-work hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-[0_10px_30px_-5px_rgba(246,176,0,0.4)] relative z-10"
             >
                 {submitting ? (
-                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="h-5 w-5 border-2 border-[#0F0A07]/30 border-t-[#0F0A07] rounded-full animate-spin" />
                 ) : (
                     <>
                         <Send size={16} />
-                        Submit Check-In
+                        Transmit Readiness Data
                     </>
                 )}
             </button>

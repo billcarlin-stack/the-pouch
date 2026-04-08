@@ -138,14 +138,14 @@ export const PlayerReview = () => {
     return (
         <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div className="flex items-center justify-between bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+            <div className="flex items-center justify-between bg-[#1A1411] p-8 rounded-3xl shadow-sm border border-white/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-black text-emerald-600 tracking-tight uppercase">Player Review Hub</h1>
-                    <p className="text-gray-500 font-medium mt-1">Self-assess your performance metrics. Match the categories assessed by coaches.</p>
+                    <h1 className="text-5xl font-black text-white uppercase tracking-tight font-space">Player Review Hub</h1>
+                    <p className="text-white/80 font-medium mt-1">Self-assess your performance metrics. Match the categories assessed by coaches.</p>
                 </div>
-                <div className="bg-emerald-50 p-4 rounded-2xl relative z-10">
-                    <Target size={32} className="text-emerald-600" />
+                <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl relative z-10">
+                    <Target size={32} className="text-emerald-400" />
                 </div>
             </div>
 
@@ -153,9 +153,9 @@ export const PlayerReview = () => {
                 {/* Rating Input Panel */}
                 <div className="lg:col-span-2 space-y-8">
                     {Object.entries(SKILL_CATEGORIES).map(([category, skills]) => (
-                        <div key={category} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                                <h3 className="font-bold text-lg text-gray-800">{category}</h3>
+                        <div key={category} className="bg-[#1A1411] rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+                            <div className="bg-[#1A1411] px-6 py-4 border-b border-white/10 flex items-center justify-between">
+                                <h3 className="font-bold text-lg text-white/80">{category}</h3>
                                 <Zap size={18} className="text-gold-500" />
                             </div>
                             <div className="p-6 space-y-8">
@@ -166,14 +166,14 @@ export const PlayerReview = () => {
                                     return (
                                         <div key={skill} className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <label className="font-bold text-gray-900 block">{skill}</label>
-                                                <span className="text-xs font-black text-hfc-brown bg-amber-50 px-2 py-1 rounded">
+                                                <label className="font-bold text-white/80 block">{skill}</label>
+                                                <span className="text-xs font-black text-white bg-white/10 border border-white/10 px-2 py-1 rounded">
                                                     {val} / 10
                                                 </span>
                                             </div>
 
                                             <div className="flex items-center gap-4">
-                                                <span className="text-xs font-bold text-gray-400">1</span>
+                                                <span className="text-xs font-bold text-white/40">1</span>
                                                 <input
                                                     type="range"
                                                     min="1"
@@ -181,17 +181,17 @@ export const PlayerReview = () => {
                                                     step="1"
                                                     value={val}
                                                     onChange={e => handleRatingChange(category, skill, Number(e.target.value))}
-                                                    className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-hfc-brown"
+                                                    className="w-full h-2 bg-white/5 rounded-lg appearance-none cursor-pointer accent-hfc-brown"
                                                 />
-                                                <span className="text-xs font-bold text-gray-400">10</span>
+                                                <span className="text-xs font-bold text-white/40">10</span>
                                             </div>
 
                                             <div className="relative">
-                                                <MessageSquare size={14} className="absolute left-3 top-3 text-gray-300" />
+                                                <MessageSquare size={14} className="absolute left-3 top-3 text-white/40" />
                                                 <input
                                                     type="text"
                                                     placeholder="Self-reflection notes..."
-                                                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/20"
+                                                    className="w-full pl-9 pr-4 py-2 bg-white/5 text-white rounded-xl border border-white/10 text-sm focus:outline-none focus:ring-1 focus:ring-gold-400/30 focus:border-gold-400/30 placeholder:text-white/20 transition-all"
                                                     value={notes[key] || ''}
                                                     onChange={e => handleNoteChange(category, skill, e.target.value)}
                                                 />
@@ -235,12 +235,12 @@ export const PlayerReview = () => {
                         </div>
 
                         {/* Submit Button Sidebar */}
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                            <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">Finalize Review</h3>
-                            <p className="text-xs text-gray-500 mb-6 font-medium">Click save to submit your self-assessment. Coaches will be able to compare this against their own ratings.</p>
+                        <div className="bg-[#1A1411] p-6 rounded-2xl shadow-sm border border-white/10">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-white/40 mb-4">Finalize Review</h3>
+                            <p className="text-xs text-white/80 mb-6 font-medium">Click save to submit your self-assessment. Coaches will be able to compare this against their own ratings.</p>
                             
                             {success && (
-                                <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm mb-4 animate-in fade-in slide-in-from-right-2">
+                                <div className="flex items-center gap-2 text-white font-bold text-sm mb-4 animate-in fade-in slide-in-from-right-2">
                                     <CheckCircle size={18} />
                                     Ratings Saved!
                                 </div>

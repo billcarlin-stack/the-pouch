@@ -89,40 +89,7 @@ def create_app(config=None):
     app.register_blueprint(engagement_bp, url_prefix='/api/engagement')
     app.register_blueprint(squad_builder_bp, url_prefix='/api/squad-builder')
 
-    # ── Temporary Admin/Seed Route ────────────────────────────────
-    @app.route('/api/admin/seed', methods=['GET'])
-    def admin_seed():
-        """Synchronous seeding route using consolidated database_utils.
-        """
-        try:
-            from database_utils import initialize_and_seed
-            initialize_and_seed()
-            
-            return jsonify({
-                "status": "success", 
-                "message": "Database initialized and seeded successfully (Simplified Version)"
-            }), 200
-            
-        except Exception as e:
-            logger.error(f"Seeding failed: {str(e)}", exc_info=True)
-            return jsonify({
-                "status": "error",
-                "message": "Seeding failed. Check server logs.",
-                "detail": str(e)
-            }), 500
 
-    @app.route('/api/admin/users/debug', methods=['GET'])
-    def debug_users():
-        try:
-            from models.user_roles import UserRole
-            from db.cloudsql_client import get_session
-            session = get_session()
-            users = session.query(UserRole).all()
-            user_list = [{"email": u.google_email, "role": u.role, "name": u.name} for u in users]
-            session.close()
-            return jsonify(user_list), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
 
     # ── Global Error Handlers ─────────────────────────────────────
     @app.errorhandler(404)

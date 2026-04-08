@@ -144,6 +144,19 @@ export interface RatingResponse {
     aggregated: AggregatedRating[];
 }
 
+export interface TeamMatrixResponse {
+    date: string;
+    players: { id: number; name: string }[];
+    skills: string[];
+    matrix: Record<number, Record<string, { coach: number; self: number }>>;
+}
+
+export interface YearlyMatrixResponse {
+    rounds: string[];
+    skills: string[];
+    matrix: Record<string, Record<string, { coach: number; self: number }>>;
+}
+
 export interface FitnessSession {
     session_date: string;
     session_type: string;
@@ -335,6 +348,16 @@ export const ApiService = {
     },
     submitRating: async (data: any) => {
         const response = await api.post('/ratings', data);
+        return response.data;
+    },
+
+    getTeamMatrix: async () => {
+        const response = await api.get<TeamMatrixResponse>('/ratings/matrix/team');
+        return response.data;
+    },
+
+    getYearlyMatrix: async (playerId: number | string) => {
+        const response = await api.get<YearlyMatrixResponse>(`/ratings/matrix/yearly/${playerId}`);
         return response.data;
     },
 
